@@ -1,0 +1,80 @@
+[
+  {
+    "id": 1,
+    "tag": "NEW USER",
+    "title": "Free First Inspection",
+    "description": "Get a complete vehicle inspection absolutely free on your first booking with any verified garage.",
+    "discount": "FREE",
+    "code": "FIRST100",
+    "validTill": "2026-04-30",
+    "category": "all",
+    "gradient": ["#0056D2", "#003fa3"],
+    "minOrder": null,
+    "usageLimit": "One-time per user"
+  },
+  {
+    "id": 2,
+    "tag": "WEEKEND DEAL",
+    "title": "20% Off on Car Service",
+    "description": "Book any full car service this weekend and save flat 20% on the total bill.",
+    "discount": "20% OFF",
+    "code": "WEEKEND20",
+    "validTill": "2026-03-31",
+    "category": "car",
+    "gradient": ["#FF6B00", "#e05a00"],
+    "minOrder": "₹999",
+    "usageLimit": "Valid Sat–Sun only"
+  },
+  {
+    "id": 3,
+    "tag": "BIKE SPECIAL",
+    "title": "Flat ₹100 Off on Bike Service",
+    "description": "Get ₹100 instant discount on any bike or scooter full service at participating garages.",
+    "discount": "₹100 OFF",
+    "code": "BIKE100",
+    "validTill": "2026-04-15",
+    "category": "bike",
+    "gradient": ["#16a34a", "#15803d"],
+    "minOrder": "₹499",
+    "usageLimit": "Max 2 uses per user"
+  },
+  {
+    "id": 4,
+    "tag": "EV OFFER",
+    "title": "EV Battery Checkup at ₹199",
+    "description": "Special flat price for complete EV battery health diagnostic at any EV-certified garage near you.",
+    "discount": "₹199 FLAT",
+    "code": "EVCARE",
+    "validTill": "2026-05-31",
+    "category": "ev",
+    "gradient": ["#0891b2", "#0e7490"],
+    "minOrder": null,
+    "usageLimit": "One-time per user"
+  },
+  {
+    "id": 5,
+    "tag": "REFERRAL",
+    "title": "Refer & Earn ₹200",
+    "description": "Refer a friend and earn ₹200 wallet credits when they complete their first booking.",
+    "discount": "₹200 CREDIT",
+    "code": "REFER200",
+    "validTill": "2026-06-30",
+    "category": "all",
+    "gradient": ["#7c3aed", "#6d28d9"],
+    "minOrder": null,
+    "usageLimit": "Unlimited referrals"
+  },
+  {
+    "id": 6,
+    "tag": "MONSOON CARE",
+    "title": "15% Off Tyre & Brake Check",
+    "description": "Stay safe this monsoon. Get 15% off on tyre rotation and brake pad inspection.",
+    "discount": "15% OFF",
+    "code": "MONSOON15",
+    "validTill": "2026-06-30",
+    "category": "car",
+    "gradient": ["#0f766e", "#0d9488"],
+    "minOrder": "₹499",
+    "usageLimit": "Valid once per vehicle"
+  }
+]

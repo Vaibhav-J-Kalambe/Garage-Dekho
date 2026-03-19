@@ -1,0 +1,62 @@
+[
+  {
+    "id": "BK001",
+    "garageId": 1,
+    "garageName": "Prime Auto Care",
+    "garageImage": "https://images.pexels.com/photos/4489734/pexels-photo-4489734.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "service": "AC Repair & Gas Refill",
+    "date": "2026-03-18",
+    "time": "10:00 AM",
+    "price": "₹999",
+    "status": "confirmed",
+    "pickupDrop": true
+  },
+  {
+    "id": "BK002",
+    "garageId": 2,
+    "garageName": "City Bike Garage",
+    "garageImage": "https://images.pexels.com/photos/3806279/pexels-photo-3806279.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "service": "Bike Full Service",
+    "date": "2026-03-22",
+    "time": "9:00 AM",
+    "price": "₹599",
+    "status": "confirmed",
+    "pickupDrop": false
+  },
+  {
+    "id": "BK003",
+    "garageId": 1,
+    "garageName": "Prime Auto Care",
+    "garageImage": "https://images.pexels.com/photos/4489734/pexels-photo-4489734.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "service": "Engine Oil Change",
+    "date": "2026-03-05",
+    "time": "11:00 AM",
+    "price": "₹499",
+    "status": "completed",
+    "pickupDrop": true
+  },
+  {
+    "id": "BK004",
+    "garageId": 3,
+    "garageName": "Express Car Clinic",
+    "garageImage": "https://images.pexels.com/photos/3807388/pexels-photo-3807388.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "service": "Full Vehicle Inspection",
+    "date": "2026-02-20",
+    "time": "2:00 PM",
+    "price": "₹399",
+    "status": "completed",
+    "pickupDrop": false
+  },
+  {
+    "id": "BK005",
+    "garageId": 2,
+    "garageName": "City Bike Garage",
+    "garageImage": "https://images.pexels.com/photos/3806279/pexels-photo-3806279.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "service": "Tyre Puncture Repair",
+    "date": "2026-02-10",
+    "time": "4:00 PM",
+    "price": "₹149",
+    "status": "cancelled",
+    "pickupDrop": false
+  }
+]

@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────
+   BASE RESETS & FONT
+───────────────────────────────────────────── */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: #F8FAFC;
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+main {
+  min-height: 100vh;
+}
+
+/* ─────────────────────────────────────────────
+   UTILITIES
+───────────────────────────────────────────── */
+@layer utilities {
+
+  /* ── Scrollbar ── */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ── Shadow scale ── */
+  .shadow-card       { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); }
+  .shadow-card-hover { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10); }
+  .shadow-sos        { box-shadow: 0 6px 24px rgba(211, 47, 47, 0.32); }
+  .shadow-promo      { box-shadow: 0 6px 24px rgba(245, 158, 11, 0.28); }
+  .shadow-nav        { box-shadow: 0 -1px 0 rgba(0,0,0,0.04), 0 -8px 24px rgba(0,0,0,0.06); }
+
+  /* ── Glow shadows for CTAs ── */
+  .shadow-glow-primary { box-shadow: 0 4px 16px rgba(0, 86, 210, 0.38); }
+  .shadow-glow-accent  { box-shadow: 0 4px 16px rgba(255, 107, 0, 0.38); }
+
+  /* ── Glassmorphism ── */
+  .glass {
+    background: rgba(255, 255, 255, 0.80);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.50);
+  }
+  .glass-dark {
+    background: rgba(15, 23, 42, 0.80);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* ── Gradient text ── */
+  .gradient-text {
+    background: linear-gradient(135deg, #0056D2 0%, #0EA5E9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .gradient-text-warm {
+    background: linear-gradient(135deg, #FF6B00 0%, #F59E0B 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Shimmer (skeleton loader) ── */
+  .animate-shimmer {
+    background: linear-gradient(
+      90deg,
+      #f1f5f9 25%,
+      #e8edf5 50%,
+      #f1f5f9 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+
+  /* ── Slide-up (stagger entrance) ── */
+  .animate-slide-up {
+    animation: slide-up 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .animate-pop {
+    animation: pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* ── Stagger delays ── */
+  .delay-75  { animation-delay:  75ms; }
+  .delay-100 { animation-delay: 100ms; }
+  .delay-150 { animation-delay: 150ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+
+  /* ── Fade in up (toast) ── */
+  .animate-fade-in-up {
+    animation: fade-in-up 0.25s ease-out both;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   KEYFRAMES
+───────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1);    }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0);    }
+}
+
+/* Leaflet user-dot ping */
+@keyframes gd-ping {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  100% { transform: scale(2.8); opacity: 0;   }
+}

@@ -1,0 +1,104 @@
+[
+  {
+    "id": 1,
+    "name": "Prime Auto Care",
+    "rating": 4.8,
+    "reviews": 214,
+    "distance": "0.8 km",
+    "lat": 18.5362,
+    "lng": 73.8939,
+    "image": "https://images.pexels.com/photos/4489734/pexels-photo-4489734.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "verified": true,
+    "speciality": "AC Repair Specialist",
+    "vehicleType": "4-Wheeler",
+    "isOpen": true,
+    "waitTime": "~10 min",
+    "address": "12, Sector 4, Koregaon Park, Pune",
+    "phone": "+91 98765 43210",
+    "openHours": "8:00 AM – 9:00 PM",
+    "experience": 10,
+    "vehiclesServed": 1240,
+    "about": "Prime Auto Care has been serving Pune's vehicle owners for over 10 years. We specialise in AC repair, engine diagnostics, and full-service maintenance for all 4-wheelers. Our certified technicians use OEM-grade parts and provide a 30-day service warranty on all jobs.",
+    "services": [
+      { "name": "AC Repair & Gas Refill", "price": "₹999",  "duration": "2–3 hrs" },
+      { "name": "Engine Oil Change",       "price": "₹499",  "duration": "30 min"  },
+      { "name": "Full Car Service",        "price": "₹1,999","duration": "4–5 hrs" },
+      { "name": "Battery Replacement",     "price": "₹799",  "duration": "45 min"  },
+      { "name": "Brake Pad Replacement",   "price": "₹699",  "duration": "1 hr"    },
+      { "name": "Tyre Rotation",           "price": "₹299",  "duration": "30 min"  }
+    ],
+    "reviewsList": [
+      { "id": 1, "name": "Rahul S.",  "rating": 5, "comment": "Excellent service! AC works perfectly now. Very professional staff.", "date": "2 days ago" },
+      { "id": 2, "name": "Priya M.",  "rating": 5, "comment": "Quick oil change, transparent pricing. Will definitely come back.", "date": "1 week ago" },
+      { "id": 3, "name": "Arjun K.", "rating": 4, "comment": "Good work overall, slight delay but quality was top-notch.", "date": "2 weeks ago" }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "City Bike Garage",
+    "rating": 4.7,
+    "reviews": 138,
+    "distance": "1.2 km",
+    "lat": 18.5308,
+    "lng": 73.8748,
+    "image": "https://images.pexels.com/photos/3806279/pexels-photo-3806279.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "verified": true,
+    "speciality": "2-Wheeler Expert",
+    "vehicleType": "2-Wheeler",
+    "isOpen": true,
+    "waitTime": "~5 min",
+    "address": "7, MG Road, Shivaji Nagar, Pune",
+    "phone": "+91 91234 56789",
+    "openHours": "7:00 AM – 8:00 PM",
+    "experience": 7,
+    "vehiclesServed": 870,
+    "about": "City Bike Garage is Pune's go-to destination for 2-wheelers. From routine tune-ups to full engine overhauls, our specialists handle bikes, scooters, and EV two-wheelers with precision and care.",
+    "services": [
+      { "name": "Bike Full Service",     "price": "₹599",  "duration": "2–3 hrs" },
+      { "name": "Tyre Puncture Repair",  "price": "₹149",  "duration": "20 min"  },
+      { "name": "Chain Lubrication",     "price": "₹99",   "duration": "15 min"  },
+      { "name": "Brake Adjustment",      "price": "₹199",  "duration": "30 min"  },
+      { "name": "Engine Oil Change",     "price": "₹299",  "duration": "20 min"  },
+      { "name": "EV Battery Checkup",    "price": "₹399",  "duration": "1 hr"    }
+    ],
+    "reviewsList": [
+      { "id": 1, "name": "Sneha T.",  "rating": 5, "comment": "Super fast service! My scooter runs like new. Highly recommended.", "date": "3 days ago" },
+      { "id": 2, "name": "Vikram P.", "rating": 4, "comment": "Good mechanics, fair prices. EV bike serviced perfectly.", "date": "5 days ago" },
+      { "id": 3, "name": "Meera D.", "rating": 5, "comment": "Always reliable. Been coming here for 2 years, never disappointed.", "date": "1 week ago" }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Express Car Clinic",
+    "rating": 4.9,
+    "reviews": 302,
+    "distance": "2.3 km",
+    "lat": 18.5590,
+    "lng": 73.7868,
+    "image": "https://images.pexels.com/photos/3807388/pexels-photo-3807388.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "verified": false,
+    "speciality": "General Repair",
+    "vehicleType": "All Vehicles",
+    "isOpen": false,
+    "waitTime": null,
+    "address": "45, Baner Road, Baner, Pune",
+    "phone": "+91 87654 32109",
+    "openHours": "9:00 AM – 7:00 PM",
+    "experience": 14,
+    "vehiclesServed": 2100,
+    "about": "Express Car Clinic is Pune's highest-rated multi-vehicle garage. With 14 years of experience, we service everything from hatchbacks to SUVs, bikes to EVs. Our diagnostics bay is equipped with the latest OBD-II scanners.",
+    "services": [
+      { "name": "Full Vehicle Inspection", "price": "₹399",  "duration": "1 hr"    },
+      { "name": "Engine Diagnostics",      "price": "₹599",  "duration": "1–2 hrs" },
+      { "name": "Denting & Painting",      "price": "₹1,499","duration": "1–2 days"},
+      { "name": "Wheel Alignment",         "price": "₹499",  "duration": "45 min"  },
+      { "name": "AC Service",              "price": "₹899",  "duration": "2 hrs"   },
+      { "name": "Suspension Repair",       "price": "₹1,199","duration": "3–4 hrs" }
+    ],
+    "reviewsList": [
+      { "id": 1, "name": "Ankit R.",  "rating": 5, "comment": "Best garage in Pune! Diagnosed my car issue in 20 minutes flat.", "date": "1 day ago" },
+      { "id": 2, "name": "Pooja N.", "rating": 5, "comment": "Transparent billing, no hidden charges. Genuinely trustworthy.", "date": "4 days ago" },
+      { "id": 3, "name": "Karan M.", "rating": 5, "comment": "Handled my EV perfectly. Very knowledgeable team.", "date": "1 week ago" }
+    ]
+  }
+]
