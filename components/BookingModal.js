@@ -51,6 +51,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
   const [loading,     setLoading]     = useState(false);
   const [error,       setError]       = useState(null);
   const [done,        setDone]        = useState(false);
+  const [paymentId,   setPaymentId]   = useState(null);
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -107,53 +108,149 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
     }
   }
 
+  function getFinalAmount() {
+    const raw = parseFloat((service?.price || "").replace(/[^\d.]/g, ""));
+    if (isNaN(raw)) return 0;
+    if (!promoApplied) return raw;
+    if (promoApplied.type === "percent") return Math.round(raw * (1 - promoApplied.value / 100));
+    if (promoApplied.type === "flat")    return Math.max(0, raw - promoApplied.value);
+    return 0; // free
+  }
+
+  async function finishBooking(paidId) {
+    const pickupAddress = pickupDrop
+      ? [flatNo, building, landmark, locality].filter(Boolean).join(", ")
+      : null;
+
+    await createBooking({
+      user_id:        user.id,
+      garage_id:      garage.id,
+      garage_name:    garage.name,
+      garage_image:   garage.image,
+      service_name:   service?.name  ?? "General Service",
+      service_price:  service?.price ?? "",
+      booking_date:   date,
+      booking_time:   time,
+      vehicle_type:   vehicleType,
+      notes:          notes.trim() || null,
+      pickup_drop:    pickupDrop,
+      pickup_address: pickupAddress,
+      status:         "confirmed",
+      payment_id:     paidId ?? null,
+    });
+
+    // Send confirmation email — fire and forget
+    fetch("/api/booking/confirm", {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userEmail:    user.email,
+        userName:     user.user_metadata?.full_name || user.email?.split("@")[0] || "Customer",
+        garageName:   garage.name,
+        serviceName:  service?.name  ?? "General Service",
+        servicePrice: service?.price ?? "",
+        bookingDate:  date,
+        bookingTime:  time,
+        vehicleType,
+        pickupDrop,
+        pickupAddress,
+        promoCode:    promoApplied?.code ?? null,
+      }),
+    }).catch(() => {});
+
+    setPaymentId(paidId ?? null);
+    setDone(true);
+  }
+
+  function loadRazorpayScript() {
+    return new Promise((resolve) => {
+      if (window.Razorpay) { resolve(true); return; }
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload  = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     if (!date) { setError("Please choose a date."); return; }
     if (!time) { setError("Please choose a time slot."); return; }
     if (pickupDrop && !locality.trim()) { setError("Please enter your pickup address or use current location."); return; }
+
     setLoading(true); setError(null);
+
     try {
-      const pickupAddress = pickupDrop
-        ? [flatNo, building, landmark, locality].filter(Boolean).join(", ")
-        : null;
+      const amount = getFinalAmount(); // in rupees
 
-      await createBooking({
-        user_id:        user.id,
-        garage_id:      garage.id,
-        garage_name:    garage.name,
-        garage_image:   garage.image,
-        service_name:   service?.name  ?? "General Service",
-        service_price:  service?.price ?? "",
-        booking_date:   date,
-        booking_time:   time,
-        vehicle_type:   vehicleType,
-        notes:          notes.trim() || null,
-        pickup_drop:    pickupDrop,
-        pickup_address: pickupAddress,
-        status:         "confirmed",
-      });
+      // Free service or free promo — skip payment
+      if (amount === 0) {
+        await finishBooking(null);
+        return;
+      }
 
-      // Send confirmation email — fire and forget (don't block success screen)
-      fetch("/api/booking/confirm", {
+      // Create Razorpay order
+      const orderRes = await fetch("/api/payment/create-order", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userEmail:    user.email,
-          userName:     user.user_metadata?.full_name || user.email?.split("@")[0] || "Customer",
-          garageName:   garage.name,
-          serviceName:  service?.name  ?? "General Service",
-          servicePrice: service?.price ?? "",
-          bookingDate:  date,
-          bookingTime:  time,
-          vehicleType,
-          pickupDrop,
-          pickupAddress,
-          promoCode:    promoApplied?.code ?? null,
+          amount:  amount * 100, // paise
+          receipt: "bkg_" + Date.now(),
         }),
-      }).catch(() => {}); // never block UI on email failure
+      });
+      const order = await orderRes.json();
+      if (!orderRes.ok) throw new Error(order.error || "Could not create payment order");
 
-      setDone(true);
+      // Load Razorpay script
+      const loaded = await loadRazorpayScript();
+      if (!loaded) throw new Error("Failed to load payment gateway. Check your internet connection.");
+
+      // Open checkout
+      const options = {
+        key:         process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount:      order.amount,
+        currency:    order.currency,
+        name:        "GarageDekho",
+        description: service?.name ?? "Garage Service",
+        order_id:    order.id,
+        prefill: {
+          name:  user.user_metadata?.full_name || "",
+          email: user.email || "",
+        },
+        theme: { color: "#2563eb" },
+        modal: {
+          ondismiss: () => {
+            setError("Payment cancelled. Please try again to confirm your booking.");
+            setLoading(false);
+          },
+        },
+        handler: async function (response) {
+          try {
+            // Verify signature on server
+            const verifyRes = await fetch("/api/payment/verify", {
+              method:  "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(response),
+            });
+            const verify = await verifyRes.json();
+            if (!verify.ok) throw new Error("Payment verification failed");
+
+            await finishBooking(response.razorpay_payment_id);
+          } catch (err) {
+            setError(err.message + " — contact support with payment ID: " + response.razorpay_payment_id);
+            setLoading(false);
+          }
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on("payment.failed", function (resp) {
+        setError("Payment failed: " + (resp.error?.description || "Unknown error"));
+        setLoading(false);
+      });
+      rzp.open();
+
     } catch (err) {
       setError(err.message);
       setLoading(false);
@@ -173,6 +270,9 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
           <p className="mt-2 text-sm text-slate-400">
             Your appointment at <strong>{garage.name}</strong> is confirmed for {date} at {time}.
           </p>
+          {paymentId && (
+            <p className="mt-1 text-[11px] text-slate-400">Payment ID: {paymentId}</p>
+          )}
           <button
             onClick={() => { onSuccess(); onClose(); }}
             className="mt-6 w-full rounded-2xl bg-primary py-3 text-sm font-bold text-white transition hover:brightness-110 active:scale-[0.98]"
@@ -435,15 +535,11 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
               </span>
             ) : (
               (() => {
-            if (!service) return "Confirm Booking";
-            const raw = parseFloat((service.price || "").replace(/[^\d.]/g, ""));
-            if (!promoApplied || isNaN(raw)) return `Confirm Booking · ${service.price}`;
-            let final = raw;
-            if (promoApplied.type === "percent") final = raw * (1 - promoApplied.value / 100);
-            else if (promoApplied.type === "flat") final = Math.max(0, raw - promoApplied.value);
-            else final = 0; // free
-            return `Confirm Booking · ₹${Math.round(final)}`;
-          })()
+              if (!service) return "Confirm Booking";
+              const finalAmt = getFinalAmount();
+              if (isNaN(finalAmt) || finalAmt === 0) return "Confirm Booking (Free)";
+              return "Pay & Book · ₹" + finalAmt;
+            })()
             )}
           </button>
 
