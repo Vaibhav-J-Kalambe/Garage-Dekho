@@ -48,6 +48,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
   const [promoInput,  setPromoInput]  = useState("");
   const [promoApplied, setPromoApplied] = useState(null);
   const [promoError,  setPromoError]  = useState(null);
+  const [payMethod,   setPayMethod]   = useState("online"); // "online" | "later"
   const [loading,     setLoading]     = useState(false);
   const [error,       setError]       = useState(null);
   const [done,        setDone]        = useState(false);
@@ -135,8 +136,9 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
       notes:          notes.trim() || null,
       pickup_drop:    pickupDrop,
       pickup_address: pickupAddress,
-      status:         "confirmed",
-      payment_id:     paidId ?? null,
+      status:          "confirmed",
+      payment_id:      paidId ?? null,
+      payment_method:  paidId ? "online" : payMethod === "later" ? "pay_at_garage" : "free",
     });
 
     // Send confirmation email — fire and forget
@@ -184,8 +186,8 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
     try {
       const amount = getFinalAmount(); // in rupees
 
-      // Free service or free promo — skip payment
-      if (amount === 0) {
+      // Free service, free promo, or Pay at Garage — skip Razorpay
+      if (amount === 0 || payMethod === "later") {
         await finishBooking(null);
         return;
       }
@@ -522,6 +524,39 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
             {promoError && <p className="mt-1 text-[11px] text-red-500">{promoError}</p>}
           </div>
 
+          {/* ── Payment Method ── */}
+          <div>
+            <p className="mb-2 text-xs font-black uppercase tracking-widest text-slate-400">Payment Method</p>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setPayMethod("online")}
+                className={`flex flex-col items-center gap-1.5 rounded-xl border py-3 text-xs font-bold transition active:scale-95 ${
+                  payMethod === "online"
+                    ? "border-primary bg-primary/5 text-primary"
+                    : "border-slate-100 text-slate-500 hover:border-primary/30"
+                }`}
+              >
+                <span className="text-base">💳</span>
+                Pay Now
+                <span className="text-[10px] font-normal text-slate-400">UPI / Card / Netbanking</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPayMethod("later")}
+                className={`flex flex-col items-center gap-1.5 rounded-xl border py-3 text-xs font-bold transition active:scale-95 ${
+                  payMethod === "later"
+                    ? "border-primary bg-primary/5 text-primary"
+                    : "border-slate-100 text-slate-500 hover:border-primary/30"
+                }`}
+              >
+                <span className="text-base">🏪</span>
+                Pay at Garage
+                <span className="text-[10px] font-normal text-slate-400">Cash / UPI after service</span>
+              </button>
+            </div>
+          </div>
+
           {/* ── Submit ── */}
           <button
             type="submit"
@@ -538,6 +573,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
               if (!service) return "Confirm Booking";
               const finalAmt = getFinalAmount();
               if (isNaN(finalAmt) || finalAmt === 0) return "Confirm Booking (Free)";
+              if (payMethod === "later") return "Confirm Booking · Pay ₹" + finalAmt + " at Garage";
               return "Pay & Book · ₹" + finalAmt;
             })()
             )}
