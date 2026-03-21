@@ -1,9 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { X, Truck, Car, Bike, Zap, Wrench, Loader2, CheckCircle2 } from "lucide-react";
+import { X, Truck, Car, Bike, Zap, Wrench, Loader2, CheckCircle2, Tag, Check } from "lucide-react";
 import { createBooking } from "../lib/bookings";
 import { useAuth } from "./AuthProvider";
+
+/* Valid promo codes — discount in percentage or flat rupees */
+const PROMO_CODES = {
+  FIRST100:  { label: "Free inspection",    type: "free",    value: 0    },
+  WEEKEND20: { label: "20% off",            type: "percent", value: 20   },
+  BIKE100:   { label: "₹100 off",           type: "flat",    value: 100  },
+  EVCARE:    { label: "₹199 flat price",    type: "flat",    value: 199  },
+  REFER200:  { label: "₹200 credit",        type: "flat",    value: 200  },
+  MONSOON15: { label: "15% off",            type: "percent", value: 15   },
+};
 
 const TIME_SLOTS = [
   "9:00 AM", "10:00 AM", "11:00 AM",
@@ -27,11 +37,26 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
   const [vehicleType, setVehicleType] = useState("Car");
   const [pickupDrop,  setPickupDrop]  = useState(false);
   const [notes,       setNotes]       = useState("");
+  const [promoInput,  setPromoInput]  = useState("");
+  const [promoApplied, setPromoApplied] = useState(null);
+  const [promoError,  setPromoError]  = useState(null);
   const [loading,     setLoading]     = useState(false);
   const [error,       setError]       = useState(null);
   const [done,        setDone]        = useState(false);
 
   const today = new Date().toISOString().split("T")[0];
+
+  function applyPromo() {
+    const code = promoInput.trim().toUpperCase();
+    const promo = PROMO_CODES[code];
+    if (promo) {
+      setPromoApplied({ code, ...promo });
+      setPromoError(null);
+    } else {
+      setPromoApplied(null);
+      setPromoError("Invalid promo code.");
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -221,6 +246,44 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
               rows={2}
               className="w-full resize-none rounded-xl border border-slate-200 px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
             />
+          </div>
+
+          {/* ── Promo Code ── */}
+          <div>
+            <p className="mb-2 text-xs font-black uppercase tracking-widest text-slate-400">Promo Code (optional)</p>
+            {promoApplied ? (
+              <div className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 px-3 py-2.5">
+                <Check className="h-4 w-4 shrink-0 text-green-500" />
+                <div className="flex-1">
+                  <p className="text-xs font-bold text-green-700">{promoApplied.code} applied — {promoApplied.label}</p>
+                </div>
+                <button type="button" onClick={() => { setPromoApplied(null); setPromoInput(""); }} className="text-slate-400 hover:text-slate-600">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <div className="flex flex-1 items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5">
+                  <Tag className="h-4 w-4 shrink-0 text-slate-400" />
+                  <input
+                    type="text"
+                    value={promoInput}
+                    onChange={(e) => { setPromoInput(e.target.value); setPromoError(null); }}
+                    placeholder="Enter code…"
+                    className="flex-1 bg-transparent text-sm uppercase placeholder:normal-case placeholder:text-slate-400 focus:outline-none"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={applyPromo}
+                  disabled={!promoInput.trim()}
+                  className="rounded-xl bg-primary px-4 text-xs font-bold text-white transition hover:brightness-110 disabled:opacity-40"
+                >
+                  Apply
+                </button>
+              </div>
+            )}
+            {promoError && <p className="mt-1 text-[11px] text-red-500">{promoError}</p>}
           </div>
 
           {/* ── Submit ── */}

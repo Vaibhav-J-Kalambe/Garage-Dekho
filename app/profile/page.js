@@ -13,6 +13,8 @@ import {
 import Header from "../../components/Header";
 import Avatar from "../../components/ui/Avatar";
 import Badge from "../../components/ui/Badge";
+import { getBookingCounts } from "../../lib/bookings";
+import { getUserVehicles, addUserVehicle, removeUserVehicle } from "../../lib/vehicles";
 
 const MENU = [
   {
@@ -65,33 +67,44 @@ export default function ProfilePage() {
   const [avatarUrl,       setAvatarUrl]       = useState(user?.user_metadata?.avatar_url || null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
+  /* ── Booking count ── */
+  const [bookingCount, setBookingCount] = useState(null);
+
   /* ── Toast ── */
   const [toast, setToast] = useState(null);
   function showToast(msg) { setToast(msg); setTimeout(() => setToast(null), 2500); }
 
-  /* Load vehicles */
+  /* Load vehicles from Supabase */
   useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem("user_vehicles") || "[]");
-      setVehicles(saved);
-    } catch { setVehicles([]); }
-  }, []);
+    if (!user) return;
+    getUserVehicles(user.id).then(setVehicles).catch(() => setVehicles([]));
+  }, [user]);
 
-  function saveVehicles(list) {
-    setVehicles(list);
-    localStorage.setItem("user_vehicles", JSON.stringify(list));
-  }
+  /* Load booking count */
+  useEffect(() => {
+    if (!user) return;
+    getBookingCounts(user.id).then(setBookingCount);
+  }, [user]);
 
-  function handleAddVehicle(e) {
+  async function handleAddVehicle(e) {
     e.preventDefault();
-    if (!vName.trim() || !vNumber.trim()) return;
-    const newV = { id: Date.now(), name: vName.trim(), type: vType, number: vNumber.trim() };
-    saveVehicles([...vehicles, newV]);
-    setVName(""); setVNumber(""); setVType("Car"); setAdding(false);
+    if (!vName.trim() || !vNumber.trim() || !user) return;
+    try {
+      const newV = await addUserVehicle(user.id, { name: vName.trim(), type: vType, number_plate: vNumber.trim() });
+      setVehicles((prev) => [...prev, newV]);
+      setVName(""); setVNumber(""); setVType("Car"); setAdding(false);
+    } catch (err) {
+      showToast("Failed to add vehicle: " + err.message);
+    }
   }
 
-  function removeVehicle(id) {
-    saveVehicles(vehicles.filter((v) => v.id !== id));
+  async function removeVehicle(id) {
+    try {
+      await removeUserVehicle(id);
+      setVehicles((prev) => prev.filter((v) => v.id !== id));
+    } catch {
+      showToast("Failed to remove vehicle.");
+    }
   }
 
   /* ── Profile photo upload ── */
@@ -199,11 +212,10 @@ export default function ProfilePage() {
               <div className="my-4 border-t border-slate-100" />
 
               {/* Stats */}
-              <div className="grid grid-cols-3 divide-x divide-slate-100">
+              <div className="grid grid-cols-2 divide-x divide-slate-100">
                 {[
-                  { value: "5",                        label: "Bookings" },
-                  { value: vehicles.length.toString(), label: "Vehicles" },
-                  { value: "4",                        label: "Reviews"  },
+                  { value: bookingCount === null ? "…" : String(bookingCount), label: "Bookings" },
+                  { value: vehicles.length.toString(),                          label: "Vehicles" },
                 ].map(({ value, label }) => (
                   <div key={label} className="flex flex-col items-center gap-0.5">
                     <span className="text-xl font-black text-slate-900">{value}</span>
@@ -287,7 +299,7 @@ export default function ProfilePage() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="truncate text-xs font-bold text-slate-800">{v.name}</p>
-                          <p className="text-[10px] text-slate-400">{v.number} · {v.type}</p>
+                          <p className="text-[10px] text-slate-400">{v.number_plate} · {v.type}</p>
                         </div>
                         <button
                           type="button"

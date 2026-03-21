@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { getGarageById } from "../../../lib/garages";
 import { useAuth } from "../../../components/AuthProvider";
+import { getSavedGarageIds, saveGarage, unsaveGarage } from "../../../lib/saved";
 import BookingModal from "../../../components/BookingModal";
 
 export default function GarageDetailPage({ params }) {
@@ -29,6 +30,7 @@ export default function GarageDetailPage({ params }) {
   const [garage,      setGarage]      = useState(null);
   const [loading,     setLoading]     = useState(true);
   const [saved,       setSaved]       = useState(false);
+  const [savingHeart, setSavingHeart] = useState(false);
   const [activeTab,   setActiveTab]   = useState("services");
   const [showModal,   setShowModal]   = useState(false);
   const [preService,  setPreService]  = useState(null);
@@ -45,6 +47,21 @@ export default function GarageDetailPage({ params }) {
       .catch(() => setGarage(null))
       .finally(() => setLoading(false));
   }, [id]);
+
+  useEffect(() => {
+    if (!user) return;
+    getSavedGarageIds(user.id).then((ids) => setSaved(ids.includes(id)));
+  }, [user, id]);
+
+  async function toggleSave() {
+    if (!user) { router.push(`/auth?redirect=/garage/${id}`); return; }
+    setSavingHeart(true);
+    try {
+      if (saved) { await unsaveGarage(user.id, id); setSaved(false); }
+      else        { await saveGarage(user.id, id);   setSaved(true);  }
+    } catch { /* silent */ }
+    setSavingHeart(false);
+  }
 
   if (loading) {
     return (
@@ -107,8 +124,9 @@ export default function GarageDetailPage({ params }) {
             <button
               type="button"
               aria-label="Save"
-              onClick={() => setSaved((s) => !s)}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition hover:bg-black/60 active:scale-95"
+              onClick={toggleSave}
+              disabled={savingHeart}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition hover:bg-black/60 active:scale-95 disabled:opacity-60"
             >
               <Heart
                 className={`h-4 w-4 transition ${saved ? "fill-red-500 text-red-500" : "text-white"}`}

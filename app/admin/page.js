@@ -46,11 +46,21 @@ export default function AdminPage() {
   const [success, setSuccess]     = useState(false);
   const [error, setError]         = useState(null);
 
-  /* ── Password gate ── */
-  function handleLogin() {
-    const correct = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "garage@admin2024";
-    if (password === correct) setAuthed(true);
-    else setError("Incorrect password. Try again.");
+  /* ── Password gate — verified server-side ── */
+  async function handleLogin() {
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const data = await res.json();
+      if (data.ok) setAuthed(true);
+      else setError(data.error || "Incorrect password. Try again.");
+    } catch {
+      setError("Could not verify password. Please try again.");
+    }
   }
 
   /* ── Form helpers ── */
@@ -122,7 +132,7 @@ export default function AdminPage() {
             </button>
           </div>
           <p className="mt-4 text-center text-xs text-slate-400">
-            Default password is in your <code>.env.local</code> file
+            Password is set via <code>ADMIN_PASSWORD</code> server env var
           </p>
         </div>
       </div>

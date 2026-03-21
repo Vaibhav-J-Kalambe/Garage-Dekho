@@ -97,11 +97,19 @@ export default function SosPage() {
       {phase === "idle" && (
         <main className="mx-auto flex w-full max-w-lg flex-1 flex-col px-4 pb-8 pt-4">
 
+          {/* Demo disclaimer */}
+          <div className="mb-3 flex items-center gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2">
+            <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-amber-400" />
+            <p className="flex-1 text-[11px] font-semibold text-amber-300">
+              Demo only — for real emergencies call <strong>112</strong>
+            </p>
+          </div>
+
           {/* Location strip */}
           <div className="mb-4 flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900/60 px-3 py-2">
-            <MapPin className="h-3.5 w-3.5 shrink-0 text-green-400" />
-            <p className="flex-1 text-[11px] font-semibold text-slate-400">Live GPS location being shared</p>
-            <span className="text-[10px] font-bold text-green-400">Active</span>
+            <MapPin className="h-3.5 w-3.5 shrink-0 text-slate-500" />
+            <p className="flex-1 text-[11px] font-semibold text-slate-500">GPS dispatch not yet active</p>
+            <span className="text-[10px] font-bold text-slate-600">Coming Soon</span>
           </div>
 
           {/* Hero */}
@@ -151,7 +159,7 @@ export default function SosPage() {
               </span>
             </button>
 
-            <p className="text-[11px] text-slate-500">One tap — help arrives in minutes</p>
+            <p className="text-[11px] text-slate-500">Demo simulation — no real mechanic is dispatched</p>
 
             {/* Divider */}
             <div className="flex w-full items-center gap-3">
@@ -228,7 +236,7 @@ export default function SosPage() {
             <div>
               <p className="text-lg font-black text-slate-50">Help is on the way!</p>
               <p className="mt-0.5 text-sm text-slate-400">
-                A verified mechanic has been dispatched to your location.
+                This is a demo simulation. For real emergencies, call <strong className="text-white">112</strong>.
               </p>
             </div>
           </div>

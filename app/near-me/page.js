@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import {
@@ -29,6 +30,18 @@ const TYPE_FILTERS = [
   { label: "EV",   value: "EV",        icon: Zap    },
 ];
 
+/* ── Haversine distance in km ── */
+function haversine(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 /* ── Detect Pune neighbourhood from coords ── */
 function getPuneNeighbourhood(lat, lng) {
   if (lat >= 18.52 && lat <= 18.55 && lng >= 73.88 && lng <= 73.91) return "Koregaon Park";
@@ -46,17 +59,20 @@ function getPuneNeighbourhood(lat, lng) {
 /* ── Toast ── */
 function Toast({ message, onDone }) {
   const [visible, setVisible] = useState(true);
-  useCallback(() => {
-    const t = setTimeout(() => { setVisible(false); setTimeout(onDone, 300); }, 3200);
-    return () => clearTimeout(t);
-  }, [onDone])();
+  const onDoneRef = useRef(onDone);
+  onDoneRef.current = onDone;
+
+  useEffect(() => {
+    const hide = setTimeout(() => setVisible(false), 3200);
+    const done = setTimeout(() => onDoneRef.current(), 3500);
+    return () => { clearTimeout(hide); clearTimeout(done); };
+  }, []);
 
   return (
     <div
       className={`pointer-events-none fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-2xl bg-slate-900/90 px-5 py-3 text-sm font-semibold text-white shadow-xl backdrop-blur-sm transition-all duration-300 md:bottom-8 ${
         visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
       }`}
-      style={{ animation: "fade-in-up 0.25s ease-out both" }}
     >
       {message}
     </div>
@@ -113,11 +129,12 @@ function GarageRow({ garage, active, onClick }) {
 }
 
 export default function NearMePage() {
+  const searchParams  = useSearchParams();
   const [garages,       setGarages]       = useState([]);
   const [activeGarage,  setActiveGarage]  = useState(null);
   const [distFilter,    setDistFilter]    = useState("All");
   const [typeFilter,    setTypeFilter]    = useState("all");
-  const [search,        setSearch]        = useState("");
+  const [search,        setSearch]        = useState(searchParams.get("q") || "");
   const [listExpanded,  setListExpanded]  = useState(false);
   const [locating,      setLocating]      = useState(false);
   const [userCoords,    setUserCoords]    = useState(null);
@@ -127,13 +144,22 @@ export default function NearMePage() {
     getAllGarages().then(setGarages).catch(console.error);
   }, []);
 
-  const dismissToast = useCallback(() => setToast(null), []);
+  function dismissToast() { setToast(null); }
 
-  const filtered = garages.filter((g) => {
+  /* When userCoords is available, compute real distance for each garage */
+  const garagesWithDist = garages.map((g) => {
+    if (userCoords && g.lat && g.lng) {
+      const km = haversine(userCoords[0], userCoords[1], g.lat, g.lng);
+      return { ...g, _realDist: km, distance: km < 1 ? `${(km * 1000).toFixed(0)} m` : `${km.toFixed(1)} km` };
+    }
+    return { ...g, _realDist: parseFloat(g.distance) || 99 };
+  });
+
+  const filtered = garagesWithDist.filter((g) => {
     const matchType   = typeFilter === "all" || g.vehicleType.includes(typeFilter);
     const matchSearch = g.name.toLowerCase().includes(search.toLowerCase()) ||
                         g.speciality.toLowerCase().includes(search.toLowerCase());
-    const dist = parseFloat(g.distance);
+    const dist = g._realDist;
     const matchDist =
       distFilter === "All" ||
       (distFilter === "< 1 km" && dist < 1)  ||
@@ -245,7 +271,7 @@ export default function NearMePage() {
             garages={filtered}
             activeGarage={activeGarage}
             onSelectGarage={toggleGarage}
-            userCoords={userCoords}
+            userCoords={userCoords ?? undefined}
           />
 
           {/* Loading overlay */}

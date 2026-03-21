@@ -21,12 +21,13 @@ import {
   RotateCcw,
   Tag,
   Search,
-  Mic,
   Heart,
   Star,
 } from "lucide-react";
 import Header from "../components/Header";
 import { getAllGarages } from "../lib/garages";
+import { getLastBooking } from "../lib/bookings";
+import { useAuth } from "../components/AuthProvider";
 import Skeleton from "../components/ui/Skeleton";
 
 const SERVICES = [
@@ -49,9 +50,12 @@ function getGreeting() {
 
 export default function HomePage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [topGarages,    setTopGarages]    = useState([]);
   const [garagesLoading, setGaragesLoading] = useState(true);
-  const [toast, setToast] = useState(null);
+  const [toast,         setToast]         = useState(null);
+  const [search,        setSearch]        = useState("");
+  const [lastBooking,   setLastBooking]   = useState(null);
 
   useEffect(() => {
     getAllGarages()
@@ -59,6 +63,17 @@ export default function HomePage() {
       .catch(console.error)
       .finally(() => setGaragesLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (!user) { setLastBooking(null); return; }
+    getLastBooking(user.id).then(setLastBooking).catch(() => null);
+  }, [user]);
+
+  function handleSearch(e) {
+    e.preventDefault();
+    const q = search.trim();
+    if (q) router.push(`/near-me?q=${encodeURIComponent(q)}`);
+  }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
@@ -88,25 +103,25 @@ export default function HomePage() {
           </div>
 
           {/* Search bar */}
-          <div className="flex items-center gap-3 md:flex-1 animate-slide-up delay-75">
+          <form onSubmit={handleSearch} className="flex items-center gap-3 md:flex-1 animate-slide-up delay-75">
             <div className="flex flex-1 items-center gap-2 rounded-2xl bg-white px-4 py-3 shadow-card transition focus-within:shadow-card-hover focus-within:ring-2 focus-within:ring-primary/20">
               <Search className="h-4 w-4 shrink-0 text-slate-400" />
               <input
                 type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search garage, service…"
                 className="flex-1 bg-transparent text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
               />
-              <Mic className="h-4 w-4 shrink-0 text-slate-400 cursor-pointer hover:text-primary transition" onClick={() => { setToast("Voice search coming soon"); setTimeout(() => setToast(null), 2500); }} />
             </div>
             <button
-              type="button"
-              aria-label="Use my location"
-              onClick={() => router.push('/near-me')}
+              type="submit"
+              aria-label="Search"
               className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-glow-primary transition hover:brightness-110 active:scale-95"
             >
-              <MapPin className="h-5 w-5" />
+              <Search className="h-5 w-5" />
             </button>
-          </div>
+          </form>
 
         </div>
 
@@ -119,13 +134,25 @@ export default function HomePage() {
               <RotateCcw className="h-4 w-4" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs text-slate-400">Last visited</p>
-              <p className="truncate text-sm font-bold text-slate-900">
-                Prime Auto Care · Oil Change
-              </p>
+              {lastBooking ? (
+                <>
+                  <p className="text-xs text-slate-400">Last visited</p>
+                  <p className="truncate text-sm font-bold text-slate-900">
+                    {lastBooking.garage_name} · {lastBooking.service_name}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-xs text-slate-400">No bookings yet</p>
+                  <p className="truncate text-sm font-bold text-slate-900">Find a garage near you</p>
+                </>
+              )}
             </div>
-            <Link href="/bookings" className="shrink-0 rounded-full bg-primary px-4 py-2 text-xs font-bold text-white shadow-glow-primary transition hover:brightness-110 active:scale-95">
-              Book Again
+            <Link
+              href={lastBooking ? `/garage/${lastBooking.garage_id}` : "/near-me"}
+              className="shrink-0 rounded-full bg-primary px-4 py-2 text-xs font-bold text-white shadow-glow-primary transition hover:brightness-110 active:scale-95"
+            >
+              {lastBooking ? "Book Again" : "Explore"}
             </Link>
           </div>
 

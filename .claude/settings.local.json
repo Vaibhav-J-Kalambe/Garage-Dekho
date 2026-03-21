@@ -4,7 +4,8 @@
       "Bash(npm run:*)",
       "WebFetch(domain:uxpin.medium.com)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:feathericons.com)"
+      "WebFetch(domain:feathericons.com)",
+      "WebFetch(domain:garage-dekho-16sh8x82t-vaibhav-j-kalambes-projects.vercel.app)"
     ]
   }
 }
