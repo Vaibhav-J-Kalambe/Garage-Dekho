@@ -2,6 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -15,12 +16,41 @@ import {
   Wrench,
   ShieldCheck,
   Calendar,
-  Loader2,
+  Navigation,
+  Droplets,
+  Gauge,
+  Zap,
+  Wind,
+  Truck,
+  RotateCcw,
+  Settings,
+  Thermometer,
+  Paintbrush,
+  Battery,
+  Scan,
 } from "lucide-react";
+
+function getServiceIcon(name = "") {
+  const n = name.toLowerCase();
+  if (n.includes("oil") || n.includes("fluid") || n.includes("coolant")) return Droplets;
+  if (n.includes("tyre") || n.includes("tire") || n.includes("wheel") || n.includes("puncture")) return Gauge;
+  if (n.includes("battery") || n.includes("electric") || n.includes("ev")) return Battery;
+  if (n.includes("ac") || n.includes("air con") || n.includes("cooling")) return Wind;
+  if (n.includes("tow") || n.includes("pickup") || n.includes("recovery")) return Truck;
+  if (n.includes("wash") || n.includes("clean") || n.includes("polish") || n.includes("detailing")) return Paintbrush;
+  if (n.includes("engine") || n.includes("tuning") || n.includes("alignment")) return Settings;
+  if (n.includes("inspect") || n.includes("diagnos") || n.includes("check")) return Scan;
+  if (n.includes("brake") || n.includes("suspension")) return RotateCcw;
+  if (n.includes("heat") || n.includes("radiator")) return Thermometer;
+  if (n.includes("zap") || n.includes("jump") || n.includes("start")) return Zap;
+  return Wrench;
+}
 import { getGarageById } from "../../../lib/garages";
+import Skeleton from "../../../components/ui/Skeleton";
 import { useAuth } from "../../../components/AuthProvider";
 import { getSavedGarageIds, saveGarage, unsaveGarage } from "../../../lib/saved";
 import { getGarageReviews } from "../../../lib/reviews";
+import { useToast } from "../../../context/ToastContext";
 import BookingModal from "../../../components/BookingModal";
 
 export default function GarageDetailPage({ params }) {
@@ -36,6 +66,7 @@ export default function GarageDetailPage({ params }) {
   const [showModal,   setShowModal]   = useState(false);
   const [preService,  setPreService]  = useState(null);
   const [reviews,     setReviews]     = useState([]);
+  const { showToast } = useToast();
 
   function openBooking(svc = null) {
     if (!user) { router.push(`/auth?redirect=/garage/${id}`); return; }
@@ -66,13 +97,7 @@ export default function GarageDetailPage({ params }) {
     setSavingHeart(false);
   }
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+  if (loading) return <Skeleton.GarageDetail />;
 
   if (!garage) {
     return (
@@ -90,25 +115,35 @@ export default function GarageDetailPage({ params }) {
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
 
-      {/* ── Hero Image ── */}
-      <div className="relative h-72 w-full md:h-96">
-        <img
-          src={garage.image}
+      {/* ── Hero Image + mini gallery strip ── */}
+      <div className="relative h-60 w-full md:h-96">
+        <Image
+          src={garage.image || "/placeholder-garage.svg"}
           alt={garage.name}
-          className="h-full w-full object-cover"
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
         />
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/40" />
 
+        {/* Photo count badge */}
+        <div className="absolute bottom-20 right-4 flex items-center gap-1.5 rounded-full bg-black/50 px-3 py-1 text-xs font-bold text-white backdrop-blur-sm">
+          <svg className="h-3 w-3" viewBox="0 0 16 16" fill="currentColor"><path d="M2 4a2 2 0 012-2h8a2 2 0 012 2v1H2V4zm0 3h12v5a2 2 0 01-2 2H4a2 2 0 01-2-2V7zm5 2a1 1 0 100 2 1 1 0 000-2z"/></svg>
+          1 photo
+        </div>
+
         {/* Floating header */}
         <div className="absolute left-0 right-0 top-0 flex items-center justify-between px-4 pt-safe pt-4">
-          <Link
-            href="/"
+          <button
+            type="button"
             aria-label="Back"
+            onClick={() => router.back()}
             className="flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md transition hover:bg-black/70 active:scale-95"
           >
             <ArrowLeft className="h-4 w-4" />
-          </Link>
+          </button>
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -117,7 +152,12 @@ export default function GarageDetailPage({ params }) {
                 if (navigator.share) {
                   try { await navigator.share({ title: garage.name, text: garage.speciality, url: window.location.href }); } catch {}
                 } else {
-                  navigator.clipboard.writeText(window.location.href).catch(() => {});
+                  try {
+                    await navigator.clipboard.writeText(window.location.href);
+                    showToast("Link copied to clipboard!");
+                  } catch {
+                    showToast("Could not copy link. Please copy manually.");
+                  }
                 }
               }}
               className="flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md transition hover:bg-black/70 active:scale-95"
@@ -184,9 +224,20 @@ export default function GarageDetailPage({ params }) {
 
                 {/* Address + hours + phone */}
                 <div className="mt-3 space-y-2">
-                  <div className="flex items-start gap-2 text-sm text-slate-500">
-                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
-                    <span>{garage.address}</span>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-start gap-2 text-sm text-slate-500">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
+                      <span>{garage.address}</span>
+                    </div>
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(garage.name + " " + garage.address)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex shrink-0 items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-2.5 py-1 text-[10px] font-bold text-primary transition hover:bg-primary/10 active:scale-95"
+                    >
+                      <Navigation className="h-3 w-3" />
+                      Directions
+                    </a>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-slate-500">
                     <Clock className="h-4 w-4 shrink-0 text-slate-400" />
@@ -240,30 +291,33 @@ export default function GarageDetailPage({ params }) {
               {/* Tab: Services */}
               {activeTab === "services" && (
                 <div className="flex flex-col gap-3">
-                  {garage.services.map((svc) => (
-                    <div
-                      key={svc.name}
-                      className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-card"
-                    >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                        <Wrench className="h-4 w-4" />
+                  {garage.services.map((svc) => {
+                    const SvcIcon = getServiceIcon(svc.name);
+                    return (
+                      <div
+                        key={svc.name}
+                        className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-card transition hover:shadow-card-hover"
+                      >
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                          <SvcIcon className="h-5 w-5" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-bold text-slate-900">{svc.name}</p>
+                          <p className="mt-0.5 text-xs text-slate-500">{svc.duration}</p>
+                        </div>
+                        <div className="flex shrink-0 flex-col items-end gap-1.5">
+                          <span className="text-sm font-black text-primary">{svc.price}</span>
+                          <button
+                            type="button"
+                            onClick={() => openBooking(svc)}
+                            className="rounded-full bg-primary px-3 py-1.5 text-xs font-bold text-white transition hover:bg-primary/90 active:scale-95"
+                          >
+                            Book
+                          </button>
+                        </div>
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-bold text-slate-900">{svc.name}</p>
-                        <p className="mt-0.5 text-[11px] text-slate-400">{svc.duration}</p>
-                      </div>
-                      <div className="flex shrink-0 flex-col items-end gap-1.5">
-                        <span className="text-sm font-black text-primary">{svc.price}</span>
-                        <button
-                          type="button"
-                          onClick={() => openBooking(svc)}
-                          className="rounded-full bg-primary px-3 py-1 text-[10px] font-bold text-white transition hover:bg-primary/90 active:scale-95"
-                        >
-                          Book
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
 
@@ -282,23 +336,41 @@ export default function GarageDetailPage({ params }) {
               {activeTab === "reviews" && (
                 <div className="flex flex-col gap-3">
                   {/* Rating summary */}
-                  <div className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-card">
-                    <div className="text-center">
-                      <p className="text-4xl font-black text-slate-900">{garage.rating}</p>
-                      <div className="mt-1 flex items-center justify-center gap-0.5">
-                        {[1,2,3,4,5].map((s) => (
-                          <Star key={s} className={`h-3 w-3 ${s <= Math.round(garage.rating) ? "fill-amber-400 text-amber-400" : "text-slate-200"}`} />
-                        ))}
+                  {(() => {
+                    const counts = [5,4,3,2,1].map((star) => ({
+                      star,
+                      count: reviews.filter((r) => r.rating === star).length,
+                    }));
+                    const max = Math.max(...counts.map((c) => c.count), 1);
+                    return (
+                      <div className="flex items-start gap-5 rounded-2xl bg-white p-5 shadow-card">
+                        <div className="flex flex-col items-center gap-1 shrink-0">
+                          <p className="text-5xl font-black text-slate-900 leading-none">{garage.rating}</p>
+                          <div className="flex items-center gap-0.5 mt-1">
+                            {[1,2,3,4,5].map((s) => (
+                              <Star key={s} className={`h-3.5 w-3.5 ${s <= Math.round(garage.rating) ? "fill-amber-400 text-amber-400" : "text-slate-200"}`} />
+                            ))}
+                          </div>
+                          <p className="text-xs text-slate-400 mt-0.5">{reviews.length} review{reviews.length !== 1 ? "s" : ""}</p>
+                        </div>
+                        <div className="flex-1 flex flex-col gap-1.5">
+                          {counts.map(({ star, count }) => (
+                            <div key={star} className="flex items-center gap-2">
+                              <span className="text-[11px] w-3 text-right font-semibold text-slate-500">{star}</span>
+                              <Star className="h-3 w-3 fill-amber-400 text-amber-400 shrink-0" />
+                              <div className="flex-1 h-2 rounded-full bg-slate-100 overflow-hidden">
+                                <div
+                                  className="h-full rounded-full bg-amber-400 transition-all duration-500"
+                                  style={{ width: reviews.length ? `${(count / max) * 100}%` : "0%" }}
+                                />
+                              </div>
+                              <span className="text-[11px] w-4 text-slate-400">{count}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                      <p className="mt-1 text-[11px] text-slate-400">{reviews.length} review{reviews.length !== 1 ? "s" : ""}</p>
-                    </div>
-                    <div className="h-12 w-px bg-slate-100" />
-                    <p className="flex-1 text-xs leading-relaxed text-slate-500">
-                      {reviews.length > 0
-                        ? "Based on verified customer bookings."
-                        : "No reviews yet. Be the first to review after your visit!"}
-                    </p>
-                  </div>
+                    );
+                  })()}
 
                   {/* Review cards */}
                   {reviews.length === 0 ? (
@@ -346,18 +418,24 @@ export default function GarageDetailPage({ params }) {
                 <p className="mt-1 text-xs text-slate-400">Select a service and schedule your visit</p>
 
                 <div className="mt-4 space-y-2">
-                  {garage.services.slice(0, 4).map((svc) => (
-                    <div
-                      key={svc.name}
-                      className="flex items-center justify-between rounded-xl border border-slate-100 px-3 py-2.5 hover:border-primary/30 hover:bg-primary/5 transition cursor-pointer"
-                    >
-                      <div>
-                        <p className="text-xs font-semibold text-slate-800">{svc.name}</p>
-                        <p className="text-[10px] text-slate-400">{svc.duration}</p>
-                      </div>
-                      <span className="text-sm font-black text-primary">{svc.price}</span>
-                    </div>
-                  ))}
+                  {garage.services.slice(0, 4).map((svc) => {
+                    const SvcIcon = getServiceIcon(svc.name);
+                    return (
+                      <button
+                        key={svc.name}
+                        type="button"
+                        onClick={() => openBooking(svc)}
+                        className="flex w-full items-center gap-3 rounded-xl border border-slate-100 px-3 py-2.5 text-left hover:border-primary/30 hover:bg-primary/5 transition active:scale-[0.98] cursor-pointer"
+                      >
+                        <SvcIcon className="h-4 w-4 shrink-0 text-primary" />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-semibold text-slate-800">{svc.name}</p>
+                          <p className="text-[10px] text-slate-500">{svc.duration}</p>
+                        </div>
+                        <span className="text-sm font-black text-primary">{svc.price}</span>
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <button

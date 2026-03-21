@@ -14,6 +14,7 @@ import {
   AlertTriangle,
   Star,
 } from "lucide-react";
+import Image from "next/image";
 import Header from "../../components/Header";
 import { useAuth } from "../../components/AuthProvider";
 import { getUserBookings, cancelBooking } from "../../lib/bookings";
@@ -49,16 +50,17 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
       {/* Top row */}
       <div className="flex items-center gap-3">
         <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl">
-          <img
-            src={booking.garageImage}
+          <Image
+            src={booking.garageImage || "/placeholder-garage.svg"}
             alt={booking.garageName}
-            className="h-full w-full object-cover"
-            loading="lazy"
+            fill
+            className="object-cover"
+            sizes="56px"
           />
         </div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-bold text-slate-900">{booking.garageName}</p>
-          <p className="mt-0.5 truncate text-xs text-slate-500">{booking.service || "General Service"} · {booking.vehicleType}</p>
+          <p className="mt-0.5 truncate text-xs text-slate-600">{booking.service || "General Service"} · {booking.vehicleType}</p>
         </div>
         <Badge variant={status.variant} icon={StatusIcon} size="sm">
           {status.label}
@@ -225,7 +227,7 @@ export default function BookingsPage() {
         {/* Heading */}
         <div className="animate-slide-up">
           <h1 className="text-2xl font-black tracking-tight text-slate-900">My Bookings</h1>
-          <p className="mt-0.5 text-sm text-slate-400">Track and manage your service appointments</p>
+          <p className="mt-0.5 text-sm text-slate-500">Track and manage your service appointments</p>
         </div>
 
         {/* Tab switcher */}

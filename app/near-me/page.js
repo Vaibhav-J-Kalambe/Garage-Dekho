@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense } from "react";
+import { useState, useEffect, Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Search, SlidersHorizontal, Star, CheckCircle2,
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 import Header from "../../components/Header";
 import { getAllGarages } from "../../lib/garages";
+import { useToast } from "../../context/ToastContext";
 
 /* Load Leaflet map client-side only (no SSR) */
 const MapView = dynamic(() => import("../../components/MapView"), {
@@ -56,29 +58,6 @@ function getPuneNeighbourhood(lat, lng) {
   return null;
 }
 
-/* ── Toast ── */
-function Toast({ message, onDone }) {
-  const [visible, setVisible] = useState(true);
-  const onDoneRef = useRef(onDone);
-  onDoneRef.current = onDone;
-
-  useEffect(() => {
-    const hide = setTimeout(() => setVisible(false), 3200);
-    const done = setTimeout(() => onDoneRef.current(), 3500);
-    return () => { clearTimeout(hide); clearTimeout(done); };
-  }, []);
-
-  return (
-    <div
-      className={`pointer-events-none fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-2xl bg-slate-900/90 px-5 py-3 text-sm font-semibold text-white shadow-xl backdrop-blur-sm transition-all duration-300 md:bottom-8 ${
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
-      }`}
-    >
-      {message}
-    </div>
-  );
-}
-
 /* ── Garage list row ── */
 function GarageRow({ garage, active, onClick }) {
   return (
@@ -90,7 +69,7 @@ function GarageRow({ garage, active, onClick }) {
       }`}
     >
       <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl">
-        <img src={garage.image} alt={garage.name} className="h-full w-full object-cover" loading="lazy" />
+        <Image src={garage.image || "/placeholder-garage.svg"} alt={garage.name} fill className={`object-cover ${!garage.isOpen ? "opacity-70 grayscale-[25%]" : ""}`} sizes="56px" />
         {garage.isOpen && (
           <span className="absolute bottom-1 right-1 h-2 w-2 rounded-full border-2 border-white bg-green-500" />
         )}
@@ -100,7 +79,7 @@ function GarageRow({ garage, active, onClick }) {
           <p className="truncate text-sm font-bold text-slate-900">{garage.name}</p>
           {garage.verified && <CheckCircle2 className="h-3 w-3 shrink-0 text-primary" />}
         </div>
-        <p className="text-[11px] text-slate-400">{garage.speciality}</p>
+        <p className="text-[11px] text-slate-500">{garage.speciality}</p>
         <div className="mt-1 flex items-center gap-2">
           <div className="flex items-center gap-0.5">
             <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
@@ -117,7 +96,7 @@ function GarageRow({ garage, active, onClick }) {
         <Link
           href={`/garage/${garage.id}`}
           onClick={(e) => e.stopPropagation()}
-          className={`rounded-full px-2.5 py-1 text-[10px] font-bold text-white transition hover:opacity-90 active:scale-95 ${
+          className={`rounded-full px-3 py-1.5 text-xs font-bold text-white transition hover:opacity-90 active:scale-95 ${
             active ? "bg-red-500" : "bg-primary"
           }`}
         >
@@ -127,6 +106,12 @@ function GarageRow({ garage, active, onClick }) {
     </button>
   );
 }
+
+const SORT_OPTIONS = [
+  { label: "Nearest",   value: "nearest"  },
+  { label: "Top Rated", value: "rating"   },
+  { label: "Open Now",  value: "open"     },
+];
 
 function NearMeContent() {
   const searchParams  = useSearchParams();
@@ -138,35 +123,42 @@ function NearMeContent() {
   const [listExpanded,  setListExpanded]  = useState(false);
   const [locating,      setLocating]      = useState(false);
   const [userCoords,    setUserCoords]    = useState(null);
-  const [toast,         setToast]         = useState(null);
+  const [sortBy,        setSortBy]        = useState("nearest");
+  const [showSort,      setShowSort]      = useState(false);
+  const { showToast } = useToast();
 
   useEffect(() => {
     getAllGarages().then(setGarages).catch(console.error);
   }, []);
 
-  function dismissToast() { setToast(null); }
-
   /* When userCoords is available, compute real distance for each garage */
-  const garagesWithDist = garages.map((g) => {
+  const garagesWithDist = useMemo(() => garages.map((g) => {
     if (userCoords && g.lat && g.lng) {
       const km = haversine(userCoords[0], userCoords[1], g.lat, g.lng);
       return { ...g, _realDist: km, distance: km < 1 ? `${(km * 1000).toFixed(0)} m` : `${km.toFixed(1)} km` };
     }
     return { ...g, _realDist: parseFloat(g.distance) || 99 };
-  });
+  }), [garages, userCoords]);
 
-  const filtered = garagesWithDist.filter((g) => {
-    const matchType   = typeFilter === "all" || g.vehicleType.includes(typeFilter);
-    const matchSearch = g.name.toLowerCase().includes(search.toLowerCase()) ||
-                        g.speciality.toLowerCase().includes(search.toLowerCase());
-    const dist = g._realDist;
-    const matchDist =
-      distFilter === "All" ||
-      (distFilter === "< 1 km" && dist < 1)  ||
-      (distFilter === "< 2 km" && dist < 2)  ||
-      (distFilter === "< 5 km" && dist < 5);
-    return matchType && matchSearch && matchDist;
-  });
+  const filtered = useMemo(() => garagesWithDist
+    .filter((g) => {
+      const matchType   = typeFilter === "all" || g.vehicleType.includes(typeFilter);
+      const matchSearch = g.name.toLowerCase().includes(search.toLowerCase()) ||
+                          g.speciality.toLowerCase().includes(search.toLowerCase());
+      const dist = g._realDist;
+      const matchDist =
+        distFilter === "All" ||
+        (distFilter === "< 1 km" && dist < 1)  ||
+        (distFilter === "< 2 km" && dist < 2)  ||
+        (distFilter === "< 5 km" && dist < 5);
+      const matchOpen = sortBy !== "open" || g.isOpen;
+      return matchType && matchSearch && matchDist && matchOpen;
+    })
+    .sort((a, b) => {
+      if (sortBy === "rating")  return (b.rating || 0) - (a.rating || 0);
+      if (sortBy === "open")    return (b.isOpen ? 1 : 0) - (a.isOpen ? 1 : 0);
+      return (a._realDist || 0) - (b._realDist || 0); // nearest
+    }), [garagesWithDist, typeFilter, search, distFilter, sortBy, userCoords]);
 
   function toggleGarage(id) {
     setActiveGarage((prev) => (prev === id ? null : id));
@@ -174,31 +166,28 @@ function NearMeContent() {
 
   function handleLocateMe() {
     if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser.");
+      setToast("Geolocation is not supported by your browser.");
       return;
     }
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
-        console.log("📍 User coordinates:", { latitude, longitude });
         const coords = [latitude, longitude];
         setUserCoords(coords);
         const area = getPuneNeighbourhood(latitude, longitude);
-        setToast(area
-          ? `📍 Showing garages near ${area}`
-          : `📍 Location found! Showing nearby garages`
+        showToast(area
+          ? `Showing garages near ${area}`
+          : `Location found! Showing nearby garages`
         );
         setLocating(false);
       },
       (err) => {
         setLocating(false);
         if (err.code === err.PERMISSION_DENIED) {
-          alert(
-            "Location access was denied.\n\nTo get better results, please enable location permissions for this site in your browser settings."
-          );
+          showToast("Location denied. Enable permissions in browser settings to see nearby garages.");
         } else {
-          setToast("⚠️ Could not fetch location. Try again.");
+          showToast("Could not fetch location. Please try again.");
         }
       },
       { timeout: 10000, enableHighAccuracy: true }
@@ -208,8 +197,6 @@ function NearMeContent() {
   return (
     <div className="flex h-dvh flex-col overflow-hidden bg-[#F8FAFC]">
       <Header />
-
-      {toast && <Toast key={toast} message={toast} onDone={dismissToast} />}
 
       {/* ── Search + filters ── */}
       <div className="shrink-0 bg-white px-4 py-3 shadow-card md:px-8">
@@ -245,18 +232,30 @@ function NearMeContent() {
               </button>
             ))}
             <div className="h-5 w-px shrink-0 bg-slate-200" />
-            {DISTANCE_FILTERS.map((d) => (
-              <button
-                key={d}
-                type="button"
-                onClick={() => setDistFilter(d)}
-                className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-bold transition active:scale-95 ${
-                  distFilter === d ? "bg-slate-800 text-white" : "bg-slate-100 text-slate-500 hover:text-slate-700"
-                }`}
-              >
-                {d}
-              </button>
-            ))}
+            {DISTANCE_FILTERS.map((d) => {
+              const needsGps = d !== "All";
+              const disabled = needsGps && !userCoords;
+              return (
+                <button
+                  key={d}
+                  type="button"
+                  onClick={() => {
+                    if (disabled) { showToast("Enable location for accurate distance filters"); return; }
+                    setDistFilter(d);
+                  }}
+                  title={disabled ? "Enable location to use this filter" : undefined}
+                  className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-bold transition active:scale-95 ${
+                    distFilter === d
+                      ? "bg-slate-800 text-white"
+                      : disabled
+                        ? "bg-slate-100 text-slate-300 cursor-not-allowed"
+                        : "bg-slate-100 text-slate-500 hover:text-slate-700"
+                  }`}
+                >
+                  {d}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -322,8 +321,30 @@ function NearMeContent() {
               <p className="text-xs font-black uppercase tracking-widest text-slate-400">
                 {filtered.length} garage{filtered.length !== 1 ? "s" : ""} nearby
               </p>
-              <SlidersHorizontal className="h-4 w-4 text-slate-300" />
+              <button
+                type="button"
+                onClick={() => setShowSort((s) => !s)}
+                className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold transition active:scale-95 ${showSort ? "bg-primary text-white" : "text-slate-500 hover:text-primary"}`}
+              >
+                <SlidersHorizontal className="h-3.5 w-3.5" />
+                Sort
+              </button>
             </div>
+
+            {showSort && (
+              <div className="mb-3 flex gap-2">
+                {SORT_OPTIONS.map(({ label, value }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => { setSortBy(value); setShowSort(false); }}
+                    className={`rounded-full px-3 py-1.5 text-xs font-bold transition active:scale-95 ${sortBy === value ? "bg-primary text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {filtered.length === 0 ? (
               <div className="flex flex-col items-center py-10 text-center">

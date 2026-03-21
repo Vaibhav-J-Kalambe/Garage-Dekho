@@ -9,26 +9,28 @@ const PUNE_CENTER = [18.5204, 73.8567];
 
 /* ── Garage distance-bubble pin ── */
 function createGaragePin(distance, active) {
-  const bg    = active ? "#ef4444" : "#ffffff";
-  const color = active ? "#ffffff" : "#1e293b";
-  const stem  = active ? "#ef4444" : "#94a3b8";
+  const bg     = active ? "#ef4444" : "#0056D2";
+  const shadow = active ? "0 4px 16px rgba(239,68,68,0.45)" : "0 4px 16px rgba(0,86,210,0.40)";
+  const ring   = active ? "#fecaca" : "#bfdbfe";
   return L.divIcon({
     className: "",
     html: `
-      <div style="display:flex;flex-direction:column;align-items:center;cursor:pointer">
+      <div style="display:flex;flex-direction:column;align-items:center;cursor:pointer;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15))">
         <div style="
-          background:${bg};color:${color};
-          padding:4px 12px;border-radius:12px;
-          font-size:12px;font-weight:900;
-          box-shadow:0 4px 14px rgba(0,0,0,0.18);
+          background:${bg};color:#fff;
+          padding:4px 10px;border-radius:20px;
+          font-size:11px;font-weight:900;
+          box-shadow:${shadow};
+          border:2px solid ${ring};
           white-space:nowrap;
-          transition:background 0.2s,color 0.2s;
+          transition:background 0.25s,box-shadow 0.25s;
+          ${active ? "transform:scale(1.1);" : ""}
         ">${distance}</div>
-        <div style="width:2px;height:8px;background:${stem};margin-top:1px;border-radius:2px"></div>
-        <div style="width:6px;height:6px;background:${stem};border-radius:50%"></div>
+        <div style="width:2px;height:6px;background:${bg};margin-top:1px;border-radius:2px;opacity:0.8"></div>
+        <div style="width:5px;height:5px;background:${bg};border-radius:50%;opacity:0.8"></div>
       </div>`,
-    iconAnchor: [32, 48],
-    iconSize: [64, 48],
+    iconAnchor: [30, 46],
+    iconSize: [60, 46],
   });
 }
 

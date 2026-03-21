@@ -13,6 +13,7 @@ import {
 import Header from "../../components/Header";
 import Avatar from "../../components/ui/Avatar";
 import Badge from "../../components/ui/Badge";
+import { useToast } from "../../context/ToastContext";
 import { getBookingCounts } from "../../lib/bookings";
 import { getUserVehicles, addUserVehicle, removeUserVehicle } from "../../lib/vehicles";
 
@@ -20,24 +21,24 @@ const MENU = [
   {
     section: "Account",
     items: [
-      { label: "Edit Profile",       icon: Edit3,         href: "/profile/edit",           color: "text-primary"    },
-      { label: "Saved Garages",      icon: Heart,         href: "/profile/saved",          color: "text-red-500"    },
-      { label: "My Bookings",        icon: CalendarCheck, href: "/bookings",               color: "text-blue-500"   },
-      { label: "My Reviews",         icon: Star,          href: "/profile/reviews",        color: "text-amber-500"  },
+      { label: "Edit Profile",       icon: Edit3,         href: "/profile/edit",           color: "text-primary",    comingSoon: true  },
+      { label: "Saved Garages",      icon: Heart,         href: "/profile/saved",          color: "text-red-500"                       },
+      { label: "My Bookings",        icon: CalendarCheck, href: "/bookings",               color: "text-blue-500"                      },
+      { label: "My Reviews",         icon: Star,          href: "/profile/reviews",        color: "text-amber-500"                     },
     ],
   },
   {
     section: "Preferences",
     items: [
-      { label: "Notifications",      icon: Bell,          href: "/profile/notifications",  color: "text-orange-500" },
-      { label: "Saved Addresses",    icon: MapPin,        href: "/profile/addresses",      color: "text-green-600"  },
-      { label: "Privacy & Security", icon: ShieldCheck,   href: "/profile/security",       color: "text-slate-500"  },
+      { label: "Notifications",      icon: Bell,          href: "/profile/notifications",  color: "text-orange-500", comingSoon: true  },
+      { label: "Saved Addresses",    icon: MapPin,        href: "/profile/addresses",      color: "text-green-600",  comingSoon: true  },
+      { label: "Privacy & Security", icon: ShieldCheck,   href: "/profile/security",       color: "text-slate-500",  comingSoon: true  },
     ],
   },
   {
     section: "Support",
     items: [
-      { label: "Help & FAQ",         icon: HelpCircle,    href: "/profile/help",           color: "text-slate-400"  },
+      { label: "Help & FAQ",         icon: HelpCircle,    href: "/profile/help",           color: "text-slate-400",  comingSoon: true  },
     ],
   },
 ];
@@ -95,9 +96,7 @@ export default function ProfilePage() {
   /* ── Booking count ── */
   const [bookingCount, setBookingCount] = useState(null);
 
-  /* ── Toast ── */
-  const [toast, setToast] = useState(null);
-  function showToast(msg) { setToast(msg); setTimeout(() => setToast(null), 2500); }
+  const { showToast } = useToast();
 
   /* Load vehicles from Supabase */
   useEffect(() => {
@@ -194,6 +193,29 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-[#F8FAFC]">
       <Header />
 
+      {/* Profile hero band */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#0047BE] via-[#0056D2] to-[#3730A3] px-4 pb-14 pt-6 md:px-8">
+        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/[0.06]" />
+        <div className="pointer-events-none absolute -bottom-8 left-1/4 h-32 w-32 rounded-full bg-white/[0.04]" />
+        <div className="mx-auto max-w-5xl flex items-center gap-4">
+          <div className="relative">
+            <Avatar name={name} src={avatarUrl} size="lg" online={!!user} />
+          </div>
+          <div className="min-w-0">
+            <h1 className="text-xl font-black text-white capitalize truncate">{name}</h1>
+            <p className="mt-0.5 text-sm text-blue-200 truncate">{email}</p>
+            <div className="mt-2 flex items-center gap-3">
+              <span className="flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-xs font-bold text-white">
+                {bookingCount ?? "…"} Bookings
+              </span>
+              <span className="flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-xs font-bold text-white">
+                {vehicles.length} Vehicles
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Hidden file input */}
       <input
         ref={fileRef}
@@ -203,66 +225,36 @@ export default function ProfilePage() {
         onChange={handleAvatarChange}
       />
 
-      <main className="mx-auto flex max-w-5xl flex-col gap-5 px-4 md:px-8 pb-28 md:pb-10 pt-5 md:pt-8">
-
-        {/* Page heading — mobile only */}
-        <div className="md:hidden animate-slide-up">
-          <h1 className="text-2xl font-black tracking-tight text-slate-900">Profile</h1>
-          <p className="mt-0.5 text-sm text-slate-400">Manage your account</p>
-        </div>
+      <div className="relative -mt-6 rounded-t-3xl bg-[#F8FAFC]">
+      <main className="mx-auto flex max-w-5xl flex-col gap-5 px-4 md:px-8 pb-28 md:pb-10 pt-5 md:pt-6">
 
         <div className="flex flex-col gap-5 md:flex-row md:items-start md:gap-8">
 
           {/* ── LEFT COL ── */}
           <div className="flex flex-col gap-4 md:w-72 md:shrink-0">
 
-            {/* Profile card */}
-            <div className="rounded-2xl bg-white p-5 shadow-card animate-slide-up">
-              <div className="flex items-start justify-between">
-
-                {/* Avatar + camera button */}
-                <div className="relative">
-                  <Avatar name={name} src={avatarUrl} size="lg" online={!!user} />
-                  <button
-                    type="button"
-                    aria-label="Change profile photo"
-                    onClick={() => fileRef.current?.click()}
-                    disabled={uploadingAvatar}
-                    className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-primary text-white shadow-sm transition hover:brightness-110 active:scale-95 disabled:opacity-60"
-                  >
-                    {uploadingAvatar
-                      ? <Loader2 className="h-3 w-3 animate-spin" />
-                      : <Camera className="h-3 w-3" />
-                    }
-                  </button>
-                </div>
-
-                <Badge variant="success" dot>Verified</Badge>
+            {/* Photo change card */}
+            <div className="rounded-2xl bg-white p-4 shadow-card animate-slide-up flex items-center gap-4">
+              <div className="relative shrink-0">
+                <Avatar name={name} src={avatarUrl} size="lg" online={!!user} />
+                <button
+                  type="button"
+                  aria-label="Change profile photo"
+                  onClick={() => fileRef.current?.click()}
+                  disabled={uploadingAvatar}
+                  className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-primary text-white shadow-sm transition hover:brightness-110 active:scale-95 disabled:opacity-60"
+                >
+                  {uploadingAvatar
+                    ? <Loader2 className="h-3 w-3 animate-spin" />
+                    : <Camera className="h-3 w-3" />
+                  }
+                </button>
               </div>
-
-              {/* Name + email */}
-              <div className="mt-3">
-                <h2 className="text-lg font-black text-slate-900 capitalize">{name}</h2>
-                <div className="mt-1.5 flex items-center gap-2 text-xs text-slate-400">
-                  <Mail className="h-3.5 w-3.5 shrink-0" />
-                  <span className="truncate">{email}</span>
-                </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-black text-slate-900 capitalize truncate">{name}</p>
+                <p className="text-xs text-slate-500 truncate">{email}</p>
               </div>
-
-              <div className="my-4 border-t border-slate-100" />
-
-              {/* Stats */}
-              <div className="grid grid-cols-2 divide-x divide-slate-100">
-                {[
-                  { value: bookingCount === null ? "…" : String(bookingCount), label: "Bookings" },
-                  { value: vehicles.length.toString(),                          label: "Vehicles" },
-                ].map(({ value, label }) => (
-                  <div key={label} className="flex flex-col items-center gap-0.5">
-                    <span className="text-xl font-black text-slate-900">{value}</span>
-                    <span className="text-[10px] font-semibold text-slate-400">{label}</span>
-                  </div>
-                ))}
-              </div>
+              <Badge variant="success" dot>Verified</Badge>
             </div>
 
             {/* My Vehicles */}
@@ -376,7 +368,7 @@ export default function ProfilePage() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="truncate text-xs font-bold text-slate-800">{v.name}</p>
-                          <p className="text-[10px] text-slate-400">{v.number_plate} · {v.type}</p>
+                          <p className="text-xs text-slate-500">{v.number_plate} · {v.type}</p>
                         </div>
                         <button
                           type="button"
@@ -408,19 +400,34 @@ export default function ProfilePage() {
                   {section}
                 </p>
                 <div className="divide-y divide-slate-50">
-                  {items.map(({ label, icon: Icon, href, color }) => (
-                    <Link
-                      key={label}
-                      href={href}
-                      className="flex items-center gap-3 px-4 py-3.5 transition hover:bg-slate-50 active:bg-slate-100"
-                    >
-                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-50 ${color}`}>
-                        <Icon className="h-4 w-4" />
-                      </div>
-                      <span className="flex-1 text-sm font-semibold text-slate-800">{label}</span>
-                      <ChevronRight className="h-4 w-4 shrink-0 text-slate-300" />
-                    </Link>
-                  ))}
+                  {items.map(({ label, icon: Icon, href, color, comingSoon }) =>
+                    comingSoon ? (
+                      <button
+                        key={label}
+                        type="button"
+                        onClick={() => showToast(`${label} — coming soon`)}
+                        className="flex w-full items-center gap-3 px-4 py-3.5 transition hover:bg-slate-50 active:bg-slate-100"
+                      >
+                        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-50 ${color}`}>
+                          <Icon className="h-4 w-4" />
+                        </div>
+                        <span className="flex-1 text-left text-sm font-semibold text-slate-800">{label}</span>
+                        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-400">Soon</span>
+                      </button>
+                    ) : (
+                      <Link
+                        key={label}
+                        href={href}
+                        className="flex items-center gap-3 px-4 py-3.5 transition hover:bg-slate-50 active:bg-slate-100"
+                      >
+                        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-50 ${color}`}>
+                          <Icon className="h-4 w-4" />
+                        </div>
+                        <span className="flex-1 text-sm font-semibold text-slate-800">{label}</span>
+                        <ChevronRight className="h-4 w-4 shrink-0 text-slate-300" />
+                      </Link>
+                    )
+                  )}
                 </div>
               </div>
             ))}
@@ -450,14 +457,8 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Toast */}
-        {toast && (
-          <div className="pointer-events-none fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-2xl bg-slate-900/90 px-5 py-3 text-sm font-semibold text-white shadow-xl backdrop-blur-sm md:bottom-8">
-            {toast}
-          </div>
-        )}
-
       </main>
+      </div>
     </div>
   );
 }

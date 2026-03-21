@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, Heart, MapPin, Star, Loader2 } from "lucide-react";
 import { useAuth } from "../../../components/AuthProvider";
 import { getSavedGarages, unsaveGarage } from "../../../lib/saved";
@@ -69,7 +70,9 @@ export default function SavedGaragesPage() {
             {saved.map((g) => (
               <div key={g.id} className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-card transition hover:shadow-card-hover animate-slide-up">
                 <Link href={`/garage/${g.id}`} className="flex flex-1 items-center gap-3 min-w-0">
-                  <img src={g.image} alt={g.name} className="h-14 w-14 shrink-0 rounded-xl object-cover" />
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl">
+                    <Image src={g.image || "/placeholder-garage.svg"} alt={g.name} fill className="object-cover" sizes="56px" />
+                  </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-bold text-slate-900">{g.name}</p>
                     <p className="mt-0.5 text-xs text-slate-400">{g.speciality}</p>

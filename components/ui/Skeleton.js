@@ -89,6 +89,83 @@ function BookingCard() {
   );
 }
 
+/* Garage detail page skeleton — matches hero + identity + tabs + service cards */
+function GarageDetail() {
+  return (
+    <div className="min-h-screen bg-[#F8FAFC]">
+      {/* Hero image */}
+      <Base className="h-72 w-full rounded-none md:h-96" />
+
+      {/* Content pulled up */}
+      <div className="relative -mt-5 rounded-t-3xl bg-[#F8FAFC]">
+        <div className="mx-auto max-w-5xl px-4 pb-28 pt-5 md:px-8">
+          <div className="flex flex-col gap-5 md:flex-row md:gap-8">
+
+            {/* Left column */}
+            <div className="flex flex-col gap-5 md:flex-1">
+
+              {/* Identity card */}
+              <div className="rounded-2xl bg-white p-4 shadow-card space-y-3">
+                <div className="flex items-center justify-between">
+                  <Line className="w-1/2 h-5" />
+                  <Base className="h-8 w-20 rounded-xl" />
+                </div>
+                <Line className="w-3/4" />
+                <Line className="w-1/2" />
+                <Line className="w-1/3" />
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="rounded-2xl bg-white p-3 shadow-card text-center space-y-2">
+                    <Line className="w-2/3 mx-auto h-5" />
+                    <Line className="w-1/2 mx-auto h-3" />
+                  </div>
+                ))}
+              </div>
+
+              {/* Tab bar */}
+              <Base className="h-12 w-full rounded-2xl" />
+
+              {/* Service cards */}
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-card">
+                  <Base className="h-10 w-10 rounded-full shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <Line className="w-2/3" />
+                    <Line className="w-1/3 h-3" />
+                  </div>
+                  <div className="flex flex-col items-end gap-2 shrink-0">
+                    <Line className="w-12 h-4" />
+                    <Base className="h-6 w-14 rounded-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Right column — desktop only */}
+            <div className="hidden md:block md:w-80 md:shrink-0">
+              <div className="rounded-2xl bg-white p-5 shadow-card space-y-3">
+                <Line className="w-1/2 h-5" />
+                <Line className="w-2/3 h-3" />
+                <div className="space-y-2 pt-2">
+                  {[1, 2, 3].map((i) => (
+                    <Base key={i} className="h-12 w-full rounded-xl" />
+                  ))}
+                </div>
+                <Base className="h-12 w-full rounded-2xl mt-2" />
+                <Base className="h-12 w-full rounded-2xl" />
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const Skeleton = {
   Base,
   Line,
@@ -97,6 +174,7 @@ const Skeleton = {
   GarageCard,
   GarageList,
   BookingCard,
+  GarageDetail,
 };
 
 export default Skeleton;

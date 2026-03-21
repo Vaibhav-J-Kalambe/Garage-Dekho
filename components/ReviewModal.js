@@ -1,12 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { X, Star, Loader2, CheckCircle2 } from "lucide-react";
 import { submitReview } from "../lib/reviews";
 import { useAuth } from "./AuthProvider";
+import SwipeableSheet from "./SwipeableSheet";
+import { useFocusTrap } from "../hooks/useFocusTrap";
 
 export default function ReviewModal({ booking, onClose, onSuccess }) {
-  const { user } = useAuth();
+  const { user }  = useAuth();
+  const trapRef   = useRef(null);
+  useFocusTrap(trapRef, { onEscape: onClose });
   const [rating,  setRating]  = useState(0);
   const [hovered, setHovered] = useState(0);
   const [comment, setComment] = useState("");
@@ -52,7 +56,8 @@ export default function ReviewModal({ booking, onClose, onSuccess }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-sm rounded-t-3xl bg-white shadow-2xl md:rounded-3xl">
+      <SwipeableSheet onClose={onClose} className="relative w-full max-w-sm rounded-t-3xl bg-white shadow-2xl md:rounded-3xl">
+        <div ref={trapRef}>
 
         {/* Header */}
         <div className="flex items-center justify-between rounded-t-3xl border-b border-slate-100 px-5 py-4">
@@ -80,9 +85,11 @@ export default function ReviewModal({ booking, onClose, onSuccess }) {
                 <button
                   key={star}
                   type="button"
-                  onClick={() => setRating(star)}
+                  onClick={() => { setRating(star); setHovered(0); }}
                   onMouseEnter={() => setHovered(star)}
                   onMouseLeave={() => setHovered(0)}
+                  onTouchStart={() => setHovered(star)}
+                  onTouchEnd={() => setHovered(0)}
                   className="transition-transform active:scale-90"
                 >
                   <Star
@@ -104,10 +111,15 @@ export default function ReviewModal({ booking, onClose, onSuccess }) {
 
           {/* Comment */}
           <div>
-            <p className="mb-2 text-xs font-black uppercase tracking-widest text-slate-400">Comment (optional)</p>
+            <div className="mb-2 flex items-center justify-between">
+              <p className="text-xs font-black uppercase tracking-widest text-slate-500">Comment (optional)</p>
+              <span className={`text-[11px] font-semibold ${comment.length > 450 ? "text-red-500" : "text-slate-400"}`}>
+                {comment.length}/500
+              </span>
+            </div>
             <textarea
               value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              onChange={(e) => { if (e.target.value.length <= 500) setComment(e.target.value); }}
               placeholder="Share your experience with this garage…"
               rows={3}
               className="w-full resize-none rounded-xl border border-slate-200 px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
@@ -124,7 +136,8 @@ export default function ReviewModal({ booking, onClose, onSuccess }) {
           </button>
 
         </form>
-      </div>
+        </div>
+      </SwipeableSheet>
     </div>
   );
 }

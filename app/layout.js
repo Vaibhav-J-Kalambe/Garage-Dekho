@@ -2,6 +2,10 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import BottomNav from "../components/BottomNav";
 import { AuthProvider } from "../components/AuthProvider";
+import { LocationProvider } from "../context/LocationContext";
+import { ToastProvider } from "../context/ToastContext";
+import Analytics from "../components/Analytics";
+import NavigationProgress from "../components/NavigationProgress";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -10,8 +14,17 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "GarageDekho",
-  description: "Hyperlocal automotive service marketplace",
+  title: { default: "GarageDekho", template: "%s — GarageDekho" },
+  description: "Hyperlocal automotive service marketplace — find & book garages near you",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "GarageDekho",
+  },
+  themeColor: "#0056D2",
+  viewport: { width: "device-width", initialScale: 1, maximumScale: 1 },
+  formatDetection: { telephone: false },
 };
 
 export default function RootLayout({ children }) {
@@ -21,9 +34,15 @@ export default function RootLayout({ children }) {
         className="bg-slate-50 text-slate-900 font-sans antialiased"
         suppressHydrationWarning
       >
+        <NavigationProgress />
+        <Analytics />
         <AuthProvider>
-          {children}
-          <BottomNav />
+          <LocationProvider>
+            <ToastProvider>
+              {children}
+              <BottomNav />
+            </ToastProvider>
+          </LocationProvider>
         </AuthProvider>
       </body>
     </html>
