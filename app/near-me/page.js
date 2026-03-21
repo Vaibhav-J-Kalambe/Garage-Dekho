@@ -328,7 +328,7 @@ function NearMeContent() {
             <div className="h-1 w-10 rounded-full bg-slate-300" />
           </button>
 
-          <div className="overflow-y-auto flex-1 p-3 pb-24 md:p-4 md:pb-6">
+          <div className="overflow-y-auto flex-1 p-3 md:p-4" style={{ paddingBottom: "max(6rem, calc(env(safe-area-inset-bottom) + 1.5rem))" }}>
             <div className="mb-3 flex items-center justify-between">
               <p className="text-xs font-black uppercase tracking-widest text-slate-400">
                 {filtered.length} garage{filtered.length !== 1 ? "s" : ""} nearby

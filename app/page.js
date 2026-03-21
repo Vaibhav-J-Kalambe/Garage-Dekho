@@ -57,6 +57,11 @@ const SERVICES = [
   { label: "General Repair", icon: Wrench,   color: "from-primary to-blue-400",      href: "/near-me"                       },
 ];
 
+function daysSince(dateStr) {
+  if (!dateStr) return null;
+  return Math.round((Date.now() - new Date(dateStr + "T00:00:00").getTime()) / 86400000);
+}
+
 function getGreeting() {
   const h = new Date().getHours();
   if (h < 12) return "Good morning";
@@ -275,37 +280,50 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-slide-up delay-100">
 
           {/* Book Again — full width on mobile, half on desktop */}
-          <div className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-card transition hover:shadow-card-hover">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <RotateCcw className="h-4 w-4" />
-            </div>
-            <div className="min-w-0 flex-1">
-              {lastBookingLoading ? (
-                <div className="space-y-1.5">
-                  <div className="h-3 w-20 animate-pulse rounded bg-slate-100" />
-                  <div className="h-4 w-36 animate-pulse rounded bg-slate-100" />
+          {(() => {
+            const daysAgo = lastBooking?.booking_date ? daysSince(lastBooking.booking_date) : null;
+            const serviceDue = lastBooking?.status === "completed" && daysAgo !== null && daysAgo >= 30;
+            return (
+              <div className={`flex items-center gap-4 rounded-2xl p-4 shadow-card transition hover:shadow-card-hover ${serviceDue ? "bg-amber-50 ring-1 ring-amber-200" : "bg-white"}`}>
+                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${serviceDue ? "bg-amber-100 text-amber-600" : "bg-primary/10 text-primary"}`}>
+                  <RotateCcw className="h-4 w-4" />
                 </div>
-              ) : lastBooking ? (
-                <>
-                  <p className="text-xs text-slate-500">Last visited</p>
-                  <p className="truncate text-sm font-bold text-slate-900">
-                    {lastBooking.garage_name} · {lastBooking.service_name}
-                  </p>
-                </>
-              ) : (
-                <>
-                  <p className="text-xs text-slate-500">No bookings yet</p>
-                  <p className="truncate text-sm font-bold text-slate-900">Find a garage near you</p>
-                </>
-              )}
-            </div>
-            <Link
-              href={lastBooking ? `/garage/${lastBooking.garage_id}` : "/near-me"}
-              className="shrink-0 rounded-full bg-primary px-4 py-2 text-xs font-bold text-white shadow-glow-primary transition hover:brightness-110 active:scale-95"
-            >
-              {lastBooking ? "Book Again" : "Explore"}
-            </Link>
-          </div>
+                <div className="min-w-0 flex-1">
+                  {lastBookingLoading ? (
+                    <div className="space-y-1.5">
+                      <div className="h-3 w-20 animate-pulse rounded bg-slate-100" />
+                      <div className="h-4 w-36 animate-pulse rounded bg-slate-100" />
+                    </div>
+                  ) : serviceDue ? (
+                    <>
+                      <p className="text-xs font-semibold text-amber-600">Service due!</p>
+                      <p className="truncate text-sm font-bold text-slate-900">
+                        {daysAgo}d since {lastBooking.service_name}
+                      </p>
+                    </>
+                  ) : lastBooking ? (
+                    <>
+                      <p className="text-xs text-slate-500">Last visited</p>
+                      <p className="truncate text-sm font-bold text-slate-900">
+                        {lastBooking.garage_name} · {lastBooking.service_name}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-xs text-slate-500">No bookings yet</p>
+                      <p className="truncate text-sm font-bold text-slate-900">Find a garage near you</p>
+                    </>
+                  )}
+                </div>
+                <Link
+                  href={lastBooking ? `/garage/${lastBooking.garage_id}` : "/near-me"}
+                  className={`shrink-0 rounded-full px-4 py-2 text-xs font-bold text-white transition hover:brightness-110 active:scale-95 ${serviceDue ? "bg-amber-500 shadow-[0_4px_12px_rgba(245,158,11,0.4)]" : "bg-primary shadow-glow-primary"}`}
+                >
+                  {serviceDue ? "Book Now" : lastBooking ? "Book Again" : "Explore"}
+                </Link>
+              </div>
+            );
+          })()}
 
           {/* SOS card — desktop only; on mobile the bottom nav SOS button is always reachable */}
           <Link href="/sos" className="hidden md:block">

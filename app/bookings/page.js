@@ -75,15 +75,39 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
 
       {/* Top row */}
       <div className="flex items-center gap-3">
-        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl">
-          <Image
-            src={booking.garageImage || "/placeholder-garage.svg"}
-            alt={booking.garageName}
-            fill
-            className="object-cover"
-            sizes="56px"
-          />
-        </div>
+        {/* Image with SVG progress ring */}
+        {(() => {
+          const ringMap = {
+            confirmed: { pct: 0.5, color: "#2563eb" },
+            completed: { pct: 1,   color: "#22c55e" },
+            cancelled: { pct: 0,   color: "#e2e8f0" },
+          };
+          const ring = ringMap[booking.status] ?? ringMap.confirmed;
+          const r = 25;
+          const circ = 2 * Math.PI * r;
+          return (
+            <div className="relative h-14 w-14 shrink-0">
+              <svg className="absolute inset-0 -rotate-90" width="56" height="56" viewBox="0 0 56 56">
+                <circle cx="28" cy="28" r={r} fill="none" stroke="#f1f5f9" strokeWidth="3" />
+                {ring.pct > 0 && (
+                  <circle cx="28" cy="28" r={r} fill="none" stroke={ring.color} strokeWidth="3"
+                    strokeDasharray={circ} strokeDashoffset={circ * (1 - ring.pct)}
+                    strokeLinecap="round" style={{ transition: "stroke-dashoffset 0.7s ease" }}
+                  />
+                )}
+              </svg>
+              <div className="absolute inset-1.5 overflow-hidden rounded-xl">
+                <Image
+                  src={booking.garageImage || "/placeholder-garage.svg"}
+                  alt={booking.garageName}
+                  fill
+                  className="object-cover"
+                  sizes="44px"
+                />
+              </div>
+            </div>
+          );
+        })()}
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-bold text-slate-900">{booking.garageName}</p>
           <p className="mt-0.5 truncate text-xs text-slate-600">{booking.service || "General Service"} · {booking.vehicleType}</p>

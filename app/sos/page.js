@@ -39,6 +39,7 @@ export default function SosPage() {
   const [phase, setPhase]         = useState("idle");
   const [confirm,  setConfirm]    = useState(3);   // 3-second cancel window
   const [etaLeft,  setEtaLeft]    = useState(120);  // mechanic ETA in seconds
+  const [sosFlash, setSosFlash]   = useState(false);
 
   /* 3-second confirmation countdown */
   useEffect(() => {
@@ -58,11 +59,19 @@ export default function SosPage() {
   const etaMin = Math.floor(etaLeft / 60).toString().padStart(2, "0");
   const etaSec = (etaLeft % 60).toString().padStart(2, "0");
 
-  function triggerSOS() { setPhase("confirming"); setConfirm(3); }
+  function triggerSOS() {
+    setSosFlash(true);
+    setTimeout(() => setSosFlash(false), 160);
+    setPhase("confirming");
+    setConfirm(3);
+  }
   function cancelSOS()  { setPhase("idle"); setConfirm(3); setEtaLeft(120); }
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-950 text-slate-50">
+      {sosFlash && (
+        <div className="pointer-events-none fixed inset-0 z-[9999] bg-red-500/25" style={{ transition: "opacity 0.16s" }} />
+      )}
 
       {/* ── Header ── */}
       <header className="sticky top-0 z-20 shrink-0 border-b border-slate-800/60 bg-slate-950/95 backdrop-blur-sm px-4 py-3">

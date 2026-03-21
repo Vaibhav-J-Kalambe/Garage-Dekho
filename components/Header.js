@@ -22,6 +22,13 @@ export default function Header() {
   const { user } = useAuth();
   const { location } = useLocation();
   const [showLocation,  setShowLocation]  = useState(false);
+  const [pinPulsing,    setPinPulsing]    = useState(false);
+
+  function handleLocationClose() {
+    setShowLocation(false);
+    setPinPulsing(true);
+    setTimeout(() => setPinPulsing(false), 700);
+  }
 
   const name = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Guest";
 
@@ -33,10 +40,13 @@ export default function Header() {
           {/* Location selector — left */}
           <button
             type="button"
-            onClick={() => setShowLocation(true)}
+            onClick={() => setShowLocation((v) => !v)}
             className="flex min-w-0 items-center gap-1.5 rounded-xl py-1 text-left transition hover:opacity-80 active:scale-95"
           >
-            <MapPin className="h-4 w-4 shrink-0 text-primary" />
+            <div className="relative shrink-0">
+              {pinPulsing && <span className="absolute -inset-1 rounded-full bg-primary/30 animate-ping pointer-events-none" />}
+              <MapPin className="h-4 w-4 text-primary relative z-10" />
+            </div>
             <div className="min-w-0">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 leading-none">
                 {location ? "Your area" : "Set location"}
@@ -109,7 +119,7 @@ export default function Header() {
 
       </header>
 
-      {showLocation && <LocationPopup onClose={() => setShowLocation(false)} />}
+      {showLocation && <LocationPopup onClose={handleLocationClose} />}
     </>
   );
 }

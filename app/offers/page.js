@@ -58,7 +58,8 @@ function getDaysUntilExpiry(dateStr) {
 }
 
 function CopyButton({ code }) {
-  const [copied, setCopied] = useState(false);
+  const [copied,   setCopied]   = useState(false);
+  const [revealed, setRevealed] = useState(false);
 
   function handleCopy() {
     navigator.clipboard.writeText(code).catch(() => {});
@@ -66,11 +67,24 @@ function CopyButton({ code }) {
     setTimeout(() => setCopied(false), 2000);
   }
 
+  if (!revealed) {
+    return (
+      <button
+        type="button"
+        onClick={() => setRevealed(true)}
+        className="flex shrink-0 items-center gap-1.5 rounded-xl border border-dashed border-white/50 bg-white/15 px-3 py-1.5 text-xs font-bold text-white backdrop-blur-sm transition hover:bg-white/25 active:scale-95"
+      >
+        <span className="select-none blur-sm pointer-events-none">{code}</span>
+        <span className="ml-0.5 text-[10px] font-black uppercase tracking-wide opacity-90">Reveal</span>
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"
       onClick={handleCopy}
-      className="flex shrink-0 items-center gap-1.5 rounded-xl border border-dashed border-white/50 bg-white/15 px-3 py-1.5 text-xs font-bold text-white backdrop-blur-sm transition hover:bg-white/25 active:scale-95"
+      className="flex shrink-0 items-center gap-1.5 rounded-xl border border-dashed border-white/50 bg-white/15 px-3 py-1.5 text-xs font-bold text-white backdrop-blur-sm transition hover:bg-white/25 active:scale-95 animate-pop"
     >
       {copied ? (
         <><Check className="h-3 w-3" />Copied!</>
@@ -164,14 +178,25 @@ export default function OffersPage() {
     <div className="min-h-screen bg-[#F8FAFC]">
       <Header />
 
+      {/* ── Hero band ── */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#0047BE] via-[#0056D2] to-[#3730A3] px-4 pb-14 pt-6 md:px-8">
+        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/[0.06]" />
+        <div className="pointer-events-none absolute -bottom-8 left-1/3 h-32 w-32 rounded-full bg-amber-400/10" />
+        <div className="mx-auto max-w-5xl flex items-center gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/15">
+            <Tag className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-blue-200">Savings</p>
+            <h1 className="text-2xl font-black text-white">Offers & Deals</h1>
+            <p className="mt-0.5 text-sm text-blue-100/80">Exclusive discounts · Save up to 30%</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="relative -mt-6 rounded-t-3xl bg-[#F8FAFC]">
       <main className="mx-auto flex max-w-5xl flex-col gap-5 px-4 md:px-8
                         pb-28 md:pb-10 pt-5 md:pt-8">
-
-        {/* Heading */}
-        <div className="animate-slide-up">
-          <h1 className="text-2xl font-black tracking-tight text-slate-900">Offers & Deals</h1>
-          <p className="mt-0.5 text-sm text-slate-400">Exclusive discounts just for you</p>
-        </div>
 
         {/* Filter chips — horizontal scroll on mobile */}
         <ChipRow className="animate-slide-up delay-75">
@@ -229,6 +254,7 @@ export default function OffersPage() {
         )}
 
       </main>
+      </div>
     </div>
   );
 }

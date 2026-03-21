@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { X, Truck, Car, Bike, Zap, Wrench, Loader2, CheckCircle2, Tag, Check, MapPin, LocateFixed, CreditCard, Store, Calendar } from "lucide-react";
-import { createBooking } from "../lib/bookings";
+import { X, Truck, Car, Bike, Zap, Wrench, Loader2, CheckCircle2, Tag, Check, MapPin, LocateFixed, CreditCard, Store, Calendar, Star } from "lucide-react";
+import { createBooking, getLastBooking } from "../lib/bookings";
 import { useAuth } from "./AuthProvider";
 import { getUserVehicles } from "../lib/vehicles";
 import SwipeableSheet from "./SwipeableSheet";
@@ -113,6 +113,16 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
   }
 
   const [promoLoading, setPromoLoading] = useState(false);
+  const [promoConfetti, setPromoConfetti] = useState(false);
+  const [lastServiceName, setLastServiceName] = useState(null);
+
+  useEffect(() => {
+    if (!user) return;
+    getLastBooking(user.id)
+      .then((b) => { if (b?.service_name) setLastServiceName(b.service_name); })
+      .catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   async function applyPromo() {
     const code = promoInput.trim().toUpperCase();
@@ -136,6 +146,8 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
       promoCache.current.set(code, data); // cache result
       if (data.valid) {
         setPromoApplied({ code, label: data.label, type: data.type, value: data.value });
+        setPromoConfetti(true);
+        setTimeout(() => setPromoConfetti(false), 1200);
       } else {
         setPromoApplied(null);
         setPromoError(data.error || "Invalid promo code.");
@@ -384,24 +396,41 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
           <div>
             <p className="mb-2 text-xs font-black uppercase tracking-widest text-slate-500">Select Service</p>
             <div className="flex flex-col gap-2">
-              {(garage.services ?? []).map((svc) => (
-                <button
-                  key={svc.name}
-                  type="button"
-                  onClick={() => setService(svc)}
-                  className={`flex items-center justify-between rounded-xl border px-3 py-2.5 text-left transition active:scale-[0.98] ${
-                    service?.name === svc.name
-                      ? "border-primary bg-primary/5"
-                      : "border-slate-100 hover:border-primary/30"
-                  }`}
-                >
-                  <div>
-                    <p className="text-sm font-bold text-slate-800">{svc.name}</p>
-                    <p className="text-[10px] text-slate-400">{svc.duration}</p>
-                  </div>
-                  <span className="text-sm font-black text-primary">{svc.price}</span>
-                </button>
-              ))}
+              {(garage.services ?? []).map((svc, idx) => {
+                const isUsual = lastServiceName &&
+                  svc.name.toLowerCase().includes(lastServiceName.toLowerCase().split(/[\s/]/)[0]);
+                const isRecommended = !isUsual && idx === 0;
+                return (
+                  <button
+                    key={svc.name}
+                    type="button"
+                    onClick={() => setService(svc)}
+                    className={`flex items-center justify-between rounded-xl border px-3 py-2.5 text-left transition active:scale-[0.98] ${
+                      service?.name === svc.name
+                        ? "border-primary bg-primary/5"
+                        : "border-slate-100 hover:border-primary/30"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-bold text-slate-800">{svc.name}</p>
+                        {isUsual && (
+                          <span className="flex items-center gap-0.5 rounded-full bg-amber-50 px-1.5 py-0.5 text-[10px] font-black text-amber-600">
+                            <Star className="h-2.5 w-2.5 fill-amber-500 text-amber-500" /> Your usual
+                          </span>
+                        )}
+                        {isRecommended && (
+                          <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-black text-primary">
+                            Recommended
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[10px] text-slate-400">{svc.duration}</p>
+                    </div>
+                    <span className="text-sm font-black text-primary">{svc.price}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -552,7 +581,21 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
           {/* ── Promo Code ── */}
           <div>
             <p className="mb-2 text-xs font-black uppercase tracking-widest text-slate-500">Promo Code (optional)</p>
-            {promoApplied ? (
+            {promoConfetti && (
+            <div className="pointer-events-none fixed inset-x-0 z-[60]" style={{ top: "35%" }}>
+              {[
+                { pos: "left-[20%]", color: "#F59E0B" },
+                { pos: "left-[35%]", color: "#34D399" },
+                { pos: "left-[50%]", color: "#F87171" },
+                { pos: "left-[65%]", color: "#60A5FA" },
+                { pos: "left-[80%]", color: "#A78BFA" },
+              ].map(({ pos, color }, i) => (
+                <div key={i} className={`absolute ${pos} h-2.5 w-2.5 rounded-full animate-ping opacity-80`}
+                  style={{ backgroundColor: color, animationDelay: `${i * 100}ms`, animationDuration: "0.6s" }} />
+              ))}
+            </div>
+          )}
+          {promoApplied ? (
               <div className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 px-3 py-2.5">
                 <Check className="h-4 w-4 shrink-0 text-green-500" />
                 <div className="flex-1">

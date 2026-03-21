@@ -8,11 +8,12 @@ import Link from "next/link";
 import {
   CalendarCheck, Heart, Star, ChevronRight,
   Car, Bike, Zap, Bell, ShieldCheck, HelpCircle, LogOut, LogIn,
-  Edit3, Plus, Trash2, MapPin, Mail, Wrench, X, Loader2, Camera,
+  Edit3, Plus, Trash2, MapPin, Mail, Wrench, X, Loader2, Camera, Flame,
 } from "lucide-react";
 import Header from "../../components/Header";
 import Avatar from "../../components/ui/Avatar";
 import Badge from "../../components/ui/Badge";
+import EmptyState from "../../components/ui/EmptyState";
 import { useToast } from "../../context/ToastContext";
 import { getBookingCounts } from "../../lib/bookings";
 import { getUserVehicles, addUserVehicle, removeUserVehicle } from "../../lib/vehicles";
@@ -204,13 +205,22 @@ export default function ProfilePage() {
           <div className="min-w-0">
             <h1 className="text-xl font-black text-white capitalize truncate">{name}</h1>
             <p className="mt-0.5 text-sm text-blue-200 truncate">{email}</p>
-            <div className="mt-2 flex items-center gap-3">
+            <div className="mt-2 flex flex-wrap items-center gap-2">
               <span className="flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-xs font-bold text-white">
                 {bookingCount ?? "…"} Bookings
               </span>
               <span className="flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-xs font-bold text-white">
                 {vehicles.length} Vehicles
               </span>
+              {bookingCount >= 10 ? (
+                <span className="flex items-center gap-1 rounded-full bg-amber-400/25 px-2.5 py-1 text-xs font-bold text-amber-300">
+                  <Flame className="h-3 w-3" /> Loyal Member
+                </span>
+              ) : bookingCount >= 3 ? (
+                <span className="flex items-center gap-1 rounded-full bg-amber-400/20 px-2.5 py-1 text-xs font-bold text-amber-300">
+                  <Flame className="h-3 w-3" /> {bookingCount}-booking streak
+                </span>
+              ) : null}
             </div>
           </div>
         </div>
@@ -352,11 +362,11 @@ export default function ProfilePage() {
 
               {/* Vehicle list */}
               {vehicles.length === 0 && !adding ? (
-                <div className="flex flex-col items-center py-6 text-center">
-                  <Car className="h-8 w-8 text-slate-200" />
-                  <p className="mt-2 text-xs text-slate-400">No vehicles added yet</p>
-                  <p className="text-[10px] text-slate-300">Tap + Add to get started</p>
-                </div>
+                <EmptyState
+                  title="No vehicles yet"
+                  description='Tap "+ Add" to register your car, bike, or EV.'
+                  className="py-4 shadow-none bg-transparent"
+                />
               ) : (
                 <div className="space-y-2">
                   {vehicles.map((v) => {

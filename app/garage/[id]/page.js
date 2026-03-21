@@ -344,6 +344,20 @@ export default function GarageDetailPage({ params }) {
                         </div>
                         <div className="flex shrink-0 flex-col items-end gap-1.5">
                           <span className="text-sm font-black text-primary">{svc.price}</span>
+                          {garage.isOpen && garage.waitTime && (
+                            <span className={`flex items-center gap-1 text-[10px] font-bold ${
+                              garage.waitTime.toLowerCase().includes("busy") || parseInt(garage.waitTime) > 30
+                                ? "text-red-500"
+                                : "text-amber-500"
+                            }`}>
+                              <span className={`h-1.5 w-1.5 rounded-full ${
+                                garage.waitTime.toLowerCase().includes("busy") || parseInt(garage.waitTime) > 30
+                                  ? "bg-red-500 animate-ping"
+                                  : "bg-amber-400"
+                              }`} />
+                              ~{garage.waitTime}
+                            </span>
+                          )}
                           <button
                             type="button"
                             onClick={() => openBooking(svc)}
