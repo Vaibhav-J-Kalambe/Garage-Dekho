@@ -3,27 +3,33 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, MapPin, Plus, Trash2, Home, Briefcase, X } from "lucide-react";
 
-const DEFAULTS = [
-  { id: 1, label: "Home",   address: "123, Koregaon Park, Pune 411001", icon: "home"   },
-  { id: 2, label: "Office", address: "456, Hinjewadi Phase 1, Pune 411057", icon: "office" },
-];
-
 export default function AddressesPage() {
   const router = useRouter();
-  const [addresses, setAddresses] = useState(DEFAULTS);
+  const [addresses, setAddresses] = useState(() => {
+    if (typeof window === "undefined") return [];
+    try { return JSON.parse(localStorage.getItem("saved_addresses") || "[]"); }
+    catch { return []; }
+  });
   const [adding, setAdding]       = useState(false);
   const [label,   setLabel]       = useState("");
   const [addr,    setAddr]        = useState("");
 
+  function persist(list) {
+    setAddresses(list);
+    localStorage.setItem("saved_addresses", JSON.stringify(list));
+  }
+
   function handleAdd(e) {
     e.preventDefault();
     if (!label.trim() || !addr.trim()) return;
-    setAddresses((prev) => [...prev, { id: Date.now(), label: label.trim(), address: addr.trim(), icon: "other" }]);
+    const lbl = label.trim().toLowerCase();
+    const icon = lbl === "home" ? "home" : lbl === "office" ? "office" : "other";
+    persist([...addresses, { id: Date.now(), label: label.trim(), address: addr.trim(), icon }]);
     setLabel(""); setAddr(""); setAdding(false);
   }
 
   function remove(id) {
-    setAddresses((prev) => prev.filter((a) => a.id !== id));
+    persist(addresses.filter((a) => a.id !== id));
   }
 
   const inputCls = "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 transition";

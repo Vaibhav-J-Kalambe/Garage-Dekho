@@ -32,11 +32,7 @@ export default function SecurityPage() {
     setTimeout(() => setSuccess(false), 3000);
   }
 
-  async function handleDeleteAccount() {
-    if (!confirm("Are you sure you want to delete your account? This cannot be undone.")) return;
-    // In a real app, call a server-side function to delete the user
-    alert("Account deletion requires contacting support at support@garagedekho.com");
-  }
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
@@ -125,10 +121,22 @@ export default function SecurityPage() {
             <p className="text-sm font-black text-red-500">Danger Zone</p>
           </div>
           <p className="text-xs text-slate-400 mb-3">Deleting your account is permanent and cannot be undone.</p>
-          <button type="button" onClick={handleDeleteAccount}
-            className="w-full rounded-xl border border-red-200 py-2.5 text-sm font-bold text-red-500 transition hover:bg-red-50 active:scale-95">
-            Delete Account
-          </button>
+          {showDeleteConfirm ? (
+            <div className="space-y-2">
+              <p className="rounded-xl bg-red-50 px-3 py-2.5 text-xs font-semibold text-red-600">
+                To delete your account, email us at <strong>support@garagedekho.com</strong> from your registered email address.
+              </p>
+              <button type="button" onClick={() => setShowDeleteConfirm(false)}
+                className="w-full rounded-xl border border-slate-200 py-2.5 text-sm font-bold text-slate-500 transition hover:bg-slate-50 active:scale-95">
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button type="button" onClick={() => setShowDeleteConfirm(true)}
+              className="w-full rounded-xl border border-red-200 py-2.5 text-sm font-bold text-red-500 transition hover:bg-red-50 active:scale-95">
+              Delete Account
+            </button>
+          )}
         </div>
 
       </main>
