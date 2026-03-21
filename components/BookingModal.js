@@ -114,23 +114,45 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
     if (pickupDrop && !locality.trim()) { setError("Please enter your pickup address or use current location."); return; }
     setLoading(true); setError(null);
     try {
+      const pickupAddress = pickupDrop
+        ? [flatNo, building, landmark, locality].filter(Boolean).join(", ")
+        : null;
+
       await createBooking({
-        user_id:       user.id,
-        garage_id:     garage.id,
-        garage_name:   garage.name,
-        garage_image:  garage.image,
-        service_name:  service?.name  ?? "General Service",
-        service_price: service?.price ?? "",
-        booking_date:  date,
-        booking_time:  time,
-        vehicle_type:  vehicleType,
-        notes:           notes.trim() || null,
-        pickup_drop:     pickupDrop,
-        pickup_address:  pickupDrop
-          ? [flatNo, building, landmark, locality].filter(Boolean).join(", ")
-          : null,
-        status:        "confirmed",
+        user_id:        user.id,
+        garage_id:      garage.id,
+        garage_name:    garage.name,
+        garage_image:   garage.image,
+        service_name:   service?.name  ?? "General Service",
+        service_price:  service?.price ?? "",
+        booking_date:   date,
+        booking_time:   time,
+        vehicle_type:   vehicleType,
+        notes:          notes.trim() || null,
+        pickup_drop:    pickupDrop,
+        pickup_address: pickupAddress,
+        status:         "confirmed",
       });
+
+      // Send confirmation email — fire and forget (don't block success screen)
+      fetch("/api/booking/confirm", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userEmail:    user.email,
+          userName:     user.user_metadata?.full_name || user.email?.split("@")[0] || "Customer",
+          garageName:   garage.name,
+          serviceName:  service?.name  ?? "General Service",
+          servicePrice: service?.price ?? "",
+          bookingDate:  date,
+          bookingTime:  time,
+          vehicleType,
+          pickupDrop,
+          pickupAddress,
+          promoCode:    promoApplied?.code ?? null,
+        }),
+      }).catch(() => {}); // never block UI on email failure
+
       setDone(true);
     } catch (err) {
       setError(err.message);
