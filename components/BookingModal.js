@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Truck, Car, Bike, Zap, Wrench, Loader2, CheckCircle2, Tag, Check } from "lucide-react";
+import { X, Truck, Car, Bike, Zap, Wrench, Loader2, CheckCircle2, Tag, Check, MapPin, LocateFixed } from "lucide-react";
 import { createBooking } from "../lib/bookings";
 import { useAuth } from "./AuthProvider";
 
@@ -38,8 +38,10 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
     !requires || (garage.vehicleType || "").includes(requires)
   );
   const [vehicleType, setVehicleType] = useState(supportedVehicles[0]?.label ?? "Car");
-  const [pickupDrop,  setPickupDrop]  = useState(false);
-  const [notes,       setNotes]       = useState("");
+  const [pickupDrop,    setPickupDrop]    = useState(false);
+  const [pickupAddress, setPickupAddress] = useState("");
+  const [locating,      setLocating]      = useState(false);
+  const [notes,         setNotes]         = useState("");
   const [promoInput,  setPromoInput]  = useState("");
   const [promoApplied, setPromoApplied] = useState(null);
   const [promoError,  setPromoError]  = useState(null);
@@ -52,6 +54,37 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
   function isVehicleSupported(requires) {
     if (!requires) return true;
     return (garage.vehicleType || "").includes(requires);
+  }
+
+  async function detectLocation() {
+    if (!navigator.geolocation) { setError("Geolocation not supported by your browser."); return; }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.latitude}&lon=${coords.longitude}&addressdetails=1`,
+            { headers: { "Accept-Language": "en" } }
+          );
+          const data = await res.json();
+          const a = data.address;
+          const parts = [
+            a.road || a.pedestrian || a.footway,
+            a.neighbourhood || a.suburb,
+            a.city || a.town || a.village,
+            a.state,
+            a.postcode,
+          ].filter(Boolean);
+          setPickupAddress(parts.join(", "));
+        } catch {
+          setError("Could not fetch address. Please type it manually.");
+        } finally {
+          setLocating(false);
+        }
+      },
+      () => { setError("Location permission denied. Please type your address."); setLocating(false); },
+      { timeout: 10000 }
+    );
   }
 
   function applyPromo() {
@@ -70,6 +103,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
     e.preventDefault();
     if (!date) { setError("Please choose a date."); return; }
     if (!time) { setError("Please choose a time slot."); return; }
+    if (pickupDrop && !pickupAddress.trim()) { setError("Please enter your pickup address."); return; }
     setLoading(true); setError(null);
     try {
       await createBooking({
@@ -82,8 +116,9 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
         booking_date:  date,
         booking_time:  time,
         vehicle_type:  vehicleType,
-        notes:         notes.trim() || null,
-        pickup_drop:   pickupDrop,
+        notes:           notes.trim() || null,
+        pickup_drop:     pickupDrop,
+        pickup_address:  pickupDrop ? pickupAddress.trim() : null,
         status:        "confirmed",
       });
       setDone(true);
@@ -228,21 +263,53 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
           </div>
 
           {/* ── Pickup & drop ── */}
-          <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-100 px-3 py-3 transition hover:border-primary/30">
-            <input
-              type="checkbox"
-              checked={pickupDrop}
-              onChange={(e) => setPickupDrop(e.target.checked)}
-              className="h-4 w-4 accent-primary"
-            />
-            <div className="flex flex-1 items-center gap-2">
-              <Truck className="h-4 w-4 text-primary" />
-              <div>
-                <p className="text-sm font-bold text-slate-800">Pickup & Drop Service</p>
-                <p className="text-[10px] text-slate-400">We'll collect and return your vehicle</p>
+          <div>
+            <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-100 px-3 py-3 transition hover:border-primary/30">
+              <input
+                type="checkbox"
+                checked={pickupDrop}
+                onChange={(e) => setPickupDrop(e.target.checked)}
+                className="h-4 w-4 accent-primary"
+              />
+              <div className="flex flex-1 items-center gap-2">
+                <Truck className="h-4 w-4 text-primary" />
+                <div>
+                  <p className="text-sm font-bold text-slate-800">Pickup & Drop Service</p>
+                  <p className="text-[10px] text-slate-400">We'll collect and return your vehicle</p>
+                </div>
               </div>
-            </div>
-          </label>
+            </label>
+
+            {pickupDrop && (
+              <div className="mt-2 rounded-xl border border-primary/20 bg-primary/5 p-3 space-y-2">
+                <p className="text-xs font-black uppercase tracking-widest text-slate-400">Pickup Address</p>
+                <div className="flex items-start gap-2">
+                  <div className="flex flex-1 items-start gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5">
+                    <MapPin className="h-4 w-4 shrink-0 text-primary mt-0.5" />
+                    <textarea
+                      value={pickupAddress}
+                      onChange={(e) => setPickupAddress(e.target.value)}
+                      placeholder="Enter your full address…"
+                      rows={2}
+                      className="flex-1 resize-none bg-transparent text-sm placeholder:text-slate-400 focus:outline-none"
+                    />
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={detectLocation}
+                  disabled={locating}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary/30 bg-white py-2.5 text-xs font-bold text-primary transition hover:bg-primary/5 disabled:opacity-60 active:scale-[0.98]"
+                >
+                  {locating ? (
+                    <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Detecting location…</>
+                  ) : (
+                    <><LocateFixed className="h-3.5 w-3.5" /> Use my current location</>
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* ── Notes ── */}
           <div>
