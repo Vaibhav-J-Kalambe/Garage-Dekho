@@ -25,20 +25,20 @@ import {
   Star,
 } from "lucide-react";
 import Header from "../components/Header";
-import { getAllGarages } from "../lib/garages";
+import { getAllGarages, getOpenGarageCount } from "../lib/garages";
 import { getLastBooking } from "../lib/bookings";
 import { useAuth } from "../components/AuthProvider";
 import Skeleton from "../components/ui/Skeleton";
 
 const SERVICES = [
-  { label: "Bike Service",   icon: Bike,     color: "from-blue-500 to-indigo-500"   },
-  { label: "Car Service",    icon: Car,      color: "from-violet-500 to-purple-500"  },
-  { label: "Oil Change",     icon: Droplets, color: "from-cyan-500 to-sky-500"       },
-  { label: "Tyre Repair",    icon: Gauge,    color: "from-slate-500 to-slate-700"    },
-  { label: "Battery Jump",   icon: Zap,      color: "from-amber-500 to-orange-500"   },
-  { label: "Towing",         icon: Truck,    color: "from-rose-500 to-red-500"       },
-  { label: "AC Repair",      icon: Wind,     color: "from-teal-500 to-emerald-500"   },
-  { label: "General Repair", icon: Wrench,   color: "from-primary to-blue-400"       },
+  { label: "Bike Service",   icon: Bike,     color: "from-blue-500 to-indigo-500",  href: "/near-me?type=2-Wheeler"        },
+  { label: "Car Service",    icon: Car,      color: "from-violet-500 to-purple-500", href: "/near-me?type=4-Wheeler"        },
+  { label: "Oil Change",     icon: Droplets, color: "from-cyan-500 to-sky-500",      href: "/near-me?q=oil+change"          },
+  { label: "Tyre Repair",    icon: Gauge,    color: "from-slate-500 to-slate-700",   href: "/near-me?q=tyre"                },
+  { label: "Battery Jump",   icon: Zap,      color: "from-amber-500 to-orange-500",  href: "/near-me?q=battery"             },
+  { label: "Towing",         icon: Truck,    color: "from-rose-500 to-red-500",      href: "/near-me?q=towing"              },
+  { label: "AC Repair",      icon: Wind,     color: "from-teal-500 to-emerald-500",  href: "/near-me?q=ac+repair"           },
+  { label: "General Repair", icon: Wrench,   color: "from-primary to-blue-400",      href: "/near-me"                       },
 ];
 
 function getGreeting() {
@@ -56,12 +56,14 @@ export default function HomePage() {
   const [toast,         setToast]         = useState(null);
   const [search,        setSearch]        = useState("");
   const [lastBooking,   setLastBooking]   = useState(null);
+  const [openCount,     setOpenCount]     = useState(null);
 
   useEffect(() => {
     getAllGarages()
       .then(setTopGarages)
       .catch(console.error)
       .finally(() => setGaragesLoading(false));
+    getOpenGarageCount().then(setOpenCount);
   }, []);
 
   useEffect(() => {
@@ -88,13 +90,15 @@ export default function HomePage() {
           <div className="space-y-1 md:flex-1 animate-slide-up">
             <p className="flex items-center gap-2 text-sm text-slate-400">
               {getGreeting()} —{" "}
-              <span className="flex items-center gap-1.5 font-semibold text-green-500">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+              {openCount !== null && (
+                <span className="flex items-center gap-1.5 font-semibold text-green-500">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+                  </span>
+                  {openCount} garage{openCount !== 1 ? "s" : ""} open now
                 </span>
-                28 mechanics online
-              </span>
+              )}
             </p>
             <h1 className="text-[2.1rem] font-black leading-tight tracking-tight text-slate-900">
               Find Your<br />
@@ -182,10 +186,10 @@ export default function HomePage() {
           </div>
 
           <div className="-mx-4 flex gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-4 md:overflow-x-visible md:px-0 md:pb-0">
-            {SERVICES.map(({ label, icon: Icon, color }) => (
+            {SERVICES.map(({ label, icon: Icon, color, href }) => (
               <Link
                 key={label}
-                href="/near-me"
+                href={href}
                 className="flex shrink-0 flex-col items-center gap-2.5 md:shrink group"
               >
                 <div
@@ -253,7 +257,7 @@ export default function HomePage() {
                         type="button"
                         aria-label="Save garage"
                         className="text-slate-200 transition hover:text-red-400 active:scale-90"
-                        onClick={(e) => e.preventDefault()}
+                        onClick={(e) => { e.preventDefault(); router.push(`/garage/${garage.id}`); }}
                       >
                         <Heart className="h-4 w-4" />
                       </button>

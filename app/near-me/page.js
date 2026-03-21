@@ -133,7 +133,7 @@ export default function NearMePage() {
   const [garages,       setGarages]       = useState([]);
   const [activeGarage,  setActiveGarage]  = useState(null);
   const [distFilter,    setDistFilter]    = useState("All");
-  const [typeFilter,    setTypeFilter]    = useState("all");
+  const [typeFilter,    setTypeFilter]    = useState(searchParams.get("type") || "all");
   const [search,        setSearch]        = useState(searchParams.get("q") || "");
   const [listExpanded,  setListExpanded]  = useState(false);
   const [locating,      setLocating]      = useState(false);
