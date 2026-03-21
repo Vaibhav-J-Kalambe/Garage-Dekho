@@ -51,17 +51,42 @@ const VEHICLE_TYPES = [
 
 const ICON_MAP = { Car, Bike, EV: Zap, Other: Wrench };
 
+const BRANDS = {
+  Car:   ["Maruti Suzuki", "Hyundai", "Tata", "Mahindra", "Honda", "Toyota", "Kia", "MG", "Volkswagen", "Skoda", "Renault", "Nissan", "Jeep", "Audi", "BMW", "Mercedes-Benz", "Other"],
+  Bike:  ["Hero", "Honda", "Bajaj", "TVS", "Royal Enfield", "Yamaha", "Suzuki", "KTM", "Kawasaki", "Jawa", "Triumph", "BMW", "Harley-Davidson", "Other"],
+  EV:    ["Tata", "Ather", "Ola Electric", "Hero Electric", "Bajaj", "Ampere", "Revolt", "MG", "Hyundai", "BYD", "Other"],
+  Other: ["Other"],
+};
+
+const CURRENT_YEAR = new Date().getFullYear();
+const YEARS = Array.from({ length: CURRENT_YEAR - 1999 }, (_, i) => String(CURRENT_YEAR - i));
+
+/* Indian number plate: AA 00 AA 0000 — e.g. MH03EY2122 or MH 03 EY 2122 */
+const PLATE_REGEX = /^[A-Z]{2}[0-9]{1,2}[A-Z]{1,3}[0-9]{1,4}$/;
+
+function formatPlate(raw) {
+  /* Strip spaces, uppercase */
+  return raw.toUpperCase().replace(/\s+/g, "");
+}
+
+function validatePlate(raw) {
+  return PLATE_REGEX.test(formatPlate(raw));
+}
+
 export default function ProfilePage() {
   const { user, signOut } = useAuth();
   const router  = useRouter();
   const fileRef = useRef(null);
 
-  /* ── Vehicles — persisted in localStorage ── */
-  const [vehicles, setVehicles] = useState([]);
-  const [adding,   setAdding]   = useState(false);
-  const [vName,    setVName]    = useState("");
-  const [vType,    setVType]    = useState("Car");
-  const [vNumber,  setVNumber]  = useState("");
+  /* ── Vehicles ── */
+  const [vehicles,   setVehicles]   = useState([]);
+  const [adding,     setAdding]     = useState(false);
+  const [vType,      setVType]      = useState("Car");
+  const [vBrand,     setVBrand]     = useState("");
+  const [vModel,     setVModel]     = useState("");
+  const [vYear,      setVYear]      = useState(String(CURRENT_YEAR));
+  const [vNumber,    setVNumber]    = useState("");
+  const [vNumError,  setVNumError]  = useState("");
 
   /* ── Avatar ── */
   const [avatarUrl,       setAvatarUrl]       = useState(user?.user_metadata?.avatar_url || null);
@@ -86,13 +111,28 @@ export default function ProfilePage() {
     getBookingCounts(user.id).then(setBookingCount);
   }, [user]);
 
+  function resetVehicleForm() {
+    setVType("Car"); setVBrand(""); setVModel("");
+    setVYear(String(CURRENT_YEAR)); setVNumber(""); setVNumError("");
+  }
+
   async function handleAddVehicle(e) {
     e.preventDefault();
-    if (!vName.trim() || !vNumber.trim() || !user) return;
+    if (!user) return;
+    if (!vBrand) { showToast("Please select a brand."); return; }
+    if (!vModel.trim()) { showToast("Please enter the model name."); return; }
+    if (!validatePlate(vNumber)) {
+      setVNumError("Invalid format. Use: MH03AB1234 (state + district + letters + digits)");
+      return;
+    }
+    setVNumError("");
+    const name = `${vBrand} ${vModel.trim()} ${vYear}`;
+    const number_plate = formatPlate(vNumber);
     try {
-      const newV = await addUserVehicle(user.id, { name: vName.trim(), type: vType, number_plate: vNumber.trim() });
+      const newV = await addUserVehicle(user.id, { name, type: vType, number_plate });
       setVehicles((prev) => [...prev, newV]);
-      setVName(""); setVNumber(""); setVType("Car"); setAdding(false);
+      resetVehicleForm();
+      setAdding(false);
     } catch (err) {
       showToast("Failed to add vehicle: " + err.message);
     }
@@ -231,7 +271,7 @@ export default function ProfilePage() {
                 <h3 className="text-sm font-black text-slate-900">My Vehicles</h3>
                 <button
                   type="button"
-                  onClick={() => { setAdding((v) => !v); setVName(""); setVNumber(""); setVType("Car"); }}
+                  onClick={() => { setAdding((v) => !v); resetVehicleForm(); }}
                   className="flex items-center gap-1 text-xs font-semibold text-primary transition hover:opacity-80 active:scale-95"
                 >
                   {adding ? <X className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
@@ -244,18 +284,12 @@ export default function ProfilePage() {
                 <form onSubmit={handleAddVehicle} className="mb-3 space-y-2.5 rounded-xl border border-primary/20 bg-primary/5 p-3 animate-slide-up">
                   <p className="text-[10px] font-black uppercase tracking-widest text-primary">New Vehicle</p>
 
-                  <input
-                    type="text" value={vName} onChange={(e) => setVName(e.target.value)}
-                    placeholder="Vehicle name (e.g. Honda City)" required
-                    className={inputCls}
-                  />
-
-                  {/* Type selector */}
+                  {/* Vehicle type */}
                   <div className="grid grid-cols-4 gap-1.5">
                     {VEHICLE_TYPES.map(({ label, icon: Icon }) => (
                       <button
                         key={label} type="button"
-                        onClick={() => setVType(label)}
+                        onClick={() => { setVType(label); setVBrand(""); }}
                         className={`flex flex-col items-center gap-1 rounded-lg py-2 text-[10px] font-bold transition active:scale-95 ${
                           vType === label
                             ? "bg-primary text-white shadow-sm"
@@ -268,11 +302,54 @@ export default function ProfilePage() {
                     ))}
                   </div>
 
+                  {/* Brand */}
+                  <select
+                    value={vBrand}
+                    onChange={(e) => setVBrand(e.target.value)}
+                    required
+                    className={inputCls}
+                  >
+                    <option value="">Select brand…</option>
+                    {(BRANDS[vType] ?? BRANDS.Other).map((b) => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                  </select>
+
+                  {/* Model */}
                   <input
-                    type="text" value={vNumber} onChange={(e) => setVNumber(e.target.value)}
-                    placeholder="Number plate (e.g. MH12 AB 1234)" required
+                    type="text" value={vModel}
+                    onChange={(e) => setVModel(e.target.value)}
+                    placeholder="Model (e.g. City, Activa, Nexon)"
+                    required
                     className={inputCls}
                   />
+
+                  {/* Year */}
+                  <select
+                    value={vYear}
+                    onChange={(e) => setVYear(e.target.value)}
+                    className={inputCls}
+                  >
+                    {YEARS.map((y) => <option key={y} value={y}>{y}</option>)}
+                  </select>
+
+                  {/* Number plate */}
+                  <div>
+                    <input
+                      type="text"
+                      value={vNumber}
+                      onChange={(e) => {
+                        setVNumber(e.target.value.toUpperCase());
+                        setVNumError("");
+                      }}
+                      placeholder="Number plate (e.g. MH03EY2122)"
+                      maxLength={13}
+                      required
+                      className={`${inputCls} ${vNumError ? "border-red-400" : ""} uppercase`}
+                    />
+                    {vNumError && <p className="mt-1 text-[10px] text-red-500">{vNumError}</p>}
+                    <p className="mt-1 text-[10px] text-slate-400">Format: State (2) + District (2) + Letters + Digits · e.g. MH03AB1234</p>
+                  </div>
 
                   <button type="submit"
                     className="w-full rounded-lg bg-primary py-2 text-xs font-bold text-white shadow-sm transition hover:brightness-110 active:scale-95">
