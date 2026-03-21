@@ -91,21 +91,21 @@ export default function GarageDetailPage({ params }) {
     <div className="min-h-screen bg-[#F8FAFC]">
 
       {/* ── Hero Image ── */}
-      <div className="relative h-64 w-full md:h-80">
+      <div className="relative h-72 w-full md:h-96">
         <img
           src={garage.image}
           alt={garage.name}
           className="h-full w-full object-cover"
         />
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/40" />
 
         {/* Floating header */}
-        <div className="absolute left-0 right-0 top-0 flex items-center justify-between px-4 pt-4">
+        <div className="absolute left-0 right-0 top-0 flex items-center justify-between px-4 pt-safe pt-4">
           <Link
             href="/"
             aria-label="Back"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition hover:bg-black/60 active:scale-95"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md transition hover:bg-black/70 active:scale-95"
           >
             <ArrowLeft className="h-4 w-4" />
           </Link>
@@ -120,7 +120,7 @@ export default function GarageDetailPage({ params }) {
                   navigator.clipboard.writeText(window.location.href).catch(() => {});
                 }
               }}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition hover:bg-black/60 active:scale-95"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md transition hover:bg-black/70 active:scale-95"
             >
               <Share2 className="h-4 w-4" />
             </button>
@@ -129,7 +129,7 @@ export default function GarageDetailPage({ params }) {
               aria-label="Save"
               onClick={toggleSave}
               disabled={savingHeart}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition hover:bg-black/60 active:scale-95 disabled:opacity-60"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-black/50 backdrop-blur-md transition hover:bg-black/70 active:scale-95 disabled:opacity-60"
             >
               <Heart
                 className={`h-4 w-4 transition ${saved ? "fill-red-500 text-red-500" : "text-white"}`}
@@ -138,13 +138,17 @@ export default function GarageDetailPage({ params }) {
           </div>
         </div>
 
-        {/* Open/Closed badge on image */}
-        <div className="absolute bottom-4 left-4">
+        {/* Garage name + open badge over image bottom */}
+        <div className="absolute bottom-8 left-4 right-4 flex items-end justify-between">
+          <div>
+            <p className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-1">{garage.speciality}</p>
+            <h1 className="text-2xl font-black text-white leading-tight drop-shadow">{garage.name}</h1>
+          </div>
           <span
-            className={`rounded-full px-3 py-1 text-xs font-bold backdrop-blur-sm ${
+            className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-bold shadow-lg ${
               garage.isOpen
-                ? "bg-green-500/90 text-white"
-                : "bg-slate-700/80 text-slate-200"
+                ? "bg-green-500 text-white"
+                : "bg-slate-800 text-slate-300"
             }`}
           >
             {garage.isOpen ? `Open · ${garage.waitTime}` : "Closed"}
@@ -165,28 +169,21 @@ export default function GarageDetailPage({ params }) {
               {/* Garage Identity */}
               <div className="rounded-2xl bg-white p-4 shadow-card">
                 <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <h1 className="text-xl font-black leading-tight text-slate-900">
-                        {garage.name}
-                      </h1>
-                      {garage.verified && (
-                        <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
-                      )}
-                    </div>
-                    <p className="mt-0.5 text-sm text-slate-400">{garage.speciality}</p>
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <h2 className="text-lg font-black leading-tight text-slate-900 truncate">{garage.name}</h2>
+                    {garage.verified && (
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+                    )}
                   </div>
-                  <div className="flex shrink-0 flex-col items-end gap-1">
-                    <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                      <span className="text-sm font-bold text-slate-800">{garage.rating}</span>
-                    </div>
-                    <span className="text-[11px] text-slate-400">{garage.reviews} reviews</span>
+                  <div className="flex shrink-0 items-center gap-1.5 rounded-xl bg-amber-50 px-2.5 py-1.5">
+                    <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                    <span className="text-sm font-black text-amber-600">{garage.rating}</span>
+                    <span className="text-[11px] text-amber-400 font-medium">({garage.reviews})</span>
                   </div>
                 </div>
 
-                {/* Address + phone */}
-                <div className="mt-4 space-y-2">
+                {/* Address + hours + phone */}
+                <div className="mt-3 space-y-2">
                   <div className="flex items-start gap-2 text-sm text-slate-500">
                     <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
                     <span>{garage.address}</span>
