@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Bell, Tag, AlertTriangle, Wrench, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Bell, Tag, AlertTriangle, Wrench, CheckCircle2, Construction } from "lucide-react";
 
 const NOTIF_ITEMS = [
   { key: "booking_reminders", label: "Booking Reminders",    desc: "Get reminded before your appointment", icon: Bell,          defaultOn: true  },
@@ -64,6 +64,16 @@ export default function NotificationsPage() {
       </header>
 
       <main className="mx-auto max-w-lg px-4 pb-28 pt-6 md:pb-10 space-y-4">
+        {/* Coming Soon banner */}
+        <div className="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3.5 animate-slide-up">
+          <Construction className="h-5 w-5 shrink-0 text-amber-500 mt-0.5" />
+          <div>
+            <p className="text-sm font-bold text-amber-800">Coming Soon</p>
+            <p className="mt-0.5 text-xs text-amber-600 leading-relaxed">
+              Push notifications are not yet active. Your preferences are saved and will take effect once this feature launches.
+            </p>
+          </div>
+        </div>
         <div className="rounded-2xl bg-white shadow-card overflow-hidden animate-slide-up">
           <p className="px-4 pb-1 pt-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Notification Preferences</p>
           <div className="divide-y divide-slate-50">
