@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -128,7 +128,7 @@ function GarageRow({ garage, active, onClick }) {
   );
 }
 
-export default function NearMePage() {
+function NearMeContent() {
   const searchParams  = useSearchParams();
   const [garages,       setGarages]       = useState([]);
   const [activeGarage,  setActiveGarage]  = useState(null);
@@ -352,5 +352,13 @@ export default function NearMePage() {
 
       </div>
     </div>
+  );
+}
+
+export default function NearMePage() {
+  return (
+    <Suspense>
+      <NearMeContent />
+    </Suspense>
   );
 }
