@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Navigation, CalendarCheck, Tag, AlertTriangle } from "lucide-react";
+import { Home, Navigation, CalendarCheck, User, AlertTriangle } from "lucide-react";
 
 const LEFT_ITEMS = [
   { label: "Home",    icon: Home,       href: "/"        },
@@ -11,7 +11,7 @@ const LEFT_ITEMS = [
 
 const RIGHT_ITEMS = [
   { label: "Bookings", icon: CalendarCheck, href: "/bookings" },
-  { label: "Offers",   icon: Tag,           href: "/offers"   },
+  { label: "Profile",  icon: User,          href: "/profile"  },
 ];
 
 const HIDDEN_ON = ["/admin", "/sos", "/garage/", "/partner"];

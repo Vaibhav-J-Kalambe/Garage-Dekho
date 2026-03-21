@@ -4,12 +4,18 @@ import { useState } from "react";
 import {
   ChevronRight, ChevronLeft, CheckCircle2, Loader2,
   MapPin, Phone, Clock, Wrench, User, Building2,
-  Plus, Trash2, LocateFixed,
+  Plus, Trash2, LocateFixed, Car, Bike, Zap, Truck,
+  Lock, IndianRupee, Sparkles,
 } from "lucide-react";
 
 const TOTAL_STEPS = 5;
 
-const VEHICLE_TYPE_OPTIONS = ["4-Wheeler", "2-Wheeler", "EV", "Heavy Vehicle"];
+const VEHICLE_TYPE_OPTIONS = [
+  { value: "4-Wheeler",     icon: Car   },
+  { value: "2-Wheeler",     icon: Bike  },
+  { value: "EV",            icon: Zap   },
+  { value: "Heavy Vehicle", icon: Truck },
+];
 
 const SERVICE_TEMPLATES = [
   { name: "Oil Change",       price: "₹499",  duration: "45 min" },
@@ -35,26 +41,31 @@ const HOURS_OPTIONS = [
 function StepIndicator({ current }) {
   const labels = ["Basic Info", "Location", "Services", "Hours & Contact", "Review"];
   return (
-    <div className="flex items-center justify-between px-2 mb-8">
+    <div className="flex items-start justify-between px-2 mb-8">
       {labels.map((label, i) => {
         const step = i + 1;
-        const done = step < current;
+        const done   = step < current;
         const active = step === current;
         return (
-          <div key={step} className="flex flex-col items-center gap-1 flex-1">
-            <div className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-black transition-all ${
+          <div key={step} className="flex flex-1 flex-col items-center gap-1 relative">
+            {/* Connector line — left half */}
+            {i > 0 && (
+              <div className={`absolute left-0 top-4 h-0.5 w-1/2 -translate-y-1/2 transition-all duration-500 ${done || active ? "bg-primary" : "bg-slate-200"}`} />
+            )}
+            {/* Connector line — right half */}
+            {i < labels.length - 1 && (
+              <div className={`absolute right-0 top-4 h-0.5 w-1/2 -translate-y-1/2 transition-all duration-500 ${done ? "bg-primary" : "bg-slate-200"}`} />
+            )}
+            <div className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full text-xs font-black transition-all duration-300 ${
               done   ? "bg-green-500 text-white" :
               active ? "bg-primary text-white ring-4 ring-primary/20" :
                        "bg-slate-100 text-slate-400"
             }`}>
               {done ? <CheckCircle2 className="h-4 w-4" /> : step}
             </div>
-            <span className={`hidden sm:block text-[10px] font-bold text-center leading-tight ${
+            <span className={`hidden sm:block text-[10px] font-bold text-center leading-tight mt-1 ${
               active ? "text-primary" : done ? "text-green-500" : "text-slate-400"
             }`}>{label}</span>
-            {i < labels.length - 1 && (
-              <div className={`absolute hidden`} />
-            )}
           </div>
         );
       })}
@@ -244,28 +255,35 @@ export default function PartnerPage() {
   // ── Success Screen ──
   if (submitted) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
-        <div className="w-full max-w-md rounded-3xl bg-white p-8 text-center shadow-lg">
-          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-green-50">
-            <CheckCircle2 className="h-10 w-10 text-green-500" />
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-[#0047BE] via-[#0056D2] to-[#3730A3]">
+        {/* Confetti dots */}
+        {["top-8 left-12","top-16 right-16","top-4 left-1/2","bottom-32 left-8","bottom-20 right-10","top-32 right-8"].map((pos, i) => (
+          <div key={i} className={`pointer-events-none absolute ${pos} h-3 w-3 rounded-full opacity-70 animate-ping`}
+            style={{ backgroundColor: ["#F59E0B","#34D399","#F87171","#60A5FA","#A78BFA","#FBBF24"][i], animationDelay: `${i * 150}ms` }} />
+        ))}
+        <div className="relative w-full max-w-md mx-4 animate-pop">
+          <div className="rounded-3xl bg-white p-8 text-center shadow-2xl">
+            <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-green-400 to-emerald-500 shadow-[0_8px_32px_rgba(52,211,153,0.45)]">
+              <CheckCircle2 className="h-10 w-10 text-white" />
+            </div>
+            <h1 className="text-2xl font-black text-slate-900">Application Submitted!</h1>
+            <p className="mt-2 text-sm font-semibold text-primary">{garageName}</p>
+            <p className="mt-2 text-sm text-slate-500 leading-relaxed">
+              We've received your application, <strong>{ownerName}</strong>. Our team will contact you on <strong>{phone}</strong> within 24–48 hours.
+            </p>
+            <div className="mt-5 rounded-2xl bg-slate-50 p-4 text-left space-y-2.5">
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">What happens next</p>
+              {["Our team reviews your application", "We verify your garage location", "You get a call for final onboarding", "Your garage goes live on GarageDekho"].map((s, i) => (
+                <div key={i} className="flex items-center gap-3 text-sm text-slate-600">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-black text-primary">{i + 1}</span>
+                  {s}
+                </div>
+              ))}
+            </div>
+            <a href="/" className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-bold text-white shadow-glow-primary transition hover:brightness-110 active:scale-[0.98]">
+              Back to Home
+            </a>
           </div>
-          <h1 className="text-2xl font-black text-slate-900">Application Submitted!</h1>
-          <p className="mt-3 text-sm text-slate-500 leading-relaxed">
-            Thank you, <strong>{ownerName}</strong>! We've received your application for <strong>{garageName}</strong>.
-            Our team will review it and contact you within <strong>24–48 hours</strong> on <strong>{phone}</strong>.
-          </p>
-          <div className="mt-6 rounded-2xl bg-slate-50 p-4 text-left space-y-2">
-            <p className="text-xs font-black uppercase tracking-widest text-slate-400">What happens next?</p>
-            {["Our team reviews your application", "We verify your garage location", "You get a call for final onboarding", "Your garage goes live on GarageDekho"].map((s, i) => (
-              <div key={i} className="flex items-start gap-2 text-sm text-slate-600">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-black text-primary">{i + 1}</span>
-                {s}
-              </div>
-            ))}
-          </div>
-          <a href="/" className="mt-6 block w-full rounded-2xl bg-primary py-3 text-sm font-bold text-white transition hover:brightness-110">
-            Back to Home
-          </a>
         </div>
       </div>
     );
@@ -273,19 +291,25 @@ export default function PartnerPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 pb-10">
-      {/* Header */}
-      <div className="sticky top-0 z-10 border-b border-slate-100 bg-white px-4 py-4 shadow-sm">
-        <div className="mx-auto max-w-lg">
-          <a href="/" className="text-xl font-black text-primary">GarageDekho</a>
-          <p className="text-xs text-slate-400">Partner Onboarding</p>
+      {/* Hero band */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#0047BE] via-[#0056D2] to-[#3730A3] px-4 pb-16 pt-6 md:px-8">
+        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/[0.06]" />
+        <div className="pointer-events-none absolute -bottom-8 left-1/3 h-32 w-32 rounded-full bg-white/[0.04]" />
+        <div className="mx-auto max-w-lg flex items-center justify-between">
+          <div>
+            <a href="/" className="text-xl font-black text-white">GarageDekho</a>
+            <p className="mt-1 text-xs font-semibold uppercase tracking-widest text-blue-200">Partner Onboarding</p>
+            <h1 className="mt-2 text-2xl font-black text-white">List Your Garage</h1>
+            <p className="mt-0.5 text-sm text-blue-100/80">Join 500+ garages earning more with us</p>
+          </div>
+          <div className="shrink-0 hidden sm:flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10">
+            <Wrench className="h-8 w-8 text-white/80" />
+          </div>
         </div>
       </div>
 
+      <div className="relative -mt-6 rounded-t-3xl bg-slate-50">
       <div className="mx-auto max-w-lg px-4 pt-8">
-        <div className="mb-6">
-          <h1 className="text-2xl font-black text-slate-900">List Your Garage</h1>
-          <p className="mt-1 text-sm text-slate-500">Join 500+ garages earning more with GarageDekho</p>
-        </div>
 
         <StepIndicator current={step} />
 
@@ -336,15 +360,15 @@ export default function PartnerPage() {
 
               <InputField label="Vehicle Types Supported" required>
                 <div className="grid grid-cols-2 gap-2">
-                  {VEHICLE_TYPE_OPTIONS.map((type) => (
-                    <button key={type} type="button" onClick={() => toggleVehicleType(type)}
+                  {VEHICLE_TYPE_OPTIONS.map(({ value, icon: VIcon }) => (
+                    <button key={value} type="button" onClick={() => toggleVehicleType(value)}
                       className={`flex items-center gap-2 rounded-xl border px-3 py-3 text-sm font-bold transition active:scale-95 ${
-                        vehicleTypes.includes(type)
+                        vehicleTypes.includes(value)
                           ? "border-primary bg-primary/5 text-primary"
                           : "border-slate-100 text-slate-500 hover:border-primary/30"
                       }`}>
-                      <span>{type === "4-Wheeler" ? "🚗" : type === "2-Wheeler" ? "🏍️" : type === "EV" ? "⚡" : "🚛"}</span>
-                      {type}
+                      <VIcon className="h-4 w-4 shrink-0" />
+                      {value}
                     </button>
                   ))}
                 </div>
@@ -573,16 +597,17 @@ export default function PartnerPage() {
         {/* Trust badges */}
         <div className="mt-6 grid grid-cols-3 gap-3 text-center">
           {[
-            { icon: "🔒", text: "Secure & Private" },
-            { icon: "⚡", text: "Go live in 48hrs" },
-            { icon: "💰", text: "Zero listing fee" },
-          ].map(({ icon, text }) => (
+            { Icon: Lock,          text: "Secure & Private", color: "text-slate-600" },
+            { Icon: Sparkles,      text: "Go live in 48hrs", color: "text-primary"   },
+            { Icon: IndianRupee,   text: "Zero listing fee", color: "text-green-600" },
+          ].map(({ Icon, text, color }) => (
             <div key={text} className="rounded-2xl bg-white p-3 shadow-sm">
-              <div className="text-xl">{icon}</div>
+              <Icon className={`mx-auto h-5 w-5 ${color}`} />
               <p className="mt-1 text-[11px] font-bold text-slate-500">{text}</p>
             </div>
           ))}
         </div>
+      </div>
       </div>
     </div>
   );

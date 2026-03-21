@@ -98,16 +98,16 @@ export default function ProfilePage() {
 
   const { showToast } = useToast();
 
-  /* Load vehicles from Supabase */
+  /* Load vehicles + booking count in parallel */
   useEffect(() => {
     if (!user) return;
-    getUserVehicles(user.id).then(setVehicles).catch(() => setVehicles([]));
-  }, [user]);
-
-  /* Load booking count */
-  useEffect(() => {
-    if (!user) return;
-    getBookingCounts(user.id).then(setBookingCount);
+    Promise.all([
+      getUserVehicles(user.id).catch(() => []),
+      getBookingCounts(user.id).catch(() => 0),
+    ]).then(([vehicles, count]) => {
+      setVehicles(vehicles);
+      setBookingCount(count);
+    });
   }, [user]);
 
   function resetVehicleForm() {

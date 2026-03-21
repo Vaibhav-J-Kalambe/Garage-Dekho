@@ -145,19 +145,24 @@ export default function SosPage() {
           {/* ── BIG SOS BUTTON — pushed to lower thumb zone ── */}
           <div className="flex flex-1 flex-col items-center justify-end gap-5 pt-6">
 
-            <button
-              type="button"
-              onClick={triggerSOS}
-              className="relative flex h-44 w-44 items-center justify-center rounded-full border-4 border-red-900/50 bg-[#D32F2F] text-white shadow-[0_8px_48px_rgba(211,47,47,0.55)] transition-transform active:scale-95 focus:outline-none"
-              aria-label="Request emergency help"
-            >
-              <span className="flex flex-col items-center gap-2">
-                <AlertTriangle className="h-10 w-10" />
-                <span className="text-[15px] font-black uppercase leading-tight tracking-wide">
-                  Get<br />Help Now
+            <div className="relative flex items-center justify-center">
+              {/* Pulsing rings */}
+              <span className="absolute h-52 w-52 rounded-full border-2 border-red-500/30 animate-ping" style={{ animationDuration: "2s" }} />
+              <span className="absolute h-60 w-60 rounded-full border border-red-500/15 animate-ping" style={{ animationDuration: "2.5s", animationDelay: "0.5s" }} />
+              <button
+                type="button"
+                onClick={triggerSOS}
+                className="relative flex h-44 w-44 items-center justify-center rounded-full border-4 border-red-900/50 bg-[#D32F2F] text-white shadow-[0_8px_48px_rgba(211,47,47,0.55)] transition-transform active:scale-95 focus:outline-none"
+                aria-label="Request emergency help"
+              >
+                <span className="flex flex-col items-center gap-2">
+                  <AlertTriangle className="h-10 w-10" />
+                  <span className="text-[15px] font-black uppercase leading-tight tracking-wide">
+                    Get<br />Help Now
+                  </span>
                 </span>
-              </span>
-            </button>
+              </button>
+            </div>
 
             <p className="text-[11px] text-slate-500">Demo simulation — no real mechanic is dispatched</p>
 
@@ -243,13 +248,25 @@ export default function SosPage() {
 
           {/* ETA countdown */}
           <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5 text-center">
-            <p className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
-              Estimated arrival
-            </p>
-            <p className="font-mono text-5xl font-black tracking-tight text-slate-50 tabular-nums">
-              {etaMin}:{etaSec}
-            </p>
-            <p className="mt-1 text-[11px] text-slate-600">minutes remaining</p>
+            {etaLeft > 0 ? (
+              <>
+                <p className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                  Estimated arrival
+                </p>
+                <p className="font-mono text-5xl font-black tracking-tight text-slate-50 tabular-nums">
+                  {etaMin}:{etaSec}
+                </p>
+                <p className="mt-1 text-[11px] text-slate-600">minutes remaining</p>
+              </>
+            ) : (
+              <div className="flex flex-col items-center gap-2 py-2 animate-pop">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/15">
+                  <CheckCircle2 className="h-7 w-7 text-green-400" />
+                </div>
+                <p className="text-base font-black text-slate-50">Mechanic has arrived!</p>
+                <p className="text-xs text-slate-400">Please check outside your vehicle.</p>
+              </div>
+            )}
           </div>
 
           {/* While you wait */}

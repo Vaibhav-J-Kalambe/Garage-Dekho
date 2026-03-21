@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ArrowLeft, Heart, MapPin, Star, Loader2 } from "lucide-react";
 import { useAuth } from "../../../components/AuthProvider";
 import { getSavedGarages, unsaveGarage } from "../../../lib/saved";
+import EmptyState from "../../../components/ui/EmptyState";
 
 export default function SavedGaragesPage() {
   const router = useRouter();
@@ -50,21 +51,7 @@ export default function SavedGaragesPage() {
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : saved.length === 0 ? (
-          <div className="flex flex-col items-center gap-4 py-16 text-center animate-slide-up">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
-              <Heart className="h-8 w-8 text-red-300" />
-            </div>
-            <div>
-              <p className="text-base font-black text-slate-900">No saved garages yet</p>
-              <p className="mt-1 text-sm text-slate-400">Tap the heart icon on any garage to save it here.</p>
-            </div>
-            <Link
-              href="/near-me"
-              className="mt-2 rounded-2xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-card-hover transition hover:brightness-110 active:scale-95"
-            >
-              Browse Garages
-            </Link>
-          </div>
+          <EmptyState preset="saved" />
         ) : (
           <div className="flex flex-col gap-3">
             {saved.map((g) => (
@@ -74,7 +61,12 @@ export default function SavedGaragesPage() {
                     <Image src={g.image || "/placeholder-garage.svg"} alt={g.name} fill className="object-cover" sizes="56px" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-bold text-slate-900">{g.name}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="truncate font-bold text-slate-900">{g.name}</p>
+                      <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${g.isOpen ? "bg-green-50 text-green-600" : "bg-slate-100 text-slate-400"}`}>
+                        {g.isOpen ? "Open" : "Closed"}
+                      </span>
+                    </div>
                     <p className="mt-0.5 text-xs text-slate-400">{g.speciality}</p>
                     <div className="mt-1 flex items-center gap-1 text-xs text-slate-500">
                       <MapPin className="h-3 w-3 shrink-0" />

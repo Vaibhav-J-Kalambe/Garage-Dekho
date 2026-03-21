@@ -11,7 +11,7 @@ import {
   Bike,
   Users,
   Sparkles,
-  Loader2,
+  Flame,
 } from "lucide-react";
 import Header from "../../components/Header";
 import { getOffers } from "../../lib/offers";
@@ -30,6 +30,31 @@ function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString("en-IN", {
     day: "numeric", month: "short", year: "numeric",
   });
+}
+
+function OfferSkeleton() {
+  return (
+    <div className="rounded-2xl p-5 animate-shimmer" style={{ background: "linear-gradient(135deg, #e2e8f0, #cbd5e1)" }}>
+      <div className="h-4 w-16 rounded-full bg-white/40 mb-3" />
+      <div className="h-8 w-24 rounded-lg bg-white/40 mb-2" />
+      <div className="h-4 w-40 rounded-lg bg-white/40 mb-1" />
+      <div className="h-3 w-56 rounded-lg bg-white/30 mb-4" />
+      <div className="border-t border-white/20 pt-3 flex items-end justify-between">
+        <div className="space-y-1.5">
+          <div className="h-3 w-28 rounded bg-white/30" />
+          <div className="h-3 w-20 rounded bg-white/30" />
+        </div>
+        <div className="h-8 w-20 rounded-xl bg-white/40" />
+      </div>
+    </div>
+  );
+}
+
+function getDaysUntilExpiry(dateStr) {
+  if (!dateStr) return null;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const exp = new Date(dateStr);
+  return Math.round((exp - today) / 86400000);
 }
 
 function CopyButton({ code }) {
@@ -70,10 +95,24 @@ function OfferCard({ offer, featured = false }) {
       <div className="pointer-events-none absolute -right-6 -top-6 h-28 w-28 rounded-full bg-white/10" />
       <div className="pointer-events-none absolute -bottom-8 -right-2 h-20 w-20 rounded-full bg-white/10" />
 
-      {/* Tag */}
-      <span className="inline-block rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider">
-        {offer.tag}
-      </span>
+      {/* Tag + urgency */}
+      <div className="flex items-center gap-2">
+        <span className="inline-block rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider">
+          {offer.tag}
+        </span>
+        {(() => {
+          const days = getDaysUntilExpiry(offer.validTill);
+          if (days !== null && days <= 7 && days >= 0) {
+            return (
+              <span className="flex items-center gap-1 rounded-full bg-red-500/80 px-2 py-0.5 text-[10px] font-black text-white">
+                <Flame className="h-2.5 w-2.5" />
+                {days === 0 ? "Expires today!" : `${days}d left`}
+              </span>
+            );
+          }
+          return null;
+        })()}
+      </div>
 
       {/* Discount */}
       <div className="mt-3">
@@ -148,10 +187,10 @@ export default function OffersPage() {
           ))}
         </ChipRow>
 
-        {/* Loading */}
+        {/* Skeleton loading */}
         {loading && (
-          <div className="flex items-center justify-center py-16">
-            <Loader2 className="h-7 w-7 animate-spin text-primary" />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 animate-slide-up">
+            {[1, 2, 3, 4].map((n) => <OfferSkeleton key={n} />)}
           </div>
         )}
 

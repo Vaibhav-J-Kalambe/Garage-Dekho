@@ -28,6 +28,7 @@ import {
   Paintbrush,
   Battery,
   Scan,
+  MessageCircle,
 } from "lucide-react";
 
 function getServiceIcon(name = "") {
@@ -45,13 +46,14 @@ function getServiceIcon(name = "") {
   if (n.includes("zap") || n.includes("jump") || n.includes("start")) return Zap;
   return Wrench;
 }
-import { getGarageById } from "../../../lib/garages";
+import { getGarageById, getAllGarages } from "../../../lib/garages";
 import Skeleton from "../../../components/ui/Skeleton";
 import { useAuth } from "../../../components/AuthProvider";
 import { getSavedGarageIds, saveGarage, unsaveGarage } from "../../../lib/saved";
 import { getGarageReviews } from "../../../lib/reviews";
 import { useToast } from "../../../context/ToastContext";
 import BookingModal from "../../../components/BookingModal";
+import EmptyState from "../../../components/ui/EmptyState";
 
 export default function GarageDetailPage({ params }) {
   const { id } = use(params);
@@ -65,7 +67,8 @@ export default function GarageDetailPage({ params }) {
   const [activeTab,   setActiveTab]   = useState("services");
   const [showModal,   setShowModal]   = useState(false);
   const [preService,  setPreService]  = useState(null);
-  const [reviews,     setReviews]     = useState([]);
+  const [reviews,         setReviews]         = useState([]);
+  const [similarGarages,  setSimilarGarages]  = useState([]);
   const { showToast } = useToast();
 
   function openBooking(svc = null) {
@@ -76,7 +79,30 @@ export default function GarageDetailPage({ params }) {
 
   useEffect(() => {
     getGarageById(id)
-      .then(setGarage)
+      .then((g) => {
+        setGarage(g);
+        // Load similar garages from cache or DB
+        const CACHE_KEY = "gd_garages_v1";
+        try {
+          const raw = sessionStorage.getItem(CACHE_KEY);
+          if (raw) {
+            const { data } = JSON.parse(raw);
+            const similar = data
+              .filter((x) => x.id !== id && x.vehicleType === g?.vehicleType)
+              .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+              .slice(0, 3);
+            setSimilarGarages(similar);
+            return;
+          }
+        } catch {}
+        getAllGarages().then((all) => {
+          setSimilarGarages(
+            all.filter((x) => x.id !== id && x.vehicleType === g?.vehicleType)
+               .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+               .slice(0, 3)
+          );
+        }).catch(() => {});
+      })
       .catch(() => setGarage(null))
       .finally(() => setLoading(false));
     getGarageReviews(id).then(setReviews);
@@ -243,13 +269,24 @@ export default function GarageDetailPage({ params }) {
                     <Clock className="h-4 w-4 shrink-0 text-slate-400" />
                     <span>{garage.openHours}</span>
                   </div>
-                  <a
-                    href={`tel:${garage.phone}`}
-                    className="flex items-center gap-2 text-sm font-semibold text-primary"
-                  >
-                    <Phone className="h-4 w-4 shrink-0" />
-                    <span>{garage.phone}</span>
-                  </a>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={`tel:${garage.phone}`}
+                      className="flex items-center gap-2 text-sm font-semibold text-primary"
+                    >
+                      <Phone className="h-4 w-4 shrink-0" />
+                      <span>{garage.phone}</span>
+                    </a>
+                    <a
+                      href={`https://wa.me/91${garage.phone?.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi! I found your garage on GarageDekho. I'd like to enquire about your services.`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ml-2 flex items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-green-600 active:scale-95"
+                    >
+                      <MessageCircle className="h-3.5 w-3.5" />
+                      WhatsApp
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -374,11 +411,11 @@ export default function GarageDetailPage({ params }) {
 
                   {/* Review cards */}
                   {reviews.length === 0 ? (
-                    <div className="flex flex-col items-center py-8 text-center rounded-2xl bg-white shadow-card">
-                      <Star className="h-8 w-8 text-slate-200" />
-                      <p className="mt-2 text-sm font-bold text-slate-700">No reviews yet</p>
-                      <p className="mt-1 text-xs text-slate-400">Book a service and share your experience.</p>
-                    </div>
+                    <EmptyState
+                      title="No reviews yet"
+                      description="Book a service and be the first to share your experience."
+                      className="py-8"
+                    />
                   ) : (
                     reviews.map((review) => (
                       <div key={review.id} className="rounded-2xl bg-white p-4 shadow-card">
@@ -410,6 +447,31 @@ export default function GarageDetailPage({ params }) {
               )}
 
             </div>
+
+            {/* ── Similar Garages ── */}
+            {similarGarages.length > 0 && (
+              <div className="flex flex-col gap-3 mt-1">
+                <h3 className="text-sm font-black text-slate-900">Similar Garages Nearby</h3>
+                {similarGarages.map((sg) => (
+                  <Link key={sg.id} href={`/garage/${sg.id}`}
+                    className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-card transition hover:shadow-card-hover hover:-translate-y-0.5 active:scale-[0.99]">
+                    <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl">
+                      <Image src={sg.image || "/placeholder-garage.svg"} alt={sg.name} fill className="object-cover" sizes="56px" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-bold text-slate-900">{sg.name}</p>
+                      <p className="text-[11px] text-slate-500">{sg.speciality}</p>
+                      <div className="mt-1 flex items-center gap-1">
+                        <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                        <span className="text-xs font-semibold text-slate-700">{sg.rating}</span>
+                        <span className="text-[11px] text-slate-400">· {sg.distance}</span>
+                      </div>
+                    </div>
+                    <span className="shrink-0 rounded-full bg-primary px-3 py-1.5 text-xs font-bold text-white">View</span>
+                  </Link>
+                ))}
+              </div>
+            )}
 
             {/* ── RIGHT — sticky booking card (desktop only) ── */}
             <div className="hidden md:block md:w-80 md:shrink-0 md:sticky md:top-6">

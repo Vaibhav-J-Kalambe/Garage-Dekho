@@ -8,11 +8,12 @@ import Link from "next/link";
 import {
   Search, SlidersHorizontal, Star, CheckCircle2,
   Navigation, X, Bike, Car, Zap, Wrench,
-  ChevronUp, ChevronDown, Loader2, MapPin,
+  ChevronUp, ChevronDown, Loader2,
 } from "lucide-react";
 import Header from "../../components/Header";
 import { getAllGarages } from "../../lib/garages";
 import { useToast } from "../../context/ToastContext";
+import EmptyState from "../../components/ui/EmptyState";
 
 /* Load Leaflet map client-side only (no SSR) */
 const MapView = dynamic(() => import("../../components/MapView"), {
@@ -65,7 +66,7 @@ function GarageRow({ garage, active, onClick }) {
       type="button"
       onClick={onClick}
       className={`flex w-full items-center gap-3 rounded-2xl p-3 text-left transition-all duration-200 active:scale-[0.98] shadow-card ${
-        active ? "bg-red-50 ring-2 ring-red-400" : "bg-white hover:shadow-card-hover"
+        active ? "bg-primary/5 ring-2 ring-primary/60" : "bg-white hover:shadow-card-hover"
       }`}
     >
       <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl">
@@ -92,13 +93,11 @@ function GarageRow({ garage, active, onClick }) {
         </div>
       </div>
       <div className="flex shrink-0 flex-col items-end gap-1">
-        <span className={`text-xs font-black ${active ? "text-red-500" : "text-primary"}`}>{garage.distance}</span>
+        <span className="text-xs font-black text-primary">{garage.distance}</span>
         <Link
           href={`/garage/${garage.id}`}
           onClick={(e) => e.stopPropagation()}
-          className={`rounded-full px-3 py-1.5 text-xs font-bold text-white transition hover:opacity-90 active:scale-95 ${
-            active ? "bg-red-500" : "bg-primary"
-          }`}
+          className="rounded-full bg-primary px-3 py-1.5 text-xs font-bold text-white transition hover:opacity-90 active:scale-95"
         >
           View
         </Link>
@@ -128,7 +127,20 @@ function NearMeContent() {
   const { showToast } = useToast();
 
   useEffect(() => {
-    getAllGarages().then(setGarages).catch(console.error);
+    // Share the same 5-min sessionStorage cache as the home page
+    const CACHE_KEY = "gd_garages_v1";
+    const CACHE_TTL = 5 * 60 * 1000;
+    try {
+      const raw = sessionStorage.getItem(CACHE_KEY);
+      if (raw) {
+        const { data, ts } = JSON.parse(raw);
+        if (Date.now() - ts < CACHE_TTL) { setGarages(data); return; }
+      }
+    } catch { /* ignore */ }
+    getAllGarages().then((data) => {
+      setGarages(data);
+      try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() })); } catch {}
+    }).catch(console.error);
   }, []);
 
   /* When userCoords is available, compute real distance for each garage */
@@ -332,7 +344,7 @@ function NearMeContent() {
             </div>
 
             {showSort && (
-              <div className="mb-3 flex gap-2">
+              <div className="mb-3 flex gap-2 animate-slide-up">
                 {SORT_OPTIONS.map(({ label, value }) => (
                   <button
                     key={value}
@@ -347,11 +359,7 @@ function NearMeContent() {
             )}
 
             {filtered.length === 0 ? (
-              <div className="flex flex-col items-center py-10 text-center">
-                <MapPin className="h-8 w-8 text-slate-200" />
-                <p className="mt-2 text-sm font-bold text-slate-700">No garages found</p>
-                <p className="mt-1 text-xs text-slate-400">Try adjusting your filters</p>
-              </div>
+              <EmptyState preset="near-me" className="shadow-none bg-transparent py-8" />
             ) : (
               <div className="flex flex-col gap-2">
                 {filtered.map((garage) => (

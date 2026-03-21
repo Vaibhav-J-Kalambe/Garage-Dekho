@@ -13,6 +13,7 @@ import {
   ChevronRight,
   AlertTriangle,
   Star,
+  CalendarPlus,
 } from "lucide-react";
 import Image from "next/image";
 import Header from "../../components/Header";
@@ -37,6 +38,31 @@ function formatDate(dateStr) {
     month:   "short",
     year:    "numeric",
   });
+}
+
+function getDaysUntil(dateStr) {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const appt  = new Date(dateStr + "T00:00:00");
+  const diff  = Math.round((appt - today) / 86400000);
+  if (diff === 0) return { label: "Today!", urgent: true };
+  if (diff === 1) return { label: "Tomorrow", urgent: true };
+  if (diff > 1 && diff <= 7) return { label: `In ${diff} days`, urgent: false };
+  return null;
+}
+
+function buildCalendarUrl(booking) {
+  // Parse time like "10:00 AM" → 24h
+  const [timePart, meridiem] = (booking.time || "9:00 AM").split(" ");
+  let [hh, mm] = timePart.split(":").map(Number);
+  if (meridiem === "PM" && hh !== 12) hh += 12;
+  if (meridiem === "AM" && hh === 12) hh = 0;
+  const pad = (n) => String(n).padStart(2, "0");
+  const dateBase = (booking.date || "").replace(/-/g, "");
+  const start = `${dateBase}T${pad(hh)}${pad(mm)}00`;
+  const end   = `${dateBase}T${pad(hh + 1)}${pad(mm)}00`;
+  const title = encodeURIComponent(`${booking.service || "Service"} at ${booking.garageName}`);
+  const details = encodeURIComponent(`Booking via GarageDekho\nVehicle: ${booking.vehicleType}`);
+  return `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}`;
 }
 
 function BookingCard({ booking, onCancel, onReview, reviewed }) {
@@ -70,6 +96,18 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
       {/* Divider */}
       <div className="my-3 border-t border-slate-100" />
 
+      {/* Countdown badge for upcoming bookings */}
+      {booking.status === "confirmed" && (() => {
+        const until = getDaysUntil(booking.date);
+        if (!until) return null;
+        return (
+          <div className={`mb-2 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-black ${until.urgent ? "bg-amber-50 text-amber-600" : "bg-primary/10 text-primary"}`}>
+            <span className={`h-1.5 w-1.5 rounded-full ${until.urgent ? "bg-amber-500 animate-ping" : "bg-primary"}`} />
+            {until.label}
+          </div>
+        );
+      })()}
+
       {/* Meta */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-500">
         <div className="flex items-center gap-1.5">
@@ -93,13 +131,24 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
         <span className="text-base font-black text-slate-900">{booking.price}</span>
         <div className="flex items-center gap-2">
           {booking.status === "confirmed" && (
-            <button
-              type="button"
-              onClick={() => onCancel(booking.id)}
-              className="rounded-full border border-red-200 px-3 py-1.5 text-[11px] font-bold text-red-500 transition hover:bg-red-50 active:scale-95"
-            >
-              Cancel
-            </button>
+            <>
+              <a
+                href={buildCalendarUrl(booking)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-3 py-1.5 text-[11px] font-bold text-primary transition hover:bg-primary/10 active:scale-95"
+              >
+                <CalendarPlus className="h-3 w-3" />
+                Add to Calendar
+              </a>
+              <button
+                type="button"
+                onClick={() => onCancel(booking.id)}
+                className="rounded-full border border-red-200 px-3 py-1.5 text-[11px] font-bold text-red-500 transition hover:bg-red-50 active:scale-95"
+              >
+                Cancel
+              </button>
+            </>
           )}
 
           {booking.status === "completed" && (
@@ -222,13 +271,19 @@ export default function BookingsPage() {
     <div className="min-h-screen bg-[#F8FAFC]">
       <Header />
 
-      <main className="mx-auto flex max-w-5xl flex-col gap-5 px-4 md:px-8 pb-28 md:pb-10 pt-5 md:pt-8">
-
-        {/* Heading */}
-        <div className="animate-slide-up">
-          <h1 className="text-2xl font-black tracking-tight text-slate-900">My Bookings</h1>
-          <p className="mt-0.5 text-sm text-slate-500">Track and manage your service appointments</p>
+      {/* ── Hero band ── */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#0047BE] via-[#0056D2] to-[#3730A3] px-4 pb-14 pt-6 md:px-8">
+        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/[0.06]" />
+        <div className="pointer-events-none absolute -bottom-8 left-1/3 h-32 w-32 rounded-full bg-white/[0.04]" />
+        <div className="mx-auto max-w-5xl">
+          <p className="text-xs font-semibold uppercase tracking-widest text-blue-200">Dashboard</p>
+          <h1 className="mt-1 text-2xl font-black text-white">My Bookings</h1>
+          <p className="mt-0.5 text-sm text-blue-100/80">Track and manage your service appointments</p>
         </div>
+      </div>
+
+      <div className="relative -mt-6 rounded-t-3xl bg-[#F8FAFC]">
+      <main className="mx-auto flex max-w-5xl flex-col gap-5 px-4 md:px-8 pb-28 md:pb-10 pt-5 md:pt-8">
 
         {/* Tab switcher */}
         <div className="flex gap-1 rounded-2xl bg-white p-1 shadow-card animate-slide-up delay-75">
@@ -285,6 +340,7 @@ export default function BookingsPage() {
         )}
 
       </main>
+      </div>
 
       {cancelTarget && (
         <CancelConfirmModal

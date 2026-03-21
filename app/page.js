@@ -34,6 +34,7 @@ import { useLocation } from "../context/LocationContext";
 import { useToast } from "../context/ToastContext";
 import Skeleton from "../components/ui/Skeleton";
 import LocationPopup from "../components/LocationPopup";
+import EmptyState from "../components/ui/EmptyState";
 
 function haversine(lat1, lng1, lat2, lng2) {
   const R = 6371;
@@ -199,6 +200,19 @@ export default function HomePage() {
     return [...mapped].sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 6);
   }, [topGarages, userCoords]);
 
+  // Personalized sort — boost garages matching the user's last booked service
+  const isPersonalized = !lastBookingLoading && !!lastBooking?.service_name;
+  const personalizedGarages = useMemo(() => {
+    if (!lastBooking?.service_name) return garagesWithDist;
+    const keyword = lastBooking.service_name.toLowerCase().split(/[\s/]/)[0]; // "oil", "ac", "tyre"…
+    const relevant = garagesWithDist.filter((g) =>
+      g.services?.some((s) => s.name?.toLowerCase().includes(keyword))
+    );
+    if (relevant.length === 0) return garagesWithDist;
+    const rest = garagesWithDist.filter((g) => !relevant.some((r) => r.id === g.id));
+    return [...relevant, ...rest];
+  }, [garagesWithDist, lastBooking]);
+
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       <Header />
@@ -213,7 +227,7 @@ export default function HomePage() {
         <div className="mx-auto flex max-w-5xl flex-col gap-5 md:flex-row md:items-center md:gap-10">
           <div className="space-y-2 md:flex-1 animate-slide-up">
             <p className="flex items-center gap-2 text-sm text-blue-200">
-              {getGreeting()} —{" "}
+              {getGreeting()}{user?.user_metadata?.full_name ? `, ${user.user_metadata.full_name.split(" ")[0]}` : ""} —{" "}
               {openCount !== null && (
                 <span className="flex items-center gap-1.5 font-semibold text-green-300">
                   <span className="relative flex h-2 w-2">
@@ -343,28 +357,32 @@ export default function HomePage() {
           <div className="mb-4 flex items-center justify-between">
             <div>
               <h2 className="text-lg font-black tracking-tight text-slate-900">
-                {userCoords ? "Garages Near You" : "Top Rated Garages"}
+                {isPersonalized
+                  ? "Recommended for You"
+                  : userCoords
+                  ? "Garages Near You"
+                  : "Top Rated Garages"}
               </h2>
-              {userArea && (
+              {isPersonalized ? (
+                <p className="mt-0.5 text-[11px] text-primary font-semibold">
+                  Based on your last {lastBooking.service_name}
+                </p>
+              ) : userArea ? (
                 <p className="flex items-center gap-1 text-[11px] text-slate-400 mt-0.5">
                   <MapPin className="h-3 w-3" /> {userArea}
                 </p>
-              )}
+              ) : null}
             </div>
             <Link href="/near-me" className="text-xs font-semibold text-primary hover:underline">View all</Link>
           </div>
 
           {garagesLoading ? (
             <Skeleton.GarageList count={3} />
-          ) : garagesWithDist.length === 0 ? (
-            <div className="flex flex-col items-center py-10 text-center rounded-2xl bg-white shadow-card">
-              <Wrench className="h-10 w-10 text-slate-200" />
-              <p className="mt-3 text-sm font-bold text-slate-700">No garages found nearby</p>
-              <p className="mt-1 text-xs text-slate-500">Try changing your location or check back later.</p>
-            </div>
+          ) : personalizedGarages.length === 0 ? (
+            <EmptyState preset="near-me" />
           ) : (
             <div className="flex flex-col gap-3 md:grid md:grid-cols-2 md:gap-4">
-              {garagesWithDist.map((garage, i) => (
+              {personalizedGarages.map((garage, i) => (
                 <Link key={garage.id} href={`/garage/${garage.id}`} className="block animate-slide-up" style={{ animationDelay: `${i * 60}ms` }}>
                   <article className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5 active:scale-[0.99]">
 

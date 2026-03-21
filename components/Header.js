@@ -87,9 +87,12 @@ export default function Header() {
               <Link
                 href="/offers"
                 aria-label="Offers & Deals"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-100 bg-white/80 text-slate-600 shadow-sm transition hover:border-primary/40 hover:text-primary active:scale-95"
+                className="relative flex h-9 w-9 items-center justify-center rounded-full border border-slate-100 bg-white/80 text-slate-600 shadow-sm transition hover:border-primary/40 hover:text-primary active:scale-95"
               >
                 <Tag className="h-4 w-4" />
+                <span className="absolute -right-0.5 -top-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white shadow-sm">
+                  !
+                </span>
               </Link>
             ) : (
               <Link
