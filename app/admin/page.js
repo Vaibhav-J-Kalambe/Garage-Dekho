@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
-import { Plus, Trash2, CheckCircle2, Lock, ImageIcon, ArrowLeft } from "lucide-react";
+import { Plus, Trash2, CheckCircle2, Lock, ImageIcon, ArrowLeft, ClipboardList, Check, X, ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 
 const inputCls =
@@ -43,11 +43,58 @@ export default function AdminPage() {
     if (typeof window === "undefined") return false;
     return sessionStorage.getItem("admin_authed") === "1";
   });
+  const [tab, setTab]             = useState("applications"); // "applications" | "add"
   const [form, setForm]           = useState(EMPTY_FORM);
   const [services, setServices]   = useState([{ name: "", price: "", duration: "" }]);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess]     = useState(false);
   const [error, setError]         = useState(null);
+
+  // Applications tab state
+  const [applications, setApplications]   = useState([]);
+  const [appsLoading,  setAppsLoading]    = useState(false);
+  const [expanded,     setExpanded]       = useState(null);
+  const [actionLoading, setActionLoading] = useState(null); // id being actioned
+  const [imageOverrides, setImageOverrides] = useState({}); // id → image URL
+
+  useEffect(() => {
+    if (authed && tab === "applications") fetchApplications();
+  }, [authed, tab]);
+
+  async function fetchApplications() {
+    setAppsLoading(true);
+    const { data } = await supabase
+      .from("garage_applications")
+      .select("*")
+      .order("submitted_at", { ascending: false });
+    setApplications(data ?? []);
+    setAppsLoading(false);
+  }
+
+  async function handleAction(id, action) {
+    setActionLoading(id);
+    try {
+      const res = await fetch("/api/admin/approve-garage", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-password": sessionStorage.getItem("admin_pw") || "",
+        },
+        body: JSON.stringify({
+          id,
+          action,
+          overrides: action === "approve" ? { image: imageOverrides[id] || "" } : {},
+        }),
+      });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error);
+      fetchApplications();
+    } catch (err) {
+      alert("Error: " + err.message);
+    } finally {
+      setActionLoading(null);
+    }
+  }
 
   /* ── Password gate — verified server-side ── */
   async function handleLogin() {
@@ -59,7 +106,7 @@ export default function AdminPage() {
         body: JSON.stringify({ password }),
       });
       const data = await res.json();
-      if (data.ok) { setAuthed(true); sessionStorage.setItem("admin_authed", "1"); }
+      if (data.ok) { setAuthed(true); sessionStorage.setItem("admin_authed", "1"); sessionStorage.setItem("admin_pw", password); }
       else setError(data.error || "Incorrect password. Try again.");
     } catch {
       setError("Could not verify password. Please try again.");
@@ -154,35 +201,190 @@ export default function AdminPage() {
             </Link>
             <div>
               <p className="text-xs text-slate-400">GarageDekho Admin</p>
-              <p className="text-sm font-black text-slate-900">Add New Garage</p>
+              <p className="text-sm font-black text-slate-900">Dashboard</p>
             </div>
           </div>
           <button
             type="button"
-            onClick={() => setAuthed(false)}
+            onClick={() => { setAuthed(false); sessionStorage.removeItem("admin_authed"); sessionStorage.removeItem("admin_pw"); }}
             className="text-xs font-semibold text-slate-400 hover:text-red-500"
           >
             Logout
+          </button>
+        </div>
+        {/* Tabs */}
+        <div className="mx-auto mt-3 flex max-w-2xl gap-1">
+          <button
+            onClick={() => setTab("applications")}
+            className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition ${tab === "applications" ? "bg-primary text-white" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
+          >
+            <ClipboardList className="h-3.5 w-3.5" />
+            Applications
+            {applications.filter(a => a.status === "pending").length > 0 && (
+              <span className="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-black text-white">
+                {applications.filter(a => a.status === "pending").length}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setTab("add")}
+            className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition ${tab === "add" ? "bg-primary text-white" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            Add Garage
           </button>
         </div>
       </div>
 
       <div className="mx-auto max-w-2xl space-y-4 px-4 py-6 pb-24">
 
+        {/* ── APPLICATIONS TAB ── */}
+        {tab === "applications" && (
+          <div className="space-y-3">
+            {appsLoading && (
+              <div className="rounded-2xl bg-white p-6 text-center text-sm text-slate-400 shadow-card">Loading applications…</div>
+            )}
+            {!appsLoading && applications.length === 0 && (
+              <div className="rounded-2xl bg-white p-8 text-center shadow-card">
+                <ClipboardList className="mx-auto h-8 w-8 text-slate-200 mb-2" />
+                <p className="text-sm font-semibold text-slate-400">No applications yet</p>
+                <p className="text-xs text-slate-300 mt-1">Garage owners who apply via /partner will appear here</p>
+              </div>
+            )}
+            {applications.map((app) => (
+              <div key={app.id} className="rounded-2xl bg-white shadow-card overflow-hidden">
+                {/* Application header */}
+                <button
+                  type="button"
+                  onClick={() => setExpanded(expanded === app.id ? null : app.id)}
+                  className="w-full flex items-center justify-between px-5 py-4 text-left"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`h-2.5 w-2.5 rounded-full shrink-0 ${
+                      app.status === "pending"  ? "bg-amber-400" :
+                      app.status === "approved" ? "bg-green-500" : "bg-red-400"
+                    }`} />
+                    <div>
+                      <p className="text-sm font-black text-slate-900">{app.garage_name}</p>
+                      <p className="text-xs text-slate-400">{app.owner_name} · {app.city} · {new Date(app.submitted_at).toLocaleDateString("en-IN")}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-black ${
+                      app.status === "pending"  ? "bg-amber-50 text-amber-600" :
+                      app.status === "approved" ? "bg-green-50 text-green-600" : "bg-red-50 text-red-500"
+                    }`}>{app.status}</span>
+                    {expanded === app.id ? <ChevronUp className="h-4 w-4 text-slate-400" /> : <ChevronDown className="h-4 w-4 text-slate-400" />}
+                  </div>
+                </button>
+
+                {/* Expanded details */}
+                {expanded === app.id && (
+                  <div className="border-t border-slate-100 px-5 py-4 space-y-3">
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      {[
+                        ["Phone",       app.phone],
+                        ["WhatsApp",    app.whatsapp || "—"],
+                        ["Email",       app.email || "—"],
+                        ["Speciality",  app.speciality],
+                        ["Experience",  app.experience],
+                        ["Vehicle Types", app.vehicle_types],
+                        ["Hours",       app.open_hours],
+                        ["Address",     app.address],
+                        ["GPS",         app.lat ? app.lat + ", " + app.lng : "Not captured"],
+                      ].map(([label, value]) => (
+                        <div key={label}>
+                          <p className="font-black text-slate-400 uppercase tracking-widest text-[10px]">{label}</p>
+                          <p className="text-slate-700 mt-0.5 break-all">{value}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {app.about && (
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">About</p>
+                        <p className="text-xs text-slate-600 mt-0.5">{app.about}</p>
+                      </div>
+                    )}
+
+                    {app.services?.length > 0 && (
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Services</p>
+                        <div className="space-y-1">
+                          {app.services.map((s, i) => (
+                            <div key={i} className="flex justify-between rounded-xl bg-slate-50 px-3 py-1.5 text-xs">
+                              <span className="font-semibold text-slate-700">{s.name}</span>
+                              <span className="font-black text-primary">{s.price}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Image URL for approval */}
+                    {app.status === "pending" && (
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Garage Image URL (optional)</p>
+                        <input
+                          type="text"
+                          value={imageOverrides[app.id] || ""}
+                          onChange={(e) => setImageOverrides((prev) => ({ ...prev, [app.id]: e.target.value }))}
+                          placeholder="https://images.pexels.com/…"
+                          className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-700 focus:border-primary focus:outline-none"
+                        />
+                      </div>
+                    )}
+
+                    {/* Action buttons */}
+                    {app.status === "pending" && (
+                      <div className="flex gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => handleAction(app.id, "approve")}
+                          disabled={actionLoading === app.id}
+                          className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-green-500 py-2.5 text-xs font-black text-white transition hover:bg-green-600 disabled:opacity-60"
+                        >
+                          {actionLoading === app.id ? "Processing…" : <><Check className="h-3.5 w-3.5" /> Approve & Go Live</>}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleAction(app.id, "reject")}
+                          disabled={actionLoading === app.id}
+                          className="flex items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-xs font-black text-red-500 transition hover:bg-red-100 disabled:opacity-60"
+                        >
+                          <X className="h-3.5 w-3.5" /> Reject
+                        </button>
+                      </div>
+                    )}
+                    {app.status === "approved" && (
+                      <p className="text-xs font-bold text-green-600 flex items-center gap-1">
+                        <CheckCircle2 className="h-4 w-4" /> This garage is live on the website
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ── ADD GARAGE TAB ── */}
+        {tab === "add" && (
+
         {/* Success banner */}
-        {success && (
+        {tab === "add" && success && (
           <div className="flex items-center gap-3 rounded-2xl bg-green-50 p-4 text-green-700 shadow-card">
             <CheckCircle2 className="h-5 w-5 shrink-0" />
             <p className="text-sm font-bold">Garage added! It is now live on the website.</p>
           </div>
         )}
-        {error && (
+        {tab === "add" && error && (
           <div className="rounded-2xl bg-red-50 p-4 text-sm text-red-600 shadow-card">
             <strong>Error:</strong> {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {tab === "add" && <form onSubmit={handleSubmit} className="space-y-4">
 
           {/* ── Basic Info ── */}
           <Section title="Basic Information">
@@ -327,7 +529,7 @@ export default function AdminPage() {
             {submitting ? "Adding Garage…" : "Add Garage to Website"}
           </button>
 
-        </form>
+        </form>}
       </div>
     </div>
   );
