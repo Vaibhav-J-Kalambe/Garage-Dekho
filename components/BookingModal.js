@@ -63,15 +63,17 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
       async ({ coords }) => {
         try {
           const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.latitude}&lon=${coords.longitude}&addressdetails=1`,
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.latitude}&lon=${coords.longitude}&addressdetails=1&zoom=18`,
             { headers: { "Accept-Language": "en" } }
           );
           const data = await res.json();
-          const a = data.address;
+          const a = data.address ?? {};
           const parts = [
-            a.road || a.pedestrian || a.footway,
-            a.neighbourhood || a.suburb,
-            a.city || a.town || a.village,
+            [a.house_number, a.road || a.pedestrian || a.footway || a.path].filter(Boolean).join(" "),
+            a.building || a.amenity || a.shop,
+            a.neighbourhood || a.quarter || a.suburb || a.residential,
+            a.city_district,
+            a.city || a.town || a.village || a.county,
             a.state,
             a.postcode,
           ].filter(Boolean);
@@ -82,8 +84,13 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
           setLocating(false);
         }
       },
-      () => { setError("Location permission denied. Please type your address."); setLocating(false); },
-      { timeout: 10000 }
+      (err) => {
+        if (err.code === 1) setError("Location permission denied. Please allow location access and try again.");
+        else if (err.code === 2) setError("Location unavailable. Please type your address manually.");
+        else setError("Location request timed out. Please try again.");
+        setLocating(false);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   }
 
