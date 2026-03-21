@@ -310,7 +310,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6 p-5">
+        <form onSubmit={handleSubmit} className="space-y-6 p-5 pb-8 md:pb-5">
 
           {error && (
             <p className="rounded-xl bg-red-50 px-3 py-2 text-xs font-semibold text-red-500">{error}</p>
@@ -531,28 +531,28 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
               <button
                 type="button"
                 onClick={() => setPayMethod("online")}
-                className={`flex flex-col items-center gap-1.5 rounded-xl border py-3 text-xs font-bold transition active:scale-95 ${
+                className={`flex min-h-[72px] flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-3 text-xs font-bold transition active:scale-95 ${
                   payMethod === "online"
                     ? "border-primary bg-primary/5 text-primary"
                     : "border-slate-100 text-slate-500 hover:border-primary/30"
                 }`}
               >
-                <span className="text-base">💳</span>
-                Pay Now
-                <span className="text-[10px] font-normal text-slate-400">UPI / Card / Netbanking</span>
+                <span className="text-lg">💳</span>
+                <span>Pay Now</span>
+                <span className="text-center text-[10px] font-normal leading-tight text-slate-400">UPI / Card / Netbanking</span>
               </button>
               <button
                 type="button"
                 onClick={() => setPayMethod("later")}
-                className={`flex flex-col items-center gap-1.5 rounded-xl border py-3 text-xs font-bold transition active:scale-95 ${
+                className={`flex min-h-[72px] flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-3 text-xs font-bold transition active:scale-95 ${
                   payMethod === "later"
                     ? "border-primary bg-primary/5 text-primary"
                     : "border-slate-100 text-slate-500 hover:border-primary/30"
                 }`}
               >
-                <span className="text-base">🏪</span>
-                Pay at Garage
-                <span className="text-[10px] font-normal text-slate-400">Cash / UPI after service</span>
+                <span className="text-lg">🏪</span>
+                <span>Pay at Garage</span>
+                <span className="text-center text-[10px] font-normal leading-tight text-slate-400">Cash / UPI after service</span>
               </button>
             </div>
           </div>
@@ -573,7 +573,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
               if (!service) return "Confirm Booking";
               const finalAmt = getFinalAmount();
               if (isNaN(finalAmt) || finalAmt === 0) return "Confirm Booking (Free)";
-              if (payMethod === "later") return "Confirm Booking · Pay ₹" + finalAmt + " at Garage";
+              if (payMethod === "later") return "Book Now · Pay ₹" + finalAmt + " at Garage";
               return "Pay & Book · ₹" + finalAmt;
             })()
             )}
