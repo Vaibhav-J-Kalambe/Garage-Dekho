@@ -349,7 +349,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
               value={date}
               min={today}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-800 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
+              className="w-full min-h-[48px] rounded-xl border border-slate-200 px-3 py-3 text-base text-slate-800 appearance-none focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
             />
           </div>
 
@@ -438,7 +438,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                   value={flatNo}
                   onChange={(e) => setFlatNo(e.target.value)}
                   placeholder="Flat / House No. (e.g. B-204)"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 text-base"
                 />
 
                 {/* Building / Society / Chawl */}
@@ -447,7 +447,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                   value={building}
                   onChange={(e) => setBuilding(e.target.value)}
                   placeholder="Building / Society / Chawl name"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 text-base"
                 />
 
                 {/* Locality — auto-filled or typed */}
@@ -458,7 +458,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                     value={locality}
                     onChange={(e) => setLocality(e.target.value)}
                     placeholder="Area / Locality, City, Pincode *"
-                    className="w-full rounded-xl border border-slate-200 bg-white pl-8 pr-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
+                    className="w-full rounded-xl border border-slate-200 bg-white pl-8 pr-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 text-base"
                   />
                 </div>
 
@@ -468,7 +468,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                   value={landmark}
                   onChange={(e) => setLandmark(e.target.value)}
                   placeholder="Nearby landmark (optional)"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 text-base"
                 />
               </div>
             )}
@@ -482,7 +482,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Describe the issue or any special instructions…"
               rows={2}
-              className="w-full resize-none rounded-xl border border-slate-200 px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
+              className="w-full resize-none rounded-xl border border-slate-200 px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 text-base"
             />
           </div>
 
@@ -508,7 +508,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                     value={promoInput}
                     onChange={(e) => { setPromoInput(e.target.value); setPromoError(null); }}
                     placeholder="Enter code…"
-                    className="flex-1 bg-transparent text-sm uppercase placeholder:normal-case placeholder:text-slate-400 focus:outline-none"
+                    className="flex-1 bg-transparent text-base uppercase placeholder:normal-case placeholder:text-slate-400 focus:outline-none"
                   />
                 </div>
                 <button
