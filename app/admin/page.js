@@ -39,7 +39,10 @@ const EMPTY_FORM = {
 
 export default function AdminPage() {
   const [password, setPassword]   = useState("");
-  const [authed, setAuthed]       = useState(false);
+  const [authed, setAuthed]       = useState(() => {
+    if (typeof window === "undefined") return false;
+    return sessionStorage.getItem("admin_authed") === "1";
+  });
   const [form, setForm]           = useState(EMPTY_FORM);
   const [services, setServices]   = useState([{ name: "", price: "", duration: "" }]);
   const [submitting, setSubmitting] = useState(false);
@@ -56,7 +59,7 @@ export default function AdminPage() {
         body: JSON.stringify({ password }),
       });
       const data = await res.json();
-      if (data.ok) setAuthed(true);
+      if (data.ok) { setAuthed(true); sessionStorage.setItem("admin_authed", "1"); }
       else setError(data.error || "Incorrect password. Try again.");
     } catch {
       setError("Could not verify password. Please try again.");

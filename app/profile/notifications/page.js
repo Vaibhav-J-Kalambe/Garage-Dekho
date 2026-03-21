@@ -1,7 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Bell, Tag, AlertTriangle, Wrench, CheckCircle2, Construction } from "lucide-react";
+import { ArrowLeft, Bell, Tag, AlertTriangle, Wrench, CheckCircle2, Construction, Loader2 } from "lucide-react";
+import { useAuth } from "../../../components/AuthProvider";
+import { getPreferences, savePreferences } from "../../../lib/preferences";
 
 const NOTIF_ITEMS = [
   { key: "booking_reminders", label: "Booking Reminders",    desc: "Get reminded before your appointment", icon: Bell,          defaultOn: true  },
@@ -26,23 +28,49 @@ function Toggle({ on, onChange }) {
 
 export default function NotificationsPage() {
   const router = useRouter();
-  const [prefs, setPrefs] = useState(() => {
-    if (typeof window === "undefined") return {};
-    try {
-      return JSON.parse(localStorage.getItem("notif_prefs") || "{}");
-    } catch { return {}; }
-  });
-  const [saved, setSaved] = useState(false);
+  const { user, loading: authLoading } = useAuth();
+  const [prefs,   setPrefs]   = useState({});
+  const [loading, setLoading] = useState(true);
+  const [saving,  setSaving]  = useState(false);
+  const [saved,   setSaved]   = useState(false);
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (user) {
+      getPreferences(user.id)
+        .then(setPrefs)
+        .catch(() => {
+          try { setPrefs(JSON.parse(localStorage.getItem("notif_prefs") || "{}")); } catch { setPrefs({}); }
+        })
+        .finally(() => setLoading(false));
+    } else {
+      try { setPrefs(JSON.parse(localStorage.getItem("notif_prefs") || "{}")); } catch { setPrefs({}); }
+      setLoading(false);
+    }
+  }, [user, authLoading]);
 
   function toggle(key, val) {
     setPrefs((p) => ({ ...p, [key]: val }));
     setSaved(false);
   }
 
-  function handleSave() {
-    localStorage.setItem("notif_prefs", JSON.stringify(prefs));
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  async function handleSave() {
+    setSaving(true);
+    try {
+      if (user) {
+        await savePreferences(user.id, prefs);
+      } else {
+        localStorage.setItem("notif_prefs", JSON.stringify(prefs));
+      }
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch {
+      localStorage.setItem("notif_prefs", JSON.stringify(prefs));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } finally {
+      setSaving(false);
+    }
   }
 
   function getVal(key, def) {
@@ -64,6 +92,7 @@ export default function NotificationsPage() {
       </header>
 
       <main className="mx-auto max-w-lg px-4 pb-28 pt-6 md:pb-10 space-y-4">
+
         {/* Coming Soon banner */}
         <div className="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3.5 animate-slide-up">
           <Construction className="h-5 w-5 shrink-0 text-amber-500 mt-0.5" />
@@ -74,31 +103,45 @@ export default function NotificationsPage() {
             </p>
           </div>
         </div>
-        <div className="rounded-2xl bg-white shadow-card overflow-hidden animate-slide-up">
-          <p className="px-4 pb-1 pt-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Notification Preferences</p>
-          <div className="divide-y divide-slate-50">
-            {NOTIF_ITEMS.map(({ key, label, desc, icon: Icon, defaultOn }) => (
-              <div key={key} className="flex items-center gap-3 px-4 py-3.5">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <Icon className="h-4 w-4" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-slate-800">{label}</p>
-                  <p className="text-[11px] text-slate-400">{desc}</p>
-                </div>
-                <Toggle on={getVal(key, defaultOn)} onChange={(v) => toggle(key, v)} />
-              </div>
-            ))}
-          </div>
-        </div>
 
-        <button
-          type="button"
-          onClick={handleSave}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-bold text-white shadow-card-hover transition hover:brightness-110 active:scale-[0.98]"
-        >
-          {saved ? <><CheckCircle2 className="h-4 w-4" />Saved!</> : "Save Preferences"}
-        </button>
+        {loading ? (
+          <div className="flex items-center justify-center py-10">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          </div>
+        ) : (
+          <>
+            <div className="rounded-2xl bg-white shadow-card overflow-hidden animate-slide-up">
+              <p className="px-4 pb-1 pt-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Notification Preferences</p>
+              <div className="divide-y divide-slate-50">
+                {NOTIF_ITEMS.map(({ key, label, desc, icon: Icon, defaultOn }) => (
+                  <div key={key} className="flex items-center gap-3 px-4 py-3.5">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-slate-800">{label}</p>
+                      <p className="text-[11px] text-slate-400">{desc}</p>
+                    </div>
+                    <Toggle on={getVal(key, defaultOn)} onChange={(v) => toggle(key, v)} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={saving}
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-bold text-white shadow-card-hover transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
+            >
+              {saving ? (
+                <><Loader2 className="h-4 w-4 animate-spin" />Saving…</>
+              ) : saved ? (
+                <><CheckCircle2 className="h-4 w-4" />Saved!</>
+              ) : "Save Preferences"}
+            </button>
+          </>
+        )}
       </main>
     </div>
   );
