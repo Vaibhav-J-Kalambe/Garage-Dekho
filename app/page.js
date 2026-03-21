@@ -70,6 +70,7 @@ export default function HomePage() {
   const [openCount,     setOpenCount]     = useState(null);
   const [savedIds,      setSavedIds]      = useState(new Set());
   const [userCoords,    setUserCoords]    = useState(null);
+  const [userArea,      setUserArea]      = useState(null); // e.g. "Kurla"
 
   useEffect(() => {
     getAllGarages()
@@ -80,7 +81,20 @@ export default function HomePage() {
     // Silent location detection — no alert on deny
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        ({ coords }) => setUserCoords([coords.latitude, coords.longitude]),
+        async ({ coords }) => {
+          setUserCoords([coords.latitude, coords.longitude]);
+          // Reverse geocode to get area name
+          try {
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.latitude}&lon=${coords.longitude}&zoom=12`,
+              { headers: { "Accept-Language": "en" } }
+            );
+            const data = await res.json();
+            const a = data.address ?? {};
+            const area = a.suburb || a.neighbourhood || a.city_district || a.town || a.city || null;
+            if (area) setUserArea(area);
+          } catch { /* ignore */ }
+        },
         () => {}, // silently ignore denial
         { timeout: 8000, maximumAge: 300000 }
       );
@@ -120,14 +134,25 @@ export default function HomePage() {
     if (q) router.push(`/near-me?q=${encodeURIComponent(q)}`);
   }
 
-  // Compute real distances if location available, then sort nearest first
-  const garagesWithDist = topGarages.map((g) => {
-    if (userCoords && g.lat && g.lng) {
-      const km = haversine(userCoords[0], userCoords[1], g.lat, g.lng);
-      return { ...g, distance: km < 1 ? `${(km * 1000).toFixed(0)} m` : `${km.toFixed(1)} km`, _km: km };
+  // Compute real distances, filter by radius when location known, sort nearest first
+  const NEARBY_RADIUS_KM = 15;
+  const garagesWithDist = (() => {
+    const mapped = topGarages.map((g) => {
+      if (userCoords && g.lat && g.lng) {
+        const km = haversine(userCoords[0], userCoords[1], g.lat, g.lng);
+        return { ...g, distance: km < 1 ? `${(km * 1000).toFixed(0)} m` : `${km.toFixed(1)} km`, _km: km };
+      }
+      return { ...g, _km: parseFloat(g.distance) || 99 };
+    }).sort((a, b) => a._km - b._km);
+
+    if (userCoords) {
+      // Show garages within radius; fallback to nearest 3 if none found nearby
+      const nearby = mapped.filter((g) => g._km <= NEARBY_RADIUS_KM);
+      return (nearby.length >= 1 ? nearby : mapped.slice(0, 3)).slice(0, 6);
     }
-    return { ...g, _km: parseFloat(g.distance) || 99 };
-  }).sort((a, b) => a._km - b._km);
+    // No location: show top 6 by rating
+    return [...mapped].sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 6);
+  })();
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
@@ -260,9 +285,16 @@ export default function HomePage() {
         {/* ── Top Rated Garages ── */}
         <section>
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-black tracking-tight text-slate-900">
-              Top Rated Garages
-            </h2>
+            <div>
+              <h2 className="text-lg font-black tracking-tight text-slate-900">
+                {userCoords ? "Garages Near You" : "Top Rated Garages"}
+              </h2>
+              {userArea && (
+                <p className="flex items-center gap-1 text-[11px] text-slate-400 mt-0.5">
+                  <MapPin className="h-3 w-3" /> {userArea}
+                </p>
+              )}
+            </div>
             <Link href="/near-me" className="text-xs font-semibold text-primary hover:underline">View all</Link>
           </div>
 
