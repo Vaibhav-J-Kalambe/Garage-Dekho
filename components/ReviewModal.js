@@ -19,7 +19,8 @@ export default function ReviewModal({ booking, onClose, onSuccess }) {
     if (rating === 0) { setError("Please select a star rating."); return; }
     setLoading(true); setError(null);
     try {
-      await submitReview(user.id, booking.garageId, booking.id, rating, comment);
+      const userName = user.user_metadata?.full_name || user.email?.split("@")[0] || "User";
+      await submitReview(user.id, booking.garageId, booking.id, rating, comment, userName);
       setDone(true);
     } catch (err) {
       setError(err.message);

@@ -178,7 +178,7 @@ export default function GarageDetailPage({ params }) {
                   <div className="flex shrink-0 items-center gap-1.5 rounded-xl bg-amber-50 px-2.5 py-1.5">
                     <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                     <span className="text-sm font-black text-amber-600">{garage.rating}</span>
-                    <span className="text-[11px] text-amber-400 font-medium">({garage.reviews})</span>
+                    <span className="text-[11px] text-amber-400 font-medium">({reviews.length > 0 ? reviews.length : garage.reviews})</span>
                   </div>
                 </div>
 
@@ -313,11 +313,14 @@ export default function GarageDetailPage({ params }) {
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
                             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
-                              U
+                              {(review.user_name || "U").charAt(0).toUpperCase()}
                             </div>
+                            <div>
+                            <p className="text-xs font-semibold text-slate-700">{review.user_name || "User"}</p>
                             <p className="text-[10px] text-slate-400">
                               {new Date(review.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                             </p>
+                            </div>
                           </div>
                           <div className="flex items-center gap-0.5">
                             {[1,2,3,4,5].map((s) => (

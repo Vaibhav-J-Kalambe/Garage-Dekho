@@ -412,7 +412,16 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                 Confirming…
               </span>
             ) : (
-              `Confirm Booking${service ? ` · ${service.price}` : ""}`
+              (() => {
+            if (!service) return "Confirm Booking";
+            const raw = parseFloat((service.price || "").replace(/[^\d.]/g, ""));
+            if (!promoApplied || isNaN(raw)) return `Confirm Booking · ${service.price}`;
+            let final = raw;
+            if (promoApplied.type === "percent") final = raw * (1 - promoApplied.value / 100);
+            else if (promoApplied.type === "flat") final = Math.max(0, raw - promoApplied.value);
+            else final = 0; // free
+            return `Confirm Booking · ₹${Math.round(final)}`;
+          })()
             )}
           </button>
 

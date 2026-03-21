@@ -178,7 +178,7 @@ export default function SosPage() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-bold text-slate-50">Call Helpline</p>
-                <p className="text-[11px] text-slate-500">1800-000-0000 · Free · 24 / 7</p>
+                <p className="text-[11px] text-slate-500">+91 99692 72885 · 24 / 7</p>
               </div>
               <ChevronRight className="h-4 w-4 shrink-0 text-slate-600" />
             </a>

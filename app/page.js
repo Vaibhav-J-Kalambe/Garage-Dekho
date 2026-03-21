@@ -27,6 +27,7 @@ import {
 import Header from "../components/Header";
 import { getAllGarages, getOpenGarageCount } from "../lib/garages";
 import { getLastBooking } from "../lib/bookings";
+import { getSavedGarageIds, saveGarage, unsaveGarage } from "../lib/saved";
 import { useAuth } from "../components/AuthProvider";
 import Skeleton from "../components/ui/Skeleton";
 
@@ -57,6 +58,7 @@ export default function HomePage() {
   const [search,        setSearch]        = useState("");
   const [lastBooking,   setLastBooking]   = useState(null);
   const [openCount,     setOpenCount]     = useState(null);
+  const [savedIds,      setSavedIds]      = useState(new Set());
 
   useEffect(() => {
     getAllGarages()
@@ -67,9 +69,31 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (!user) { setLastBooking(null); return; }
+    if (!user) { setLastBooking(null); setSavedIds(new Set()); return; }
     getLastBooking(user.id).then(setLastBooking).catch(() => null);
+    getSavedGarageIds(user.id).then((ids) => setSavedIds(new Set(ids)));
   }, [user]);
+
+  async function toggleSave(e, garageId) {
+    e.preventDefault();
+    if (!user) { router.push("/auth"); return; }
+    const isSaved = savedIds.has(garageId);
+    setSavedIds((prev) => {
+      const next = new Set(prev);
+      isSaved ? next.delete(garageId) : next.add(garageId);
+      return next;
+    });
+    try {
+      isSaved ? await unsaveGarage(user.id, garageId) : await saveGarage(user.id, garageId);
+    } catch {
+      // revert on failure
+      setSavedIds((prev) => {
+        const next = new Set(prev);
+        isSaved ? next.add(garageId) : next.delete(garageId);
+        return next;
+      });
+    }
+  }
 
   function handleSearch(e) {
     e.preventDefault();
@@ -256,10 +280,10 @@ export default function HomePage() {
                       <button
                         type="button"
                         aria-label="Save garage"
-                        className="text-slate-200 transition hover:text-red-400 active:scale-90"
-                        onClick={(e) => { e.preventDefault(); router.push(`/garage/${garage.id}`); }}
+                        className="transition active:scale-90"
+                        onClick={(e) => toggleSave(e, garage.id)}
                       >
-                        <Heart className="h-4 w-4" />
+                        <Heart className={`h-4 w-4 transition ${savedIds.has(garage.id) ? "fill-red-500 text-red-500" : "text-slate-200 hover:text-red-400"}`} />
                       </button>
                       <span className="text-xs font-bold text-primary">{garage.distance}</span>
                       <span className={`text-[10px] font-semibold ${garage.isOpen ? "text-green-500" : "text-slate-400"}`}>
