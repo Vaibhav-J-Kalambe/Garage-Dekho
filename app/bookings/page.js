@@ -58,7 +58,7 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
         </div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-bold text-slate-900">{booking.garageName}</p>
-          <p className="mt-0.5 truncate text-xs text-slate-500">{booking.service}</p>
+          <p className="mt-0.5 truncate text-xs text-slate-500">{booking.service || "General Service"} · {booking.vehicleType}</p>
         </div>
         <Badge variant={status.variant} icon={StatusIcon} size="sm">
           {status.label}
@@ -208,6 +208,7 @@ export default function BookingsPage() {
     date:        b.booking_date,
     time:        b.booking_time,
     pickupDrop:  b.pickup_drop,
+    vehicleType: b.vehicle_type,
     status:      b.status,
   }));
 

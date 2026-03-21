@@ -22,10 +22,10 @@ const TIME_SLOTS = [
 ];
 
 const VEHICLE_TYPES = [
-  { label: "Car",   icon: Car   },
-  { label: "Bike",  icon: Bike  },
-  { label: "EV",    icon: Zap   },
-  { label: "Other", icon: Wrench},
+  { label: "Car",   icon: Car,    requires: "4-Wheeler" },
+  { label: "Bike",  icon: Bike,   requires: "2-Wheeler" },
+  { label: "EV",    icon: Zap,    requires: "EV"        },
+  { label: "Other", icon: Wrench, requires: null        },
 ];
 
 export default function BookingModal({ garage, preselectedService, onClose, onSuccess }) {
@@ -46,6 +46,11 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
 
   const today = new Date().toISOString().split("T")[0];
 
+  function isVehicleSupported(requires) {
+    if (!requires) return true;
+    return (garage.vehicleType || "").includes(requires);
+  }
+
   function applyPromo() {
     const code = promoInput.trim().toUpperCase();
     const promo = PROMO_CODES[code];
@@ -62,6 +67,8 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
     e.preventDefault();
     if (!date) { setError("Please choose a date."); return; }
     if (!time) { setError("Please choose a time slot."); return; }
+    const vReq = VEHICLE_TYPES.find(v => v.label === vehicleType)?.requires;
+    if (!isVehicleSupported(vReq)) { setError(`This garage does not service ${vehicleType}s.`); return; }
     setLoading(true); setError(null);
     try {
       await createBooking({
@@ -201,22 +208,35 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
           <div>
             <p className="mb-2 text-xs font-black uppercase tracking-widest text-slate-400">Vehicle Type</p>
             <div className="grid grid-cols-4 gap-2">
-              {VEHICLE_TYPES.map(({ label, icon: Icon }) => (
-                <button
-                  key={label}
-                  type="button"
-                  onClick={() => setVehicleType(label)}
-                  className={`flex flex-col items-center gap-1 rounded-xl py-2.5 text-xs font-bold transition active:scale-95 ${
-                    vehicleType === label
-                      ? "bg-primary text-white"
-                      : "bg-slate-50 text-slate-500 hover:bg-slate-100"
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {label}
-                </button>
-              ))}
+              {VEHICLE_TYPES.map(({ label, icon: Icon, requires }) => {
+                const supported = isVehicleSupported(requires);
+                const selected  = vehicleType === label;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => setVehicleType(label)}
+                    disabled={!supported}
+                    title={!supported ? `This garage does not service ${label}s` : ""}
+                    className={`relative flex flex-col items-center gap-1 rounded-xl py-2.5 text-xs font-bold transition active:scale-95 ${
+                      !supported
+                        ? "cursor-not-allowed bg-slate-100 text-slate-300 opacity-60"
+                        : selected
+                        ? "bg-primary text-white"
+                        : "bg-slate-50 text-slate-500 hover:bg-slate-100"
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {label}
+                  </button>
+                );
+              })}
             </div>
+            {!isVehicleSupported(VEHICLE_TYPES.find(v => v.label === vehicleType)?.requires) && (
+              <p className="mt-2 rounded-xl bg-red-50 px-3 py-2 text-[11px] font-semibold text-red-500">
+                This garage does not service {vehicleType}s. Please select a supported vehicle type.
+              </p>
+            )}
           </div>
 
           {/* ── Pickup & drop ── */}
