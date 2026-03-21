@@ -30,7 +30,7 @@ const FAQS = [
   },
   {
     q: "How do I contact support?",
-    a: "You can call our helpline at 1800-000-0000 (24/7) or email us at support@garagedekho.com. We typically respond within 2 hours."
+    a: "You can call our helpline at +91 99692 72885 (24/7) or email us at support@garagedekho.com. We typically respond within 2 hours."
   },
 ];
 
@@ -81,14 +81,14 @@ export default function HelpPage() {
         {/* Contact */}
         <div className="rounded-2xl bg-white p-4 shadow-card animate-slide-up delay-75 space-y-3">
           <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Still need help?</p>
-          <a href="tel:1800000000"
+          <a href="tel:+919969272885"
             className="flex items-center gap-3 rounded-xl border border-slate-100 px-3 py-3 transition hover:border-primary/30 hover:bg-primary/5">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
               <Phone className="h-4 w-4" />
             </div>
             <div>
               <p className="text-sm font-bold text-slate-800">Call Us</p>
-              <p className="text-xs text-slate-400">1800-000-0000 · 24/7 support</p>
+              <p className="text-xs text-slate-400">+91 99692 72885 · 24 / 7 support</p>
             </div>
           </a>
           <a href="mailto:support@garagedekho.com"

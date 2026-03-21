@@ -170,7 +170,7 @@ export default function SosPage() {
 
             {/* Call helpline */}
             <a
-              href="tel:1800000000"
+              href="tel:+919969272885"
               className="flex w-full items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900 px-4 py-3.5 transition hover:border-slate-700 active:scale-[0.98]"
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-500/10 text-green-400">
@@ -272,7 +272,7 @@ export default function SosPage() {
 
           {/* Call helpline */}
           <a
-            href="tel:1800000000"
+            href="tel:+919969272885"
             className="flex items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900 px-4 py-3.5 transition hover:border-slate-700 active:scale-[0.98]"
           >
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-500/10 text-green-400">
@@ -280,7 +280,7 @@ export default function SosPage() {
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-bold text-slate-50">Call Helpline</p>
-              <p className="text-[11px] text-slate-500">1800-000-0000 · Free · 24 / 7</p>
+              <p className="text-[11px] text-slate-500">+91 99692 72885 · 24 / 7</p>
             </div>
             <ChevronRight className="h-4 w-4 shrink-0 text-slate-600" />
           </a>
