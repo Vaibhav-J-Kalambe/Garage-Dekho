@@ -216,11 +216,9 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                     key={label}
                     type="button"
                     onClick={() => setVehicleType(label)}
-                    disabled={!supported}
-                    title={!supported ? `This garage does not service ${label}s` : ""}
-                    className={`relative flex flex-col items-center gap-1 rounded-xl py-2.5 text-xs font-bold transition active:scale-95 ${
-                      !supported
-                        ? "cursor-not-allowed bg-slate-100 text-slate-300 opacity-60"
+                    className={`flex flex-col items-center gap-1 rounded-xl py-2.5 text-xs font-bold transition active:scale-95 ${
+                      selected && !supported
+                        ? "bg-red-500 text-white"
                         : selected
                         ? "bg-primary text-white"
                         : "bg-slate-50 text-slate-500 hover:bg-slate-100"
@@ -233,9 +231,12 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
               })}
             </div>
             {!isVehicleSupported(VEHICLE_TYPES.find(v => v.label === vehicleType)?.requires) && (
-              <p className="mt-2 rounded-xl bg-red-50 px-3 py-2 text-[11px] font-semibold text-red-500">
-                This garage does not service {vehicleType}s. Please select a supported vehicle type.
-              </p>
+              <div className="mt-2 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5">
+                <span className="text-red-500 text-xs font-black mt-0.5">✕</span>
+                <p className="text-xs font-semibold text-red-600">
+                  This garage only services <strong>{garage.vehicleType}</strong> vehicles. {vehicleType}s are not supported here.
+                </p>
+              </div>
             )}
           </div>
 
