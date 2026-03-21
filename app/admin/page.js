@@ -370,21 +370,19 @@ export default function AdminPage() {
 
         {/* ── ADD GARAGE TAB ── */}
         {tab === "add" && (
-
-        {/* Success banner */}
-        {tab === "add" && success && (
-          <div className="flex items-center gap-3 rounded-2xl bg-green-50 p-4 text-green-700 shadow-card">
-            <CheckCircle2 className="h-5 w-5 shrink-0" />
-            <p className="text-sm font-bold">Garage added! It is now live on the website.</p>
-          </div>
-        )}
-        {tab === "add" && error && (
-          <div className="rounded-2xl bg-red-50 p-4 text-sm text-red-600 shadow-card">
-            <strong>Error:</strong> {error}
-          </div>
-        )}
-
-        {tab === "add" && <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-4">
+            {success && (
+              <div className="flex items-center gap-3 rounded-2xl bg-green-50 p-4 text-green-700 shadow-card">
+                <CheckCircle2 className="h-5 w-5 shrink-0" />
+                <p className="text-sm font-bold">Garage added! It is now live on the website.</p>
+              </div>
+            )}
+            {error && (
+              <div className="rounded-2xl bg-red-50 p-4 text-sm text-red-600 shadow-card">
+                <strong>Error:</strong> {error}
+              </div>
+            )}
+            <form onSubmit={handleSubmit} className="space-y-4">
 
           {/* ── Basic Info ── */}
           <Section title="Basic Information">
@@ -529,7 +527,10 @@ export default function AdminPage() {
             {submitting ? "Adding Garage…" : "Add Garage to Website"}
           </button>
 
-        </form>}
+            </form>
+          </div>
+        )}
+
       </div>
     </div>
   );
