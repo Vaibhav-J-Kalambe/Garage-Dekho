@@ -369,6 +369,17 @@ export default function HomePage() {
             </div>
           </section>
 
+          {/* ── List Your Garage Banner ── */}
+          <section className="mx-4 mb-6 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-700 p-5 text-white">
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400">For Garage Owners</p>
+            <h3 className="mt-1 text-lg font-black leading-tight">Grow your business with GarageDekho</h3>
+            <p className="mt-1 text-xs text-slate-300">Zero listing fee · Get discovered by 10,000+ customers</p>
+            <Link href="/partner"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-2xl bg-white px-4 py-2.5 text-xs font-black text-slate-900 transition hover:bg-slate-100 active:scale-95">
+              List Your Garage <ChevronRight className="h-3.5 w-3.5" />
+            </Link>
+          </section>
+
         </div>
 
       </main>
