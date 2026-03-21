@@ -1,11 +1,43 @@
 "use client";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Star } from "lucide-react";
+import { ArrowLeft, Star, Loader2 } from "lucide-react";
+import { useAuth } from "../../../components/AuthProvider";
+import { getUserReviews } from "../../../lib/reviews";
+
+function StarRow({ rating }) {
+  return (
+    <div className="flex items-center gap-0.5">
+      {[1, 2, 3, 4, 5].map((s) => (
+        <Star
+          key={s}
+          className={`h-3.5 w-3.5 ${s <= rating ? "fill-amber-400 text-amber-400" : "text-slate-200"}`}
+        />
+      ))}
+    </div>
+  );
+}
+
+function formatDate(dateStr) {
+  return new Date(dateStr).toLocaleDateString("en-IN", {
+    day: "numeric", month: "short", year: "numeric",
+  });
+}
 
 export default function MyReviewsPage() {
   const router = useRouter();
-  const reviews = []; // placeholder
+  const { user, loading: authLoading } = useAuth();
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user) { router.push("/auth?redirect=/profile/reviews"); return; }
+    getUserReviews(user.id)
+      .then(setReviews)
+      .finally(() => setLoading(false));
+  }, [user, authLoading, router]);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
@@ -22,7 +54,11 @@ export default function MyReviewsPage() {
       </header>
 
       <main className="mx-auto max-w-lg px-4 pb-28 pt-6 md:pb-10">
-        {reviews.length === 0 ? (
+        {loading ? (
+          <div className="flex justify-center py-16">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          </div>
+        ) : reviews.length === 0 ? (
           <div className="flex flex-col items-center gap-4 py-16 text-center animate-slide-up">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-amber-50">
               <Star className="h-8 w-8 text-amber-300" />
@@ -37,16 +73,16 @@ export default function MyReviewsPage() {
             </Link>
           </div>
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 animate-slide-up">
             {reviews.map((r) => (
               <div key={r.id} className="rounded-2xl bg-white p-4 shadow-card">
-                <p className="font-bold text-slate-900">{r.garageName}</p>
-                <div className="mt-1 flex gap-0.5">
-                  {[1,2,3,4,5].map((s) => (
-                    <Star key={s} className={`h-3.5 w-3.5 ${s <= r.rating ? "fill-amber-400 text-amber-400" : "text-slate-200"}`} />
-                  ))}
+                <div className="flex items-center justify-between">
+                  <StarRow rating={r.rating} />
+                  <span className="text-[11px] text-slate-400">{formatDate(r.created_at)}</span>
                 </div>
-                <p className="mt-2 text-sm text-slate-500">{r.comment}</p>
+                {r.comment && (
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{r.comment}</p>
+                )}
               </div>
             ))}
           </div>

@@ -12,10 +12,13 @@ import {
   Truck,
   ChevronRight,
   AlertTriangle,
+  Star,
 } from "lucide-react";
 import Header from "../../components/Header";
 import { useAuth } from "../../components/AuthProvider";
 import { getUserBookings, cancelBooking } from "../../lib/bookings";
+import { hasReviewed } from "../../lib/reviews";
+import ReviewModal from "../../components/ReviewModal";
 import Skeleton from "../../components/ui/Skeleton";
 import EmptyState from "../../components/ui/EmptyState";
 import Badge from "../../components/ui/Badge";
@@ -35,7 +38,7 @@ function formatDate(dateStr) {
   });
 }
 
-function BookingCard({ booking, onCancel }) {
+function BookingCard({ booking, onCancel, onReview, reviewed }) {
   const router = useRouter();
   const status     = STATUS[booking.status] ?? STATUS.confirmed;
   const StatusIcon = status.icon;
@@ -98,14 +101,26 @@ function BookingCard({ booking, onCancel }) {
           )}
 
           {booking.status === "completed" && (
-            <button
-              type="button"
-              onClick={() => router.push(`/garage/${booking.garageId}`)}
-              className="flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-[11px] font-bold text-white shadow-glow-primary transition hover:brightness-110 active:scale-95"
-            >
-              <RotateCcw className="h-3 w-3" />
-              Book Again
-            </button>
+            <>
+              {!reviewed && (
+                <button
+                  type="button"
+                  onClick={() => onReview(booking)}
+                  className="flex items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-3 py-1.5 text-[11px] font-bold text-amber-600 transition hover:bg-amber-100 active:scale-95"
+                >
+                  <Star className="h-3 w-3" />
+                  Review
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => router.push(`/garage/${booking.garageId}`)}
+                className="flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-[11px] font-bold text-white shadow-glow-primary transition hover:brightness-110 active:scale-95"
+              >
+                <RotateCcw className="h-3 w-3" />
+                Book Again
+              </button>
+            </>
           )}
           <Link
             href={`/garage/${booking.garageId}`}
@@ -158,13 +173,20 @@ export default function BookingsPage() {
   const [bookings,      setBookings]      = useState([]);
   const [loading,       setLoading]       = useState(true);
   const [cancelTarget,  setCancelTarget]  = useState(null);
+  const [reviewTarget,  setReviewTarget]  = useState(null);
+  const [reviewedIds,   setReviewedIds]   = useState(new Set());
 
   useEffect(() => {
     if (authLoading) return;
     if (!user) { router.push("/auth?redirect=/bookings"); return; }
-    getUserBookings(user.id).then((data) => {
+    getUserBookings(user.id).then(async (data) => {
       setBookings(data);
       setLoading(false);
+      const completed = data.filter((b) => b.status === "completed");
+      const checks = await Promise.all(
+        completed.map((b) => hasReviewed(user.id, b.id).then((r) => r ? b.id : null))
+      );
+      setReviewedIds(new Set(checks.filter(Boolean)));
     });
   }, [user, authLoading, router]);
 
@@ -248,7 +270,12 @@ export default function BookingsPage() {
           <div className="flex flex-col gap-3 md:grid md:grid-cols-2 md:gap-4">
             {shown.map((booking, i) => (
               <div key={booking.id} style={{ animationDelay: `${i * 60}ms` }}>
-                <BookingCard booking={booking} onCancel={setCancelTarget} />
+                <BookingCard
+                  booking={booking}
+                  onCancel={setCancelTarget}
+                  onReview={setReviewTarget}
+                  reviewed={reviewedIds.has(booking.id)}
+                />
               </div>
             ))}
           </div>
@@ -260,6 +287,17 @@ export default function BookingsPage() {
         <CancelConfirmModal
           onConfirm={() => handleCancel(cancelTarget)}
           onCancel={() => setCancelTarget(null)}
+        />
+      )}
+
+      {reviewTarget && (
+        <ReviewModal
+          booking={reviewTarget}
+          onClose={() => setReviewTarget(null)}
+          onSuccess={() => {
+            setReviewedIds((prev) => new Set([...prev, reviewTarget.id]));
+            setReviewTarget(null);
+          }}
         />
       )}
     </div>

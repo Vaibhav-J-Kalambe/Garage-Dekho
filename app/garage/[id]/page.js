@@ -20,6 +20,7 @@ import {
 import { getGarageById } from "../../../lib/garages";
 import { useAuth } from "../../../components/AuthProvider";
 import { getSavedGarageIds, saveGarage, unsaveGarage } from "../../../lib/saved";
+import { getGarageReviews } from "../../../lib/reviews";
 import BookingModal from "../../../components/BookingModal";
 
 export default function GarageDetailPage({ params }) {
@@ -34,6 +35,7 @@ export default function GarageDetailPage({ params }) {
   const [activeTab,   setActiveTab]   = useState("services");
   const [showModal,   setShowModal]   = useState(false);
   const [preService,  setPreService]  = useState(null);
+  const [reviews,     setReviews]     = useState([]);
 
   function openBooking(svc = null) {
     if (!user) { router.push(`/auth?redirect=/garage/${id}`); return; }
@@ -46,6 +48,7 @@ export default function GarageDetailPage({ params }) {
       .then(setGarage)
       .catch(() => setGarage(null))
       .finally(() => setLoading(false));
+    getGarageReviews(id).then(setReviews);
   }, [id]);
 
   useEffect(() => {
@@ -287,47 +290,50 @@ export default function GarageDetailPage({ params }) {
                       <p className="text-4xl font-black text-slate-900">{garage.rating}</p>
                       <div className="mt-1 flex items-center justify-center gap-0.5">
                         {[1,2,3,4,5].map((s) => (
-                          <Star
-                            key={s}
-                            className={`h-3 w-3 ${s <= Math.round(garage.rating) ? "fill-amber-400 text-amber-400" : "text-slate-200"}`}
-                          />
+                          <Star key={s} className={`h-3 w-3 ${s <= Math.round(garage.rating) ? "fill-amber-400 text-amber-400" : "text-slate-200"}`} />
                         ))}
                       </div>
-                      <p className="mt-1 text-[11px] text-slate-400">{garage.reviews} reviews</p>
+                      <p className="mt-1 text-[11px] text-slate-400">{reviews.length} review{reviews.length !== 1 ? "s" : ""}</p>
                     </div>
                     <div className="h-12 w-px bg-slate-100" />
                     <p className="flex-1 text-xs leading-relaxed text-slate-500">
-                      Customers love this garage for its quick turnaround, transparent pricing, and professional staff.
+                      {reviews.length > 0
+                        ? "Based on verified customer bookings."
+                        : "No reviews yet. Be the first to review after your visit!"}
                     </p>
                   </div>
 
                   {/* Review cards */}
-                  {garage.reviewsList.map((review) => (
-                    <div key={review.id} className="rounded-2xl bg-white p-4 shadow-card">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
-                            {review.name[0]}
-                          </div>
-                          <div>
-                            <p className="text-sm font-bold text-slate-900">{review.name}</p>
-                            <p className="text-[10px] text-slate-400">{review.date}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-0.5">
-                          {[1,2,3,4,5].map((s) => (
-                            <Star
-                              key={s}
-                              className={`h-3 w-3 ${s <= review.rating ? "fill-amber-400 text-amber-400" : "text-slate-200"}`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                      <p className="mt-2.5 text-sm leading-relaxed text-slate-500">
-                        {review.comment}
-                      </p>
+                  {reviews.length === 0 ? (
+                    <div className="flex flex-col items-center py-8 text-center rounded-2xl bg-white shadow-card">
+                      <Star className="h-8 w-8 text-slate-200" />
+                      <p className="mt-2 text-sm font-bold text-slate-700">No reviews yet</p>
+                      <p className="mt-1 text-xs text-slate-400">Book a service and share your experience.</p>
                     </div>
-                  ))}
+                  ) : (
+                    reviews.map((review) => (
+                      <div key={review.id} className="rounded-2xl bg-white p-4 shadow-card">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
+                              U
+                            </div>
+                            <p className="text-[10px] text-slate-400">
+                              {new Date(review.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-0.5">
+                            {[1,2,3,4,5].map((s) => (
+                              <Star key={s} className={`h-3 w-3 ${s <= review.rating ? "fill-amber-400 text-amber-400" : "text-slate-200"}`} />
+                            ))}
+                          </div>
+                        </div>
+                        {review.comment && (
+                          <p className="mt-2.5 text-sm leading-relaxed text-slate-500">{review.comment}</p>
+                        )}
+                      </div>
+                    ))
+                  )}
                 </div>
               )}
 
