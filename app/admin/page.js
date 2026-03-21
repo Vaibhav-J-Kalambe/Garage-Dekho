@@ -39,9 +39,12 @@ const EMPTY_FORM = {
 
 export default function AdminPage() {
   const [password, setPassword]   = useState("");
+  const [adminPw,  setAdminPw]    = useState(() =>
+    typeof window !== "undefined" ? sessionStorage.getItem("admin_pw") || "" : ""
+  );
   const [authed, setAuthed]       = useState(() => {
     if (typeof window === "undefined") return false;
-    return sessionStorage.getItem("admin_authed") === "1";
+    return sessionStorage.getItem("admin_authed") === "1" && !!sessionStorage.getItem("admin_pw");
   });
   const [tab, setTab]             = useState("applications"); // "applications" | "add"
   const [form, setForm]           = useState(EMPTY_FORM);
@@ -78,7 +81,7 @@ export default function AdminPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-admin-password": sessionStorage.getItem("admin_pw") || "",
+          "x-admin-password": adminPw,
         },
         body: JSON.stringify({
           id,
@@ -106,7 +109,7 @@ export default function AdminPage() {
         body: JSON.stringify({ password }),
       });
       const data = await res.json();
-      if (data.ok) { setAuthed(true); sessionStorage.setItem("admin_authed", "1"); sessionStorage.setItem("admin_pw", password); }
+      if (data.ok) { setAuthed(true); setAdminPw(password); sessionStorage.setItem("admin_authed", "1"); sessionStorage.setItem("admin_pw", password); }
       else setError(data.error || "Incorrect password. Try again.");
     } catch {
       setError("Could not verify password. Please try again.");
