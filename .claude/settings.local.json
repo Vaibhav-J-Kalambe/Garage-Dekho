@@ -5,7 +5,8 @@
       "WebFetch(domain:uxpin.medium.com)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:feathericons.com)",
-      "WebFetch(domain:garage-dekho-16sh8x82t-vaibhav-j-kalambes-projects.vercel.app)"
+      "WebFetch(domain:garage-dekho-16sh8x82t-vaibhav-j-kalambes-projects.vercel.app)",
+      "Bash(grep -n \"user_name\\\\|charAt\\\\|initials\" lib/reviews.js components/ReviewModal.js app/garage/[id]/page.js)"
     ]
   }
 }
