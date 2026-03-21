@@ -7,7 +7,7 @@ import { supabase } from "../../lib/supabase";
 import Link from "next/link";
 import {
   CalendarCheck, Heart, Star, ChevronRight,
-  Car, Bike, Zap, Bell, ShieldCheck, HelpCircle, LogOut,
+  Car, Bike, Zap, Bell, ShieldCheck, HelpCircle, LogOut, LogIn,
   Edit3, Plus, Trash2, MapPin, Mail, Wrench, X, Loader2, Camera,
 } from "lucide-react";
 import Header from "../../components/Header";
@@ -348,15 +348,27 @@ export default function ProfilePage() {
               </div>
             ))}
 
-            <button
-              type="button"
-              onClick={handleSignOut}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl border border-red-100 bg-white py-4 text-sm font-bold text-red-500 shadow-card transition hover:bg-red-50 active:scale-[0.98] animate-slide-up"
-              style={{ animationDelay: "320ms" }}
-            >
-              <LogOut className="h-4 w-4" />
-              Sign Out
-            </button>
+            {user ? (
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-red-100 bg-white py-4 text-sm font-bold text-red-500 shadow-card transition hover:bg-red-50 active:scale-[0.98] animate-slide-up"
+                style={{ animationDelay: "320ms" }}
+              >
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => router.push("/auth")}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-primary/20 bg-white py-4 text-sm font-bold text-primary shadow-card transition hover:bg-primary/5 active:scale-[0.98] animate-slide-up"
+                style={{ animationDelay: "320ms" }}
+              >
+                <LogIn className="h-4 w-4" />
+                Sign In
+              </button>
+            )}
 
           </div>
         </div>
