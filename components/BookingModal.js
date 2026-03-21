@@ -39,7 +39,10 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
   );
   const [vehicleType, setVehicleType] = useState(supportedVehicles[0]?.label ?? "Car");
   const [pickupDrop,    setPickupDrop]    = useState(false);
-  const [pickupAddress, setPickupAddress] = useState("");
+  const [flatNo,        setFlatNo]        = useState("");
+  const [building,      setBuilding]      = useState("");
+  const [landmark,      setLandmark]      = useState("");
+  const [locality,      setLocality]      = useState("");
   const [locating,      setLocating]      = useState(false);
   const [notes,         setNotes]         = useState("");
   const [promoInput,  setPromoInput]  = useState("");
@@ -69,15 +72,13 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
           const data = await res.json();
           const a = data.address ?? {};
           const parts = [
-            [a.house_number, a.road || a.pedestrian || a.footway || a.path].filter(Boolean).join(" "),
-            a.building || a.amenity || a.shop,
-            a.neighbourhood || a.quarter || a.suburb || a.residential,
-            a.city_district,
+            a.road || a.pedestrian || a.footway || a.path,
+            a.neighbourhood || a.quarter || a.suburb || a.residential || a.city_district,
             a.city || a.town || a.village || a.county,
             a.state,
             a.postcode,
           ].filter(Boolean);
-          setPickupAddress(parts.join(", "));
+          setLocality(parts.join(", "));
         } catch {
           setError("Could not fetch address. Please type it manually.");
         } finally {
@@ -110,7 +111,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
     e.preventDefault();
     if (!date) { setError("Please choose a date."); return; }
     if (!time) { setError("Please choose a time slot."); return; }
-    if (pickupDrop && !pickupAddress.trim()) { setError("Please enter your pickup address."); return; }
+    if (pickupDrop && !locality.trim()) { setError("Please enter your pickup address or use current location."); return; }
     setLoading(true); setError(null);
     try {
       await createBooking({
@@ -125,7 +126,9 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
         vehicle_type:  vehicleType,
         notes:           notes.trim() || null,
         pickup_drop:     pickupDrop,
-        pickup_address:  pickupDrop ? pickupAddress.trim() : null,
+        pickup_address:  pickupDrop
+          ? [flatNo, building, landmark, locality].filter(Boolean).join(", ")
+          : null,
         status:        "confirmed",
       });
       setDone(true);
@@ -288,20 +291,10 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
             </label>
 
             {pickupDrop && (
-              <div className="mt-2 rounded-xl border border-primary/20 bg-primary/5 p-3 space-y-2">
+              <div className="mt-2 rounded-xl border border-primary/20 bg-primary/5 p-3 space-y-2.5">
                 <p className="text-xs font-black uppercase tracking-widest text-slate-400">Pickup Address</p>
-                <div className="flex items-start gap-2">
-                  <div className="flex flex-1 items-start gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5">
-                    <MapPin className="h-4 w-4 shrink-0 text-primary mt-0.5" />
-                    <textarea
-                      value={pickupAddress}
-                      onChange={(e) => setPickupAddress(e.target.value)}
-                      placeholder="Enter your full address…"
-                      rows={2}
-                      className="flex-1 resize-none bg-transparent text-sm placeholder:text-slate-400 focus:outline-none"
-                    />
-                  </div>
-                </div>
+
+                {/* Auto-detect */}
                 <button
                   type="button"
                   onClick={detectLocation}
@@ -314,6 +307,45 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                     <><LocateFixed className="h-3.5 w-3.5" /> Use my current location</>
                   )}
                 </button>
+
+                {/* Flat / House No */}
+                <input
+                  type="text"
+                  value={flatNo}
+                  onChange={(e) => setFlatNo(e.target.value)}
+                  placeholder="Flat / House No. (e.g. B-204)"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
+                />
+
+                {/* Building / Society / Chawl */}
+                <input
+                  type="text"
+                  value={building}
+                  onChange={(e) => setBuilding(e.target.value)}
+                  placeholder="Building / Society / Chawl name"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
+                />
+
+                {/* Locality — auto-filled or typed */}
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-primary" />
+                  <input
+                    type="text"
+                    value={locality}
+                    onChange={(e) => setLocality(e.target.value)}
+                    placeholder="Area / Locality, City, Pincode *"
+                    className="w-full rounded-xl border border-slate-200 bg-white pl-8 pr-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
+                  />
+                </div>
+
+                {/* Landmark */}
+                <input
+                  type="text"
+                  value={landmark}
+                  onChange={(e) => setLandmark(e.target.value)}
+                  placeholder="Nearby landmark (optional)"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
+                />
               </div>
             )}
           </div>
