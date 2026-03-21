@@ -206,14 +206,14 @@ function NearMeContent() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F8FAFC]">
+    <div className="flex h-dvh flex-col overflow-hidden bg-[#F8FAFC]">
       <Header />
 
       {toast && <Toast key={toast} message={toast} onDone={dismissToast} />}
 
       {/* ── Search + filters ── */}
-      <div className="bg-white px-4 py-3 shadow-card md:px-8">
-        <div className="mx-auto max-w-5xl space-y-3">
+      <div className="shrink-0 bg-white px-4 py-3 shadow-card md:px-8">
+        <div className="mx-auto max-w-full space-y-3">
           <div className="flex items-center gap-2 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-2.5">
             <Search className="h-4 w-4 shrink-0 text-slate-400" />
             <input
@@ -261,12 +261,11 @@ function NearMeContent() {
         </div>
       </div>
 
-      {/* ── Map + List ── */}
-      <div className="relative flex flex-1 flex-col md:flex-row">
+      {/* ── Map + List — fills remaining height ── */}
+      <div className="relative flex flex-1 overflow-hidden flex-col md:flex-row">
 
-        {/* ── REAL MAP ── */}
-        <div className="relative h-[55vw] max-h-[420px] min-h-[280px] w-full shrink-0 md:h-[calc(100vh-160px)] md:flex-1 md:sticky md:top-[160px]">
-          {/* Leaflet map */}
+        {/* ── MAP — fills all remaining space ── */}
+        <div className="relative flex-1 overflow-hidden">
           <MapView
             garages={filtered}
             activeGarage={activeGarage}
@@ -284,7 +283,7 @@ function NearMeContent() {
             </div>
           )}
 
-          {/* Locate Me button — above Leaflet controls (z-[1000]) */}
+          {/* Locate Me button */}
           <button
             type="button"
             aria-label="Center on my location"
@@ -300,28 +299,25 @@ function NearMeContent() {
         </div>
 
         {/* ── GARAGE LIST ── */}
+        {/* Mobile: bottom sheet that slides up */}
         <div
           className={`
-            w-full shrink-0 overflow-y-auto bg-[#F8FAFC] transition-all
-            md:w-80 md:border-l md:border-slate-100 md:bg-white md:shadow-[-4px_0_16px_rgba(0,0,0,0.04)]
-            ${listExpanded ? "max-h-[70vh]" : "max-h-[44vh]"}
-            md:max-h-none
+            absolute bottom-0 left-0 right-0 z-[500] flex flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl transition-all duration-300
+            md:relative md:bottom-auto md:left-auto md:right-auto md:z-auto md:w-80 md:shrink-0 md:rounded-none md:border-l md:border-slate-100 md:shadow-[-4px_0_16px_rgba(0,0,0,0.04)]
+            ${listExpanded ? "h-[72vh]" : "h-[38vh]"}
+            md:h-full
           `}
         >
           {/* Pull handle — mobile only */}
           <button
             type="button"
             onClick={() => setListExpanded((e) => !e)}
-            className="flex w-full items-center justify-center gap-2 border-b border-slate-100 bg-white py-2.5 md:hidden"
+            className="flex w-full shrink-0 items-center justify-center gap-2 border-b border-slate-100 py-2.5 md:hidden"
           >
-            <div className="h-1 w-8 rounded-full bg-slate-200" />
-            {listExpanded
-              ? <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
-              : <ChevronUp   className="h-3.5 w-3.5 text-slate-400" />
-            }
+            <div className="h-1 w-10 rounded-full bg-slate-300" />
           </button>
 
-          <div className="p-3 pb-24 md:p-4 md:pb-4">
+          <div className="overflow-y-auto flex-1 p-3 pb-24 md:p-4 md:pb-6">
             <div className="mb-3 flex items-center justify-between">
               <p className="text-xs font-black uppercase tracking-widest text-slate-400">
                 {filtered.length} garage{filtered.length !== 1 ? "s" : ""} nearby
