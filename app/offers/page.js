@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Tag,
   Copy,
@@ -11,9 +11,10 @@ import {
   Bike,
   Users,
   Sparkles,
+  Loader2,
 } from "lucide-react";
 import Header from "../../components/Header";
-import offers from "./data.json";
+import { getOffers } from "../../lib/offers";
 import Chip, { ChipRow } from "../../components/ui/Chip";
 import EmptyState from "../../components/ui/EmptyState";
 
@@ -105,14 +106,20 @@ function OfferCard({ offer, featured = false }) {
 }
 
 export default function OffersPage() {
-  const [active, setActive] = useState("all");
+  const [active,  setActive]  = useState("all");
+  const [offers,  setOffers]  = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getOffers().then(setOffers).finally(() => setLoading(false));
+  }, []);
 
   const filtered =
     active === "all" ? offers : offers.filter((o) => o.category === active);
 
   const featured     = offers[0];
-  const rest         = filtered.filter((o) => o.id !== featured.id);
-  const showFeatured = active === "all";
+  const rest         = filtered.filter((o) => o.id !== featured?.id);
+  const showFeatured = active === "all" && !!featured;
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
@@ -141,8 +148,15 @@ export default function OffersPage() {
           ))}
         </ChipRow>
 
+        {/* Loading */}
+        {loading && (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="h-7 w-7 animate-spin text-primary" />
+          </div>
+        )}
+
         {/* Featured offer */}
-        {showFeatured && (
+        {!loading && showFeatured && (
           <div className="animate-slide-up delay-100">
             <p className="mb-2 text-xs font-bold uppercase tracking-widest text-slate-400">
               Featured
@@ -152,9 +166,9 @@ export default function OffersPage() {
         )}
 
         {/* Offer grid */}
-        {filtered.length === 0 ? (
+        {!loading && filtered.length === 0 ? (
           <EmptyState preset="offers" />
-        ) : (
+        ) : !loading && (
           <div className="animate-slide-up delay-150">
             {rest.length > 0 && showFeatured && (
               <p className="mb-3 text-xs font-bold uppercase tracking-widest text-slate-400">

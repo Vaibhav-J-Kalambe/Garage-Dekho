@@ -31,6 +31,16 @@ import { getSavedGarageIds, saveGarage, unsaveGarage } from "../lib/saved";
 import { useAuth } from "../components/AuthProvider";
 import Skeleton from "../components/ui/Skeleton";
 
+function haversine(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 const SERVICES = [
   { label: "Bike Service",   icon: Bike,     color: "from-blue-500 to-indigo-500",  href: "/near-me?type=2-Wheeler"        },
   { label: "Car Service",    icon: Car,      color: "from-violet-500 to-purple-500", href: "/near-me?type=4-Wheeler"        },
@@ -59,6 +69,7 @@ export default function HomePage() {
   const [lastBooking,   setLastBooking]   = useState(null);
   const [openCount,     setOpenCount]     = useState(null);
   const [savedIds,      setSavedIds]      = useState(new Set());
+  const [userCoords,    setUserCoords]    = useState(null);
 
   useEffect(() => {
     getAllGarages()
@@ -66,6 +77,14 @@ export default function HomePage() {
       .catch(console.error)
       .finally(() => setGaragesLoading(false));
     getOpenGarageCount().then(setOpenCount);
+    // Silent location detection — no alert on deny
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => setUserCoords([coords.latitude, coords.longitude]),
+        () => {}, // silently ignore denial
+        { timeout: 8000, maximumAge: 300000 }
+      );
+    }
   }, []);
 
   useEffect(() => {
@@ -100,6 +119,15 @@ export default function HomePage() {
     const q = search.trim();
     if (q) router.push(`/near-me?q=${encodeURIComponent(q)}`);
   }
+
+  // Compute real distances if location available, then sort nearest first
+  const garagesWithDist = topGarages.map((g) => {
+    if (userCoords && g.lat && g.lng) {
+      const km = haversine(userCoords[0], userCoords[1], g.lat, g.lng);
+      return { ...g, distance: km < 1 ? `${(km * 1000).toFixed(0)} m` : `${km.toFixed(1)} km`, _km: km };
+    }
+    return { ...g, _km: parseFloat(g.distance) || 99 };
+  }).sort((a, b) => a._km - b._km);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
@@ -242,7 +270,7 @@ export default function HomePage() {
             <Skeleton.GarageList count={3} />
           ) : (
             <div className="flex flex-col gap-3 md:grid md:grid-cols-2 md:gap-4">
-              {topGarages.map((garage, i) => (
+              {garagesWithDist.map((garage, i) => (
                 <Link key={garage.id} href={`/garage/${garage.id}`} className="block animate-slide-up" style={{ animationDelay: `${i * 60}ms` }}>
                   <article className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5 active:scale-[0.99]">
 
