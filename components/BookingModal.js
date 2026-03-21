@@ -34,7 +34,10 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
   const [service,     setService]     = useState(preselectedService ?? garage?.services?.[0] ?? null);
   const [date,        setDate]        = useState("");
   const [time,        setTime]        = useState("");
-  const [vehicleType, setVehicleType] = useState("Car");
+  const supportedVehicles = VEHICLE_TYPES.filter(({ requires }) =>
+    !requires || (garage.vehicleType || "").includes(requires)
+  );
+  const [vehicleType, setVehicleType] = useState(supportedVehicles[0]?.label ?? "Car");
   const [pickupDrop,  setPickupDrop]  = useState(false);
   const [notes,       setNotes]       = useState("");
   const [promoInput,  setPromoInput]  = useState("");
@@ -67,8 +70,6 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
     e.preventDefault();
     if (!date) { setError("Please choose a date."); return; }
     if (!time) { setError("Please choose a time slot."); return; }
-    const vReq = VEHICLE_TYPES.find(v => v.label === vehicleType)?.requires;
-    if (!isVehicleSupported(vReq)) { setError(`This garage does not service ${vehicleType}s.`); return; }
     setLoading(true); setError(null);
     try {
       await createBooking({
@@ -208,36 +209,22 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
           <div>
             <p className="mb-2 text-xs font-black uppercase tracking-widest text-slate-400">Vehicle Type</p>
             <div className="grid grid-cols-4 gap-2">
-              {VEHICLE_TYPES.map(({ label, icon: Icon, requires }) => {
-                const supported = isVehicleSupported(requires);
-                const selected  = vehicleType === label;
-                return (
-                  <button
-                    key={label}
-                    type="button"
-                    onClick={() => setVehicleType(label)}
-                    className={`flex flex-col items-center gap-1 rounded-xl py-2.5 text-xs font-bold transition active:scale-95 ${
-                      selected && !supported
-                        ? "bg-red-500 text-white"
-                        : selected
-                        ? "bg-primary text-white"
-                        : "bg-slate-50 text-slate-500 hover:bg-slate-100"
-                    }`}
-                  >
-                    <Icon className="h-4 w-4" />
-                    {label}
-                  </button>
-                );
-              })}
+              {VEHICLE_TYPES.filter(({ requires }) => isVehicleSupported(requires)).map(({ label, icon: Icon }) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => setVehicleType(label)}
+                  className={`flex flex-col items-center gap-1 rounded-xl py-2.5 text-xs font-bold transition active:scale-95 ${
+                    vehicleType === label
+                      ? "bg-primary text-white"
+                      : "bg-slate-50 text-slate-500 hover:bg-slate-100"
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {label}
+                </button>
+              ))}
             </div>
-            {!isVehicleSupported(VEHICLE_TYPES.find(v => v.label === vehicleType)?.requires) && (
-              <div className="mt-2 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5">
-                <span className="text-red-500 text-xs font-black mt-0.5">✕</span>
-                <p className="text-xs font-semibold text-red-600">
-                  This garage only services <strong>{garage.vehicleType}</strong> vehicles. {vehicleType}s are not supported here.
-                </p>
-              </div>
-            )}
           </div>
 
           {/* ── Pickup & drop ── */}
