@@ -191,33 +191,59 @@ export default function ProfilePage() {
     "w-full rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:border-primary focus:outline-none transition";
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-[#001f5b]">
       <Header />
 
       {/* Profile hero band */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#0047BE] via-[#0056D2] to-[#3730A3] px-4 pb-14 pt-6 md:px-8">
-        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/[0.06]" />
-        <div className="pointer-events-none absolute -bottom-8 left-1/4 h-32 w-32 rounded-full bg-white/[0.04]" />
-        <div className="mx-auto max-w-5xl flex items-center gap-4">
-          <div className="relative">
+      <div data-hero className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] px-4 pb-24 pt-[77px] md:px-8">
+        {/* Dot-grid texture */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-40"
+          style={{
+            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+        {/* Ambient glow blobs */}
+        <div className="pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-16 left-1/4 h-56 w-56 rounded-full bg-sky-300/20 blur-3xl" />
+        <div className="pointer-events-none absolute left-0 top-1/2 h-40 w-40 rounded-full bg-indigo-400/15 blur-2xl" />
+
+        <div className="mx-auto max-w-5xl relative z-10 flex items-center gap-4">
+          <div className="relative shrink-0">
             <Avatar name={name} src={avatarUrl} size="lg" online={!!user} />
+            <button
+              type="button"
+              aria-label="Change profile photo"
+              onClick={() => fileRef.current?.click()}
+              disabled={uploadingAvatar}
+              className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white/30 bg-white/20 text-white backdrop-blur-sm transition-colors duration-150 hover:bg-white/30 active:scale-95 disabled:opacity-60"
+            >
+              {uploadingAvatar
+                ? <Loader2 className="h-3 w-3 animate-spin" />
+                : <Camera className="h-3 w-3" />
+              }
+            </button>
           </div>
           <div className="min-w-0">
-            <h1 className="text-xl font-black text-white capitalize truncate">{name}</h1>
-            <p className="mt-0.5 text-sm text-blue-200 truncate">{email}</p>
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className="flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-xs font-bold text-white">
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-300">Profile</p>
+            <h1 className="mt-0.5 text-xl font-black text-white capitalize truncate md:text-2xl">{name}</h1>
+            <p className="mt-0.5 flex items-center gap-1 text-sm text-blue-200/80 truncate">
+              <Mail className="h-3 w-3 shrink-0" />{email}
+            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className="flex items-center gap-1.5 rounded-full border border-white/20 bg-white/15 px-2.5 py-1 text-xs font-bold text-white backdrop-blur-sm">
                 {bookingCount ?? "…"} Bookings
               </span>
-              <span className="flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-xs font-bold text-white">
+              <span className="flex items-center gap-1.5 rounded-full border border-white/20 bg-white/15 px-2.5 py-1 text-xs font-bold text-white backdrop-blur-sm">
                 {vehicles.length} Vehicles
               </span>
               {bookingCount >= 10 ? (
-                <span className="flex items-center gap-1 rounded-full bg-amber-400/25 px-2.5 py-1 text-xs font-bold text-amber-300">
+                <span className="flex items-center gap-1 rounded-full border border-amber-300/30 bg-amber-400/20 px-2.5 py-1 text-xs font-bold text-amber-300 backdrop-blur-sm">
                   <Flame className="h-3 w-3" /> Loyal Member
                 </span>
               ) : bookingCount >= 3 ? (
-                <span className="flex items-center gap-1 rounded-full bg-amber-400/20 px-2.5 py-1 text-xs font-bold text-amber-300">
+                <span className="flex items-center gap-1 rounded-full border border-amber-300/30 bg-amber-400/20 px-2.5 py-1 text-xs font-bold text-amber-300 backdrop-blur-sm">
                   <Flame className="h-3 w-3" /> {bookingCount}-booking streak
                 </span>
               ) : null}
@@ -235,7 +261,7 @@ export default function ProfilePage() {
         onChange={handleAvatarChange}
       />
 
-      <div className="relative -mt-6 rounded-t-3xl bg-[#F8FAFC]">
+      <div className="relative -mt-12 rounded-t-[2.5rem] bg-[#F8FAFC]">
       <main aria-label="User profile" className="mx-auto flex max-w-5xl flex-col gap-5 px-4 md:px-8 pb-28 md:pb-10 pt-5 md:pt-6">
 
         <div className="flex flex-col gap-5 md:flex-row md:items-start md:gap-8">
@@ -417,7 +443,7 @@ export default function ProfilePage() {
                         key={label}
                         type="button"
                         onClick={() => showToast(`${label} — coming soon`)}
-                        className="flex w-full items-center gap-3 px-4 py-3.5 transition hover:bg-slate-50 active:bg-slate-100"
+                        className="flex w-full items-center gap-3 px-4 py-3.5 transition-colors duration-150 hover:bg-slate-50 active:bg-slate-100"
                       >
                         <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-50 ${color}`}>
                           <Icon className="h-4 w-4" />
@@ -429,7 +455,7 @@ export default function ProfilePage() {
                       <Link
                         key={label}
                         href={href}
-                        className="flex items-center gap-3 px-4 py-3.5 transition hover:bg-slate-50 active:bg-slate-100"
+                        className="flex items-center gap-3 px-4 py-3.5 transition-colors duration-150 hover:bg-slate-50 active:bg-slate-100"
                       >
                         <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-50 ${color}`}>
                           <Icon className="h-4 w-4" />

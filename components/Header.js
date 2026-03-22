@@ -27,7 +27,7 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const hero = document.querySelector('section[aria-label="Search for garages"]');
+    const hero = document.querySelector('[data-hero], section[aria-label="Search for garages"]');
     if (!hero) {
       setScrolled(true);
       return;
@@ -58,7 +58,7 @@ export default function Header() {
       <header
         className={`fixed inset-x-0 top-0 z-20 transition-[background-color,box-shadow,border-color] duration-150 ease-in-out ${
           scrolled
-            ? "bg-white shadow-[0_2px_20px_rgba(0,0,0,0.08)] border-b border-slate-100"
+            ? "bg-white shadow-none border-b border-transparent"
             : "bg-transparent border-b border-transparent shadow-none"
         }`}
       >

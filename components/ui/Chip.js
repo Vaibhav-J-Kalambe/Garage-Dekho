@@ -14,10 +14,10 @@ export default function Chip({
       aria-pressed={active}
       onClick={onClick}
       className={[
-        "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 active:scale-95",
+        "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors duration-150 active:scale-95",
         active
           ? "bg-primary text-white shadow-glow-primary"
-          : "bg-white text-slate-600 shadow-card hover:border-primary/30 hover:text-primary border border-slate-200",
+          : "bg-transparent text-slate-600 border border-slate-200 hover:border-primary/40 hover:text-primary hover:bg-primary/5",
         className,
       ].join(" ")}
     >
@@ -40,7 +40,7 @@ export default function Chip({
 export function ChipRow({ children, className = "" }) {
   return (
     <div
-      className={`-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-hide md:mx-0 md:px-0 ${className}`}
+      className={`-mx-4 flex gap-2 overflow-x-auto px-4 py-1 scrollbar-hide md:mx-0 md:px-0 ${className}`}
     >
       {children}
     </div>

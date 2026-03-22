@@ -65,12 +65,17 @@ function GarageRow({ garage, active, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center gap-3 rounded-2xl p-3 text-left transition-all duration-200 active:scale-[0.98] shadow-card ${
+      className={`flex w-full items-center gap-3 rounded-2xl p-3 text-left transition-[transform,box-shadow,background-color] duration-150 active:scale-[0.98] shadow-card ${
         active ? "bg-primary/5 ring-2 ring-primary/60" : "bg-white hover:shadow-card-hover"
       }`}
     >
-      <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl">
-        <Image src={garage.image || "/placeholder-garage.svg"} alt={garage.name} fill className={`object-cover ${!garage.isOpen ? "opacity-70 grayscale-[25%]" : ""}`} sizes="56px" />
+      <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-slate-100">
+        {garage.image
+          ? <Image src={garage.image} alt={garage.name} fill className={`object-cover ${!garage.isOpen ? "opacity-70 grayscale-[25%]" : ""}`} sizes="56px" />
+          : <div className="flex h-full w-full items-center justify-center">
+              <Wrench className="h-6 w-6 text-slate-300" />
+            </div>
+        }
         {garage.isOpen && (
           <span className="absolute bottom-1 right-1 h-2 w-2 rounded-full border-2 border-white bg-green-500" />
         )}
@@ -211,9 +216,11 @@ function NearMeContent() {
       <Header />
 
       {/* ── Search + filters ── */}
-      <div className="shrink-0 bg-white px-4 py-3 shadow-card md:px-8">
+      <div className="shrink-0 bg-white px-4 pt-[84px] pb-3 md:px-8">
         <div className="mx-auto max-w-full space-y-3">
-          <div className="flex items-center gap-2 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-2.5">
+
+          {/* Search bar */}
+          <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 transition-[border-color,box-shadow] duration-150 focus-within:border-primary/40 focus-within:bg-white focus-within:shadow-[0_0_0_3px_rgba(0,48,145,0.08)]">
             <Search className="h-4 w-4 shrink-0 text-slate-400" />
             <input
               type="text"
@@ -223,28 +230,39 @@ function NearMeContent() {
               className="flex-1 bg-transparent text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
             />
             {search && (
-              <button type="button" aria-label="Clear search" onClick={() => setSearch("")} className="transition active:scale-90">
+              <button type="button" aria-label="Clear search" onClick={() => setSearch("")} className="transition-[transform] duration-150 active:scale-90">
                 <X className="h-4 w-4 text-slate-400 hover:text-slate-600" />
               </button>
             )}
           </div>
 
+          {/* Filter bar — labeled categories */}
           <div role="group" aria-label="Filter garages" className="flex items-center gap-2 overflow-x-auto pb-0.5 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
+
+            {/* Vehicle type label */}
+            <span className="shrink-0 text-[10px] font-black uppercase tracking-widest text-slate-400">Type</span>
             {TYPE_FILTERS.map(({ label, value, icon: Icon }) => (
               <button
                 key={value}
                 type="button"
                 aria-pressed={typeFilter === value}
                 onClick={() => setTypeFilter(value)}
-                className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition active:scale-95 ${
-                  typeFilter === value ? "bg-primary text-white" : "bg-slate-100 text-slate-500 hover:text-slate-700"
+                className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition-[background-color,color] duration-150 active:scale-95 ${
+                  typeFilter === value
+                    ? "bg-primary text-white shadow-sm"
+                    : "bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700"
                 }`}
               >
                 <Icon className="h-3 w-3" />
                 {label}
               </button>
             ))}
-            <div className="h-5 w-px shrink-0 bg-slate-200" />
+
+            {/* Divider */}
+            <div className="h-5 w-px shrink-0 bg-slate-200 mx-1" />
+
+            {/* Distance label */}
+            <span className="shrink-0 text-[10px] font-black uppercase tracking-widest text-slate-400">Distance</span>
             {DISTANCE_FILTERS.map((d) => {
               const needsGps = d !== "All";
               const disabled = needsGps && !userCoords;
@@ -254,16 +272,16 @@ function NearMeContent() {
                   type="button"
                   aria-pressed={distFilter === d}
                   onClick={() => {
-                    if (disabled) { showToast("Enable location for accurate distance filters"); return; }
+                    if (disabled) { showToast("Tap 'Locate Me' on the map to enable distance filters"); return; }
                     setDistFilter(d);
                   }}
                   title={disabled ? "Enable location to use this filter" : undefined}
-                  className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-bold transition active:scale-95 ${
+                  className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-bold transition-[background-color,color] duration-150 active:scale-95 ${
                     distFilter === d
-                      ? "bg-slate-800 text-white"
+                      ? "bg-slate-800 text-white shadow-sm"
                       : disabled
-                        ? "bg-slate-100 text-slate-300 cursor-not-allowed"
-                        : "bg-slate-100 text-slate-500 hover:text-slate-700"
+                        ? "bg-slate-100 text-slate-400 cursor-not-allowed opacity-50"
+                        : "bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700"
                   }`}
                 >
                   {d}
@@ -315,8 +333,8 @@ function NearMeContent() {
         {/* Mobile: bottom sheet that slides up */}
         <div
           className={`
-            absolute bottom-0 left-0 right-0 z-[500] flex flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl transition-all duration-300
-            md:relative md:bottom-auto md:left-auto md:right-auto md:z-auto md:w-80 md:shrink-0 md:rounded-none md:border-l md:border-slate-100 md:shadow-[-4px_0_16px_rgba(0,0,0,0.04)]
+            absolute bottom-0 left-0 right-0 z-[500] flex flex-col overflow-hidden rounded-t-[1.5rem] bg-white shadow-[0_-4px_24px_rgba(0,0,0,0.10)] transition-[height] duration-300
+            md:relative md:bottom-auto md:left-auto md:right-auto md:z-auto md:w-[22rem] md:shrink-0 md:rounded-none md:border-l md:border-slate-100 md:shadow-[-4px_0_20px_rgba(0,0,0,0.05)]
             ${listExpanded ? "h-[72vh]" : "h-[38vh]"}
             md:h-full
           `}
@@ -327,34 +345,49 @@ function NearMeContent() {
             aria-label={listExpanded ? "Collapse garage list" : "Expand garage list"}
             aria-expanded={listExpanded}
             onClick={() => setListExpanded((e) => !e)}
-            className="flex w-full shrink-0 items-center justify-center gap-2 border-b border-slate-100 py-2.5 md:hidden"
+            className="flex w-full shrink-0 flex-col items-center gap-1.5 border-b border-slate-100 py-3 md:hidden"
           >
-            <div className="h-1 w-10 rounded-full bg-slate-300" />
+            <div className="h-1 w-10 rounded-full bg-slate-200" />
+            <div className="flex items-center gap-1 text-[11px] font-bold text-slate-400">
+              {listExpanded
+                ? <><ChevronDown className="h-3 w-3" /> Collapse</>
+                : <><ChevronUp className="h-3 w-3" /> Show garages</>
+              }
+            </div>
           </button>
 
           <div className="overflow-y-auto flex-1 p-3 md:p-4" style={{ paddingBottom: "max(6rem, calc(env(safe-area-inset-bottom) + 1.5rem))" }}>
             <div className="mb-3 flex items-center justify-between">
-              <p className="text-xs font-black uppercase tracking-widest text-slate-400">
-                {filtered.length} garage{filtered.length !== 1 ? "s" : ""} nearby
-              </p>
+              <div>
+                <p className="text-sm font-black tracking-tight text-slate-800">
+                  {filtered.length} Garage{filtered.length !== 1 ? "s" : ""}
+                </p>
+                <p className="text-[11px] text-slate-400 font-medium">near your location</p>
+              </div>
               <button
                 type="button"
                 onClick={() => setShowSort((s) => !s)}
-                className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold transition active:scale-95 ${showSort ? "bg-primary text-white" : "text-slate-500 hover:text-primary"}`}
+                className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-bold transition-[background-color,color,border-color] duration-150 active:scale-95 ${
+                  showSort
+                    ? "border-primary bg-primary text-white"
+                    : "border-slate-200 bg-white text-slate-500 hover:border-primary/40 hover:text-primary"
+                }`}
               >
-                <SlidersHorizontal className="h-3.5 w-3.5" />
-                Sort
+                <SlidersHorizontal className="h-3 w-3" />
+                {SORT_OPTIONS.find(s => s.value === sortBy)?.label ?? "Sort"}
               </button>
             </div>
 
             {showSort && (
-              <div className="mb-3 flex gap-2 animate-slide-up">
+              <div className="mb-3 flex gap-1.5 animate-slide-up rounded-2xl bg-slate-50 p-1">
                 {SORT_OPTIONS.map(({ label, value }) => (
                   <button
                     key={value}
                     type="button"
                     onClick={() => { setSortBy(value); setShowSort(false); }}
-                    className={`rounded-full px-3 py-1.5 text-xs font-bold transition active:scale-95 ${sortBy === value ? "bg-primary text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+                    className={`flex-1 rounded-xl px-2 py-2 text-xs font-bold transition-[background-color,color] duration-150 active:scale-95 ${
+                      sortBy === value ? "bg-white text-primary shadow-sm" : "text-slate-500 hover:text-slate-700"
+                    }`}
                   >
                     {label}
                   </button>

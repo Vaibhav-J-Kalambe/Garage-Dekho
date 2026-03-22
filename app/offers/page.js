@@ -100,7 +100,7 @@ function OfferCard({ offer, featured = false }) {
 
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl p-5 text-white shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5 active:scale-[0.98] ${
+      className={`relative overflow-hidden rounded-2xl p-5 text-white shadow-card transition-shadow duration-150 hover:shadow-card-hover hover:-translate-y-0.5 active:scale-[0.98] ${
         featured ? "md:col-span-2" : ""
       }`}
       style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}
@@ -175,26 +175,37 @@ export default function OffersPage() {
   const showFeatured = active === "all" && !!featured;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-[#001f5b]">
       <Header />
 
       {/* ── Hero band ── */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#0047BE] via-[#0056D2] to-[#3730A3] px-4 pb-14 pt-6 md:px-8">
-        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/[0.06]" />
-        <div className="pointer-events-none absolute -bottom-8 left-1/3 h-32 w-32 rounded-full bg-amber-400/10" />
-        <div className="mx-auto max-w-5xl flex items-center gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/15">
-            <Tag className="h-6 w-6 text-white" />
+      <div data-hero className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] px-4 pb-24 pt-[77px] md:px-8">
+        {/* Dot-grid texture */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-40"
+          style={{
+            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+        {/* Ambient glow blobs */}
+        <div className="pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-16 left-1/4 h-56 w-56 rounded-full bg-amber-400/10 blur-3xl" />
+        <div className="pointer-events-none absolute left-0 top-1/2 h-40 w-40 rounded-full bg-indigo-400/15 blur-2xl" />
+
+        <div className="mx-auto max-w-5xl relative z-10 flex items-center gap-4">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20">
+            <Tag className="h-7 w-7 text-white" />
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-blue-200">Savings</p>
-            <h1 className="text-2xl font-black text-white">Offers & Deals</h1>
-            <p className="mt-0.5 text-sm text-blue-100/80">Exclusive discounts · Save up to 30%</p>
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-300">Savings</p>
+            <h1 className="mt-1 text-2xl font-black text-white md:text-3xl">Offers & Deals</h1>
+            <p className="mt-1 text-sm text-blue-100/70">Exclusive discounts · Save up to 30%</p>
           </div>
         </div>
       </div>
 
-      <div className="relative -mt-6 rounded-t-3xl bg-[#F8FAFC]">
+      <div className="relative -mt-12 rounded-t-[2.5rem] bg-[#F8FAFC]">
       <main aria-label="Offers and deals" className="mx-auto flex max-w-5xl flex-col gap-5 px-4 md:px-8
                         pb-28 md:pb-10 pt-5 md:pt-8">
 

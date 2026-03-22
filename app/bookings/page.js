@@ -71,7 +71,7 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
   const StatusIcon = status.icon;
 
   return (
-    <div className="rounded-2xl bg-white p-4 shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5 animate-slide-up">
+    <div className="rounded-2xl bg-white p-4 shadow-card transition-shadow duration-150 hover:shadow-card-hover hover:-translate-y-0.5 animate-slide-up">
 
       {/* Top row */}
       <div className="flex items-center gap-3">
@@ -292,21 +292,48 @@ export default function BookingsPage() {
   const shown    = tab === "upcoming" ? upcoming : past;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-[#001f5b]">
       <Header />
 
       {/* ── Hero band ── */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#0047BE] via-[#0056D2] to-[#3730A3] px-4 pb-14 pt-6 md:px-8">
-        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/[0.06]" />
-        <div className="pointer-events-none absolute -bottom-8 left-1/3 h-32 w-32 rounded-full bg-white/[0.04]" />
-        <div className="mx-auto max-w-5xl">
-          <p className="text-xs font-semibold uppercase tracking-widest text-blue-200">Dashboard</p>
-          <h1 className="mt-1 text-2xl font-black text-white">My Bookings</h1>
-          <p className="mt-0.5 text-sm text-blue-100/80">Track and manage your service appointments</p>
+      <div data-hero className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] px-4 pb-24 pt-[77px] md:px-8">
+        {/* Dot-grid texture */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-40"
+          style={{
+            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+        {/* Ambient glow blobs */}
+        <div className="pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-16 left-1/4 h-56 w-56 rounded-full bg-sky-300/20 blur-3xl" />
+        <div className="pointer-events-none absolute left-0 top-1/2 h-40 w-40 rounded-full bg-indigo-400/15 blur-2xl" />
+
+        <div className="mx-auto max-w-5xl relative z-10">
+          <p className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-300">Dashboard</p>
+          <h1 className="mt-1.5 text-2xl font-black text-white md:text-3xl">My Bookings</h1>
+          <p className="mt-1 text-sm text-blue-100/70">Track and manage your service appointments</p>
+
+          {/* ── Stat chips ── */}
+          {!loading && (
+            <div className="mt-5 flex flex-wrap gap-2">
+              {[
+                { label: "Total",     value: mapped.length,                              color: "bg-white/15 text-white border-white/20" },
+                { label: "Upcoming",  value: upcoming.length,                            color: upcoming.length > 0 ? "bg-amber-400/20 text-amber-200 border-amber-300/30" : "bg-white/10 text-white/60 border-white/15" },
+                { label: "Completed", value: mapped.filter(b => b.status === "completed").length, color: "bg-emerald-400/20 text-emerald-200 border-emerald-300/30" },
+              ].map(({ label, value, color }) => (
+                <div key={label} className={`flex items-center gap-2 rounded-full border px-3.5 py-1.5 backdrop-blur-sm ${color}`}>
+                  <span className="text-[11px] font-semibold opacity-80">{label}</span>
+                  <span className="text-sm font-black">{value}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="relative -mt-6 rounded-t-3xl bg-[#F8FAFC]">
+      <div className="relative -mt-12 rounded-t-[2.5rem] bg-[#F8FAFC]">
       <main aria-label="My bookings" className="mx-auto flex max-w-5xl flex-col gap-5 px-4 md:px-8 pb-28 md:pb-10 pt-5 md:pt-8">
 
         {/* Tab switcher */}
@@ -321,7 +348,7 @@ export default function BookingsPage() {
               role="tab"
               aria-selected={tab === key}
               onClick={() => setTab(key)}
-              className={`relative flex-1 rounded-xl py-2.5 text-sm font-bold capitalize transition-all duration-200 ${
+              className={`relative flex-1 rounded-xl py-2.5 text-sm font-bold capitalize transition-colors duration-150 ${
                 tab === key
                   ? "bg-primary text-white shadow-glow-primary"
                   : "text-slate-400 hover:text-slate-700"
@@ -330,7 +357,7 @@ export default function BookingsPage() {
               {label}
               {count > 0 && (
                 <span
-                  className={`ml-1.5 inline-flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-black ${
+                  className={`ml-1.5 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-black ${
                     tab === key ? "bg-white/25 text-white" : "bg-primary/10 text-primary"
                   }`}
                 >
@@ -367,6 +394,21 @@ export default function BookingsPage() {
 
       </main>
       </div>
+
+      {/* ── Sticky bottom CTA (mobile, upcoming tab, no bookings) ── */}
+      {!loading && tab === "upcoming" && upcoming.length === 0 && (
+        <div className="fixed bottom-0 inset-x-0 z-10 md:hidden">
+          <div className="bg-white/90 backdrop-blur-md border-t border-slate-100 px-4 py-3 shadow-nav">
+            <Link
+              href="/near-me"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-black text-white shadow-glow-primary active:scale-[0.98] transition-colors duration-150"
+            >
+              <CalendarCheck className="h-4 w-4" aria-hidden="true" />
+              Book a Service
+            </Link>
+          </div>
+        </div>
+      )}
 
       {cancelTarget && (
         <CancelConfirmModal

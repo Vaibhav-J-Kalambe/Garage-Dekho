@@ -87,8 +87,9 @@ export default function GarageDetailPage({ params }) {
           const raw = sessionStorage.getItem(CACHE_KEY);
           if (raw) {
             const { data } = JSON.parse(raw);
-            const similar = data
-              .filter((x) => x.id !== id && x.vehicleType === g?.vehicleType)
+            // Try matching by vehicleType first, fall back to top rated garages
+            const byType = data.filter((x) => x.id !== id && x.vehicleType === g?.vehicleType);
+            const similar = (byType.length > 0 ? byType : data.filter((x) => x.id !== id))
               .sort((a, b) => (b.rating || 0) - (a.rating || 0))
               .slice(0, 3);
             setSimilarGarages(similar);
@@ -96,10 +97,11 @@ export default function GarageDetailPage({ params }) {
           }
         } catch {}
         getAllGarages().then((all) => {
+          const byType = all.filter((x) => x.id !== id && x.vehicleType === g?.vehicleType);
           setSimilarGarages(
-            all.filter((x) => x.id !== id && x.vehicleType === g?.vehicleType)
-               .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-               .slice(0, 3)
+            (byType.length > 0 ? byType : all.filter((x) => x.id !== id))
+              .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+              .slice(0, 3)
           );
         }).catch(() => {});
       })
@@ -139,20 +141,18 @@ export default function GarageDetailPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-[#001f5b]">
 
-      {/* ── Hero Image + mini gallery strip ── */}
+      {/* ── Hero Image ── */}
       <div className="relative h-60 w-full md:h-96">
-        <Image
-          src={garage.image || "/placeholder-garage.svg"}
-          alt={garage.name}
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
+        {garage.image
+          ? <Image src={garage.image} alt={garage.name} fill priority className="object-cover" sizes="100vw" />
+          : <div className="absolute inset-0 bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] flex items-center justify-center">
+              <Wrench className="h-16 w-16 text-white/20" />
+            </div>
+        }
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
         {/* Photo count badge */}
         <div className="absolute bottom-20 right-4 flex items-center gap-1.5 rounded-full bg-black/50 px-3 py-1 text-xs font-bold text-white backdrop-blur-sm">
@@ -161,7 +161,7 @@ export default function GarageDetailPage({ params }) {
         </div>
 
         {/* Floating header */}
-        <div className="absolute left-0 right-0 top-0 flex items-center justify-between px-4 pt-safe pt-4">
+        <div className="absolute left-0 right-0 top-0 flex items-center justify-between px-4 pt-12">
           <button
             type="button"
             aria-label="Back"
@@ -198,7 +198,7 @@ export default function GarageDetailPage({ params }) {
               className="flex h-10 w-10 items-center justify-center rounded-full bg-black/50 backdrop-blur-md transition hover:bg-black/70 active:scale-95 disabled:opacity-60"
             >
               <Heart
-                className={`h-4 w-4 transition ${saved ? "fill-red-500 text-red-500" : "text-white"}`}
+                className={`h-4 w-4 transition-colors duration-150 ${saved ? "fill-red-500 text-red-500" : "text-white"}`}
               />
             </button>
           </div>
@@ -223,8 +223,8 @@ export default function GarageDetailPage({ params }) {
       </div>
 
       {/* ── Main content — pulled up over hero ── */}
-      <div className="relative -mt-5 rounded-t-3xl bg-[#F8FAFC]">
-        <div className="mx-auto max-w-5xl px-4 pb-28 pt-5 md:px-8 md:pb-10">
+      <div className="relative -mt-6 rounded-t-[2.5rem] bg-[#F8FAFC]">
+        <div className="mx-auto max-w-5xl px-4 pb-36 pt-5 md:px-8 md:pb-10">
 
           {/* ── Desktop: 2-column layout ── */}
           <div className="flex flex-col gap-5 md:flex-row md:items-start md:gap-8">
@@ -293,15 +293,12 @@ export default function GarageDetailPage({ params }) {
               {/* Quick Stats */}
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: "Experience",  value: `${garage.experience} yrs` },
-                  { label: "Vehicles",    value: `${garage.vehiclesServed.toLocaleString()}+` },
-                  { label: "Vehicle Type",value: garage.vehicleType },
+                  { label: "Experience",   value: garage.experience ? `${garage.experience} yrs` : "—" },
+                  { label: "Vehicles",     value: garage.vehiclesServed ? `${garage.vehiclesServed.toLocaleString()}+` : "—" },
+                  { label: "Vehicle Type", value: garage.vehicleType || "—" },
                 ].map(({ label, value }) => (
-                  <div
-                    key={label}
-                    className="rounded-2xl bg-white p-3 shadow-card text-center"
-                  >
-                    <p className="text-base font-black text-slate-900">{value}</p>
+                  <div key={label} className="rounded-2xl bg-white p-3 shadow-card text-center">
+                    <p className="truncate text-base font-black text-slate-900" title={value}>{value}</p>
                     <p className="mt-0.5 text-[10px] font-semibold text-slate-400">{label}</p>
                   </div>
                 ))}
@@ -314,7 +311,7 @@ export default function GarageDetailPage({ params }) {
                     key={tab}
                     type="button"
                     onClick={() => setActiveTab(tab)}
-                    className={`flex-1 rounded-xl py-2 text-xs font-bold capitalize transition ${
+                    className={`flex-1 rounded-xl py-2 text-xs font-bold capitalize transition-[background-color,color] duration-150 ${
                       activeTab === tab
                         ? "bg-primary text-white shadow-sm"
                         : "text-slate-400 hover:text-slate-700"
@@ -333,7 +330,7 @@ export default function GarageDetailPage({ params }) {
                     return (
                       <div
                         key={svc.name}
-                        className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-card transition hover:shadow-card-hover"
+                        className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-card transition-shadow duration-150 hover:shadow-card-hover"
                       >
                         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                           <SvcIcon className="h-5 w-5" />
@@ -361,7 +358,7 @@ export default function GarageDetailPage({ params }) {
                           <button
                             type="button"
                             onClick={() => openBooking(svc)}
-                            className="rounded-full bg-primary px-3 py-1.5 text-xs font-bold text-white transition hover:bg-primary/90 active:scale-95"
+                            className="rounded-full bg-primary px-4 py-2 text-xs font-bold text-white min-h-[36px] transition-colors duration-150 hover:brightness-110 active:scale-95"
                           >
                             Book
                           </button>
@@ -468,7 +465,7 @@ export default function GarageDetailPage({ params }) {
                 <h3 className="text-sm font-black text-slate-900">Similar Garages Nearby</h3>
                 {similarGarages.map((sg) => (
                   <Link key={sg.id} href={`/garage/${sg.id}`}
-                    className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-card transition hover:shadow-card-hover hover:-translate-y-0.5 active:scale-[0.99]">
+                    className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-card transition-shadow duration-150 hover:shadow-card-hover active:scale-[0.99]">
                     <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl">
                       <Image src={sg.image || "/placeholder-garage.svg"} alt={sg.name} fill className="object-cover" sizes="56px" />
                     </div>
@@ -501,7 +498,7 @@ export default function GarageDetailPage({ params }) {
                         key={svc.name}
                         type="button"
                         onClick={() => openBooking(svc)}
-                        className="flex w-full items-center gap-3 rounded-xl border border-slate-100 px-3 py-2.5 text-left hover:border-primary/30 hover:bg-primary/5 transition active:scale-[0.98] cursor-pointer"
+                        className="flex w-full items-center gap-3 rounded-xl border border-slate-100 px-3 py-2.5 text-left transition-colors duration-150 hover:border-primary/30 hover:bg-primary/5 active:scale-[0.98] cursor-pointer"
                       >
                         <SvcIcon className="h-4 w-4 shrink-0 text-primary" />
                         <div className="min-w-0 flex-1">
@@ -517,7 +514,7 @@ export default function GarageDetailPage({ params }) {
                 <button
                   type="button"
                   onClick={() => openBooking()}
-                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3 text-sm font-bold text-white shadow-card-hover transition hover:brightness-110 active:scale-[0.98]"
+                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3 text-sm font-bold text-white shadow-card-hover transition-colors duration-150 hover:brightness-110 active:scale-[0.98]"
                 >
                   <Calendar className="h-4 w-4" />
                   Schedule Appointment
@@ -525,7 +522,7 @@ export default function GarageDetailPage({ params }) {
 
                 <a
                   href={`tel:${garage.phone}`}
-                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 py-3 text-sm font-bold text-slate-700 transition hover:border-primary/40 hover:text-primary active:scale-[0.98]"
+                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 py-3 text-sm font-bold text-slate-700 transition-colors duration-150 hover:border-primary/40 hover:text-primary active:scale-[0.98]"
                 >
                   <Phone className="h-4 w-4" />
                   Call to Book
@@ -559,7 +556,7 @@ export default function GarageDetailPage({ params }) {
           <button
             type="button"
             onClick={() => openBooking()}
-            className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 text-sm font-bold text-white shadow-card-hover transition hover:brightness-110 active:scale-[0.98]"
+            className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 text-sm font-bold text-white shadow-card-hover transition-colors duration-150 hover:brightness-110 active:scale-[0.98]"
           >
             <Calendar className="h-4 w-4" />
             Book Appointment
