@@ -314,7 +314,7 @@ export default function HomePage() {
   const wrenchRef = useRef(null);
 
   return (
-    <div className="min-h-screen bg-[#001f5b]">
+    <div className="min-h-screen bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
       <Header />
       {showLocationPopup && <LocationPopup onClose={() => setShowLocationPopup(false)} />}
 
@@ -324,7 +324,7 @@ export default function HomePage() {
       ══════════════════════════════════════════════════════════ */}
       <section
         aria-label="Search for garages"
-        className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] px-4 pb-28 pt-[75px] md:px-8 md:pb-36 md:pt-[91px]"
+        className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] px-4 pb-28 pt-[77px] md:px-8 md:pb-36 md:pt-[93px]"
       >
         {/* Dot-grid texture — subtle ambient pattern (2026 trend: cinematic fields) */}
         <div
@@ -443,28 +443,7 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════
           CONTENT — pulled over hero (-mt-12), white rounded surface
       ══════════════════════════════════════════════════════════ */}
-      <div className="relative -mt-12 rounded-t-[2.5rem] bg-[#F8FAFC]">
-
-        {/* Stats strip — 8px-grid: py-5=20px, inside max-w container, 3-col */}
-        <div className="mx-auto max-w-5xl px-4 pt-6 md:px-8">
-          <div className="blur-fade-in grid grid-cols-3 divide-x divide-slate-100 overflow-hidden rounded-2xl bg-white shadow-card">
-            {[
-              { value: 500,   suffix: "+",  label: "Garages"         },
-              { value: 10000, suffix: "+",  label: "Happy Customers" },
-              { value: 24,    suffix: "/7", label: "Emergency Help"  },
-            ].map(({ value, suffix, label }) => (
-              <div key={label} className="flex flex-col items-center py-5 px-3">
-                {/* text-2xl (24px) for stats, font-black for hierarchy (design guide) */}
-                <span className="text-xl font-black text-primary tabular-nums sm:text-2xl">
-                  <NumberTicker value={value} suffix={suffix} />
-                </span>
-                <span className="mt-1 text-center text-xs font-semibold uppercase tracking-widest text-slate-400">
-                  {label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div id="main-content" className="relative -mt-12 rounded-t-[2.5rem] bg-[#F8FAFC]">
 
         {/* ── Main content — gap-10 (40px) between sections ── */}
         {/* Section breathing room: 48-64px recommended; gap-10=40px, gap-12=48px */}
