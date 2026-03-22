@@ -223,17 +223,18 @@ function NearMeContent() {
               className="flex-1 bg-transparent text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
             />
             {search && (
-              <button type="button" onClick={() => setSearch("")}>
+              <button type="button" aria-label="Clear search" onClick={() => setSearch("")} className="transition active:scale-90">
                 <X className="h-4 w-4 text-slate-400 hover:text-slate-600" />
               </button>
             )}
           </div>
 
-          <div className="flex items-center gap-2 overflow-x-auto pb-0.5 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
+          <div role="group" aria-label="Filter garages" className="flex items-center gap-2 overflow-x-auto pb-0.5 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
             {TYPE_FILTERS.map(({ label, value, icon: Icon }) => (
               <button
                 key={value}
                 type="button"
+                aria-pressed={typeFilter === value}
                 onClick={() => setTypeFilter(value)}
                 className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition active:scale-95 ${
                   typeFilter === value ? "bg-primary text-white" : "bg-slate-100 text-slate-500 hover:text-slate-700"
@@ -251,6 +252,7 @@ function NearMeContent() {
                 <button
                   key={d}
                   type="button"
+                  aria-pressed={distFilter === d}
                   onClick={() => {
                     if (disabled) { showToast("Enable location for accurate distance filters"); return; }
                     setDistFilter(d);
@@ -322,6 +324,8 @@ function NearMeContent() {
           {/* Pull handle — mobile only */}
           <button
             type="button"
+            aria-label={listExpanded ? "Collapse garage list" : "Expand garage list"}
+            aria-expanded={listExpanded}
             onClick={() => setListExpanded((e) => !e)}
             className="flex w-full shrink-0 items-center justify-center gap-2 border-b border-slate-100 py-2.5 md:hidden"
           >

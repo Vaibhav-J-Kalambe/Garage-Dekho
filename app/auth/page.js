@@ -99,7 +99,7 @@ function AuthForm() {
         <div className="mx-auto max-w-sm px-4 pb-10 pt-6">
 
           {/* Tab switcher */}
-          <div className="flex gap-1 rounded-2xl bg-white p-1 shadow-card mb-4">
+          <div role="tablist" aria-label="Authentication mode" className="flex gap-1 rounded-2xl bg-white p-1 shadow-card mb-4">
             {[
               { key: "login",  label: "Log In"  },
               { key: "signup", label: "Sign Up"  },
@@ -107,6 +107,8 @@ function AuthForm() {
               <button
                 key={key}
                 type="button"
+                role="tab"
+                aria-selected={tab === key}
                 onClick={() => { setTab(key); resetState(); }}
                 className={`flex-1 rounded-xl py-2.5 text-sm font-bold transition ${
                   tab === key ? "bg-primary text-white shadow-sm" : "text-slate-400 hover:text-slate-700"
@@ -120,8 +122,10 @@ function AuthForm() {
           {/* Form card */}
           <div className="rounded-2xl bg-white p-5 shadow-card space-y-3">
 
-            {error   && <p className="rounded-xl bg-red-50   px-3 py-2 text-xs font-semibold text-red-500  ">{error}</p>}
-            {success && <p className="rounded-xl bg-green-50 px-3 py-2 text-xs font-semibold text-green-600">{success}</p>}
+            <div aria-live="polite" aria-atomic="true">
+              {error   && <p role="alert" className="rounded-xl bg-red-50   px-3 py-2 text-xs font-semibold text-red-500  ">{error}</p>}
+              {success && <p className="rounded-xl bg-green-50 px-3 py-2 text-xs font-semibold text-green-600">{success}</p>}
+            </div>
 
             {/* Google OAuth — prominent, floated */}
             <button
@@ -178,8 +182,9 @@ function AuthForm() {
                 />
                 <button
                   type="button"
+                  aria-label={showPw ? "Hide password" : "Show password"}
                   onClick={() => setShowPw((s) => !s)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 active:scale-90 transition"
                 >
                   {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -188,6 +193,7 @@ function AuthForm() {
               <button
                 type="submit"
                 disabled={loading}
+                aria-busy={loading}
                 className="w-full rounded-xl bg-primary py-3 text-sm font-bold text-white shadow-card-hover transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
               >
                 {loading ? "Please wait…" : tab === "login" ? "Log In" : "Create Account"}

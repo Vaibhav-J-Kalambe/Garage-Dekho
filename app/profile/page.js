@@ -236,7 +236,7 @@ export default function ProfilePage() {
       />
 
       <div className="relative -mt-6 rounded-t-3xl bg-[#F8FAFC]">
-      <main className="mx-auto flex max-w-5xl flex-col gap-5 px-4 md:px-8 pb-28 md:pb-10 pt-5 md:pt-6">
+      <main aria-label="User profile" className="mx-auto flex max-w-5xl flex-col gap-5 px-4 md:px-8 pb-28 md:pb-10 pt-5 md:pt-6">
 
         <div className="flex flex-col gap-5 md:flex-row md:items-start md:gap-8">
 
@@ -401,12 +401,13 @@ export default function ProfilePage() {
           <div className="flex flex-1 flex-col gap-4">
 
             {MENU.map(({ section, items }, si) => (
-              <div
+              <section
                 key={section}
+                aria-labelledby={`menu-section-${section.toLowerCase()}`}
                 className="rounded-2xl bg-white shadow-card overflow-hidden animate-slide-up"
                 style={{ animationDelay: `${(si + 1) * 80}ms` }}
               >
-                <p className="px-4 pb-1 pt-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                <p id={`menu-section-${section.toLowerCase()}`} className="px-4 pb-1 pt-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
                   {section}
                 </p>
                 <div className="divide-y divide-slate-50">
@@ -439,7 +440,7 @@ export default function ProfilePage() {
                     )
                   )}
                 </div>
-              </div>
+              </section>
             ))}
 
             {user ? (

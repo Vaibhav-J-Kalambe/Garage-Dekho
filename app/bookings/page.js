@@ -307,10 +307,10 @@ export default function BookingsPage() {
       </div>
 
       <div className="relative -mt-6 rounded-t-3xl bg-[#F8FAFC]">
-      <main className="mx-auto flex max-w-5xl flex-col gap-5 px-4 md:px-8 pb-28 md:pb-10 pt-5 md:pt-8">
+      <main aria-label="My bookings" className="mx-auto flex max-w-5xl flex-col gap-5 px-4 md:px-8 pb-28 md:pb-10 pt-5 md:pt-8">
 
         {/* Tab switcher */}
-        <div className="flex gap-1 rounded-2xl bg-white p-1 shadow-card animate-slide-up delay-75">
+        <div role="tablist" aria-label="Booking history" className="flex gap-1 rounded-2xl bg-white p-1 shadow-card animate-slide-up delay-75">
           {[
             { key: "upcoming", label: "Upcoming", count: upcoming.length },
             { key: "past",     label: "Past",     count: past.length     },
@@ -318,6 +318,8 @@ export default function BookingsPage() {
             <button
               key={key}
               type="button"
+              role="tab"
+              aria-selected={tab === key}
               onClick={() => setTab(key)}
               className={`relative flex-1 rounded-xl py-2.5 text-sm font-bold capitalize transition-all duration-200 ${
                 tab === key

@@ -19,10 +19,36 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  /* 1.5x line-height for body readability (design guide) */
+  line-height: 1.5;
 }
 
 main {
   min-height: 100vh;
+}
+
+/* ── WCAG 2.2 Focus-visible system ──────────────────────────────────────── */
+/* Removes default focus for pointer users; shows ring for keyboard users  */
+*:focus {
+  outline: none;
+}
+*:focus-visible {
+  outline: 2px solid #0056D2;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── Interactive element defaults ───────────────────────────────────────── */
+/* All buttons and links inherit smooth transitions (GPU-only: transform+opacity) */
+button, a {
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity   0.15s ease,
+              box-shadow 0.2s ease;
+}
+
+/* ── Tap delay elimination (touch-action: manipulation on all interactive) ── */
+button, a, [role="button"] {
+  touch-action: manipulation;
 }
 
 /* ─────────────────────────────────────────────
@@ -113,6 +139,19 @@ main {
   }
 }
 
+/* ── Prefers-reduced-motion (WCAG 2.1, ux-guidelines severity: High) ────── */
+/* Eliminates all motion for users with vestibular/motion-sensitivity settings */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* ─────────────────────────────────────────────
    KEYFRAMES
 ───────────────────────────────────────────── */
@@ -180,6 +219,16 @@ main {
   opacity: 1;
 }
 
+/* ── Header accent bar — slides in from top on load ── */
+@keyframes accent-in {
+  from { opacity: 0; transform: scaleX(0.6); }
+  to   { opacity: 1; transform: scaleX(1);   }
+}
+.animate-accent-in {
+  animation: accent-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: left center;
+}
+
 /* ── BorderBeam — animated gradient border on partner card ── */
 .border-beam-card {
   position: relative;
@@ -222,6 +271,11 @@ main {
   );
   animation: shimmer-sweep 2.8s ease-in-out infinite;
   pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-btn::after { animation: none; }
+  .border-beam-card::before { animation: none; }
+  .animate-accent-in { animation: none; }
 }
 @keyframes shimmer-sweep {
   0%         { left: -100%; }

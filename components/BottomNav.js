@@ -22,7 +22,7 @@ export default function BottomNav() {
   if (HIDDEN_ON.some((p) => pathname.startsWith(p))) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 glass shadow-nav md:hidden">
+    <nav aria-label="Main navigation" className="fixed bottom-0 left-0 right-0 z-50 glass shadow-nav md:hidden">
       <div
         className="mx-auto flex max-w-md items-center justify-around px-2 pt-2"
         style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
@@ -32,25 +32,25 @@ export default function BottomNav() {
         {LEFT_ITEMS.map(({ label, icon: Icon, href }) => {
           const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
           return (
-            <Link key={label} href={href} className="flex flex-col items-center gap-1 px-3 py-1 group">
-              <div className={`flex h-10 w-10 items-center justify-center rounded-2xl transition-all duration-300 ${
+            <Link key={label} href={href} aria-current={active ? "page" : undefined} aria-label={label} className="flex flex-col items-center gap-1 px-3 py-1 group">
+              <div className={`flex h-11 w-11 items-center justify-center rounded-2xl transition-[transform,background-color,box-shadow,color] duration-200 ${
                 active
                   ? "bg-primary text-white shadow-glow-primary scale-110"
                   : "text-slate-400 group-hover:text-slate-600 group-hover:bg-slate-100"
               }`}>
-                <Icon className={`transition-all duration-300 ${active ? "h-5 w-5" : "h-5 w-5"}`} />
+                <Icon className="h-5 w-5" aria-hidden="true" />
               </div>
-              <span className={`text-xs font-semibold transition-all duration-300 ${
+              <span className={`text-xs font-semibold transition-colors duration-200 ${
                 active ? "text-primary" : "text-slate-400"
               }`}>{label}</span>
             </Link>
           );
         })}
 
-        {/* SOS — center, inline, always in thumb zone */}
-        <Link href="/sos" aria-label="SOS Emergency" className="flex flex-col items-center gap-1 px-3 py-1">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white bg-[#D32F2F] shadow-[0_4px_16px_rgba(211,47,47,0.38)] transition active:scale-95">
-            <AlertTriangle className="h-5 w-5 text-white" />
+        {/* SOS — center, always in thumb zone, min 44px touch target */}
+        <Link href="/sos" aria-label="SOS Emergency assistance" className="flex flex-col items-center gap-1 px-3 py-1">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white bg-[#D32F2F] shadow-[0_4px_16px_rgba(211,47,47,0.38)] transition-transform duration-150 active:scale-95">
+            <AlertTriangle className="h-5 w-5 text-white" aria-hidden="true" />
           </div>
           <span className="text-xs font-black text-red-800 tracking-wide">SOS</span>
         </Link>
@@ -59,15 +59,15 @@ export default function BottomNav() {
         {RIGHT_ITEMS.map(({ label, icon: Icon, href }) => {
           const active = pathname.startsWith(href);
           return (
-            <Link key={label} href={href} className="flex flex-col items-center gap-1 px-3 py-1 group">
-              <div className={`flex h-10 w-10 items-center justify-center rounded-2xl transition-all duration-300 ${
+            <Link key={label} href={href} aria-current={active ? "page" : undefined} aria-label={label} className="flex flex-col items-center gap-1 px-3 py-1 group">
+              <div className={`flex h-11 w-11 items-center justify-center rounded-2xl transition-[transform,background-color,box-shadow,color] duration-200 ${
                 active
                   ? "bg-primary text-white shadow-glow-primary scale-110"
                   : "text-slate-400 group-hover:text-slate-600 group-hover:bg-slate-100"
               }`}>
-                <Icon className="h-5 w-5" />
+                <Icon className="h-5 w-5" aria-hidden="true" />
               </div>
-              <span className={`text-xs font-semibold transition-all duration-300 ${
+              <span className={`text-xs font-semibold transition-colors duration-200 ${
                 active ? "text-primary" : "text-slate-400"
               }`}>{label}</span>
             </Link>
