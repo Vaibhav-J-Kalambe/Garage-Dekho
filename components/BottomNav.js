@@ -14,7 +14,7 @@ const RIGHT_ITEMS = [
   { label: "Profile",  icon: User,          href: "/profile"  },
 ];
 
-const HIDDEN_ON = ["/admin", "/sos", "/garage/", "/partner"];
+const HIDDEN_ON = ["/admin", "/sos", "/garage/", "/partner", "/portal"];
 
 export default function BottomNav() {
   const pathname = usePathname();
