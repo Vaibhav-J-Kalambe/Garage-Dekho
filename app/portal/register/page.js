@@ -1,12 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Wrench, Mail, Lock, Phone, MapPin, Building2, Loader2 } from "lucide-react";
 import { supabase } from "../../../lib/supabase";
 
 export default function PortalRegisterPage() {
+  return (
+    <Suspense>
+      <RegisterForm />
+    </Suspense>
+  );
+}
+
+function RegisterForm() {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const isComplete   = searchParams.get("complete") === "1"; // came from login with existing account
@@ -172,7 +180,7 @@ export default function PortalRegisterPage() {
 
     </div>
   );
-}
+}  // end RegisterForm
 
 function Field({ label, icon: Icon, children }) {
   return (

@@ -22,9 +22,14 @@ export const metadata = {
     statusBarStyle: "default",
     title: "GarageDekho",
   },
-  themeColor: "#0056D2",
-  viewport: { width: "device-width", initialScale: 1, maximumScale: 1 },
   formatDetection: { telephone: false },
+};
+
+export const viewport = {
+  themeColor: "#0056D2",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({ children }) {
