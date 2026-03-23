@@ -15,7 +15,7 @@ const DISMISS_THRESHOLD = 110; // px dragged down to trigger close
  *     ...content...
  *   </SwipeableSheet>
  */
-export default function SwipeableSheet({ onClose, className = "", children, scrollRef }) {
+export default function SwipeableSheet({ onClose, className = "", children, scrollRef, hideHandle = false }) {
   const startY    = useRef(0);
   const dragging  = useRef(false);
   const [dragY,   setDragY]   = useState(0);
@@ -66,10 +66,11 @@ export default function SwipeableSheet({ onClose, className = "", children, scro
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
     >
-      {/* Pull indicator pill — mobile only hint */}
-      <div className="flex justify-center pt-3 pb-1 md:hidden" aria-hidden>
-        <div className="h-1 w-10 rounded-full bg-slate-200" />
-      </div>
+      {!hideHandle && (
+        <div className="flex justify-center pt-3 pb-1 md:hidden" aria-hidden>
+          <div className="h-1 w-10 rounded-full bg-slate-200" />
+        </div>
+      )}
       {children}
     </div>
   );

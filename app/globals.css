@@ -296,3 +296,15 @@ button, a, [role="button"] {
   display: inline-block;
   font-variant-numeric: tabular-nums;
 }
+
+/* ── Location popup — subtle pulse on detect CTA ── */
+@keyframes loc-pulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(26, 79, 214, 0.35); }
+  50%       { box-shadow: 0 4px 28px rgba(26, 79, 214, 0.60); }
+}
+.loc-pulse {
+  animation: loc-pulse 2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .loc-pulse { animation: none; }
+}

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GarageDekho — Find Garages Near You</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+input{-webkit-appearance:none;-moz-appearance:none;appearance:none;outline:none;border:none}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#1e293b;min-height:100vh}
+
+.overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.65);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:16px;opacity:0;animation:overlayIn 250ms ease forwards}
+
+.card{background:#fff;width:100%;max-width:420px;padding:28px;border-radius:20px;position:relative;isolation:isolate;opacity:0;transform:translateY(40px);animation:cardIn 320ms ease-out 50ms forwards}
+
+.close-btn{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:#f3f4f6;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 150ms,transform 100ms;flex-shrink:0}
+.close-btn:hover{background:#e5e7eb}
+.close-btn:active{transform:scale(0.9)}
+
+.hero{width:100%;margin-bottom:20px}
+.hero svg{width:100%;height:auto;display:block}
+
+.brand-pill{display:inline-flex;align-items:center;gap:6px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:50px;padding:5px 12px;margin-bottom:14px}
+.brand-pill span{font-size:13px;font-weight:600;color:#1a4fd6}
+
+.headline{font-size:28px;font-weight:800;color:#111827;line-height:1.15;letter-spacing:-0.5px;margin-bottom:10px}
+
+.subtext{font-size:14px;font-weight:400;color:#6b7280;line-height:1.5;margin-bottom:16px;max-width:320px}
+
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.badge{display:inline-flex;align-items:center;gap:5px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:50px;padding:5px 12px;font-size:12px;font-weight:600;color:#15803d}
+
+.cta-btn{width:100%;height:52px;background:#1a4fd6;border-radius:50px;border:none;cursor:pointer;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:10px;transition:background 200ms,transform 100ms;font-family:inherit}
+.cta-btn:hover:not(:disabled){background:#1541b8;transform:translateY(-1px)}
+.cta-btn:active:not(:disabled){transform:scale(0.98)}
+.cta-btn:disabled{cursor:not-allowed}
+.cta-btn.success{background:#16a34a}
+
+.btn-label{font-size:16px;font-weight:700;color:#fff;letter-spacing:0.2px}
+.btn-label-sm{font-size:15px;font-weight:600;color:rgba(255,255,255,0.92)}
+
+.pin-pulse{animation:pinPulse 1.5s ease-in-out infinite;display:flex}
+
+.spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.65s linear infinite;flex-shrink:0}
+
+.check-pop{animation:checkPop 400ms ease-out forwards;display:flex}
+
+.error-msg{display:none;align-items:center;gap:6px;margin-bottom:12px;opacity:0}
+.error-msg.visible{display:flex;animation:fadeIn 200ms ease forwards}
+.error-msg span{font-size:12px;color:#dc2626}
+
+.privacy{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:18px}
+.privacy span{font-size:11px;color:#9ca3af;text-align:center}
+
+.divider{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.divider-line{flex:1;height:1px;background:#e5e7eb}
+.divider-text{font-size:12px;color:#9ca3af;font-weight:500;white-space:nowrap}
+
+.search-wrap{position:relative;width:100%;margin-bottom:14px}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;display:flex}
+.search-input{width:100%;height:48px;padding:0 44px 0 44px;border:2px solid #e5e7eb;border-radius:12px;font-size:15px;color:#111827;background:#ffffff;outline:none;-webkit-appearance:none;-moz-appearance:none;appearance:none;box-shadow:none;transition:border-color 150ms,box-shadow 150ms;font-family:inherit}
+.search-input::placeholder{color:#9ca3af;opacity:1}
+.search-input:hover{border:2px solid #93c5fd;box-shadow:none}
+.search-input:focus{border:2px solid #1a4fd6;box-shadow:0 0 0 4px rgba(26,79,214,0.12);outline:none}
+.search-input.highlighted{border:2px solid #1a4fd6;box-shadow:0 0 0 4px rgba(26,79,214,0.2)}
+
+.clear-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;background:#e5e7eb;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;transition:background 100ms}
+.clear-btn:hover{background:#d1d5db}
+.clear-btn.visible{display:flex}
+
+.cities-label{font-size:11px;color:#9ca3af;font-weight:500;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:#f9fafb;border:1px solid #e5e7eb;border-radius:50px;padding:6px 14px;font-size:13px;font-weight:500;color:#374151;cursor:pointer;transition:background 150ms,border-color 150ms,color 150ms;font-family:inherit}
+.chip:hover{background:#eff6ff;border-color:#bfdbfe;color:#1a4fd6}
+.chip.selected{background:#eff6ff;border-color:#1a4fd6;color:#1a4fd6;font-weight:600}
+
+@keyframes overlayIn{from{opacity:0}to{opacity:1}}
+@keyframes cardIn{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pinBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes pulseRing{0%{transform:scale(1);opacity:0.6}100%{transform:scale(2.2);opacity:0}}
+@keyframes pinPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes checkPop{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay">
+  <div class="card" id="card">
+
+    <!-- Close -->
+    <button class="close-btn" id="closeBtn" aria-label="Close">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M1 1l12 12M13 1L1 13" stroke="#6b7280" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <!-- Hero illustration -->
+    <div class="hero">
+      <svg viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Road -->
+        <rect x="0" y="78" width="300" height="22" rx="4" fill="#e5e7eb"/>
+        <!-- Road markings -->
+        <rect x="110" y="87" width="20" height="5" rx="2" fill="#fff" opacity="0.7"/>
+        <rect x="145" y="87" width="20" height="5" rx="2" fill="#fff" opacity="0.7"/>
+        <rect x="180" y="87" width="20" height="5" rx="2" fill="#fff" opacity="0.7"/>
+
+        <!-- Car group (centered) -->
+        <!-- Car body -->
+        <rect x="90" y="55" width="120" height="30" rx="8" fill="#1a4fd6"/>
+        <!-- Car roof -->
+        <rect x="108" y="38" width="84" height="26" rx="7" fill="#1a4fd6"/>
+        <!-- Windshield front -->
+        <rect x="165" y="42" width="22" height="18" rx="3" fill="#93c5fd" opacity="0.85"/>
+        <!-- Rear window -->
+        <rect x="112" y="42" width="20" height="18" rx="3" fill="#93c5fd" opacity="0.85"/>
+        <!-- Middle window -->
+        <rect x="137" y="42" width="24" height="18" rx="3" fill="#93c5fd" opacity="0.85"/>
+        <!-- Headlight -->
+        <rect x="205" y="63" width="8" height="7" rx="3" fill="#fde68a"/>
+        <!-- Taillight -->
+        <rect x="87" y="63" width="8" height="7" rx="3" fill="#fca5a5"/>
+        <!-- Wheels -->
+        <circle cx="120" cy="83" r="11" fill="#1f2937"/>
+        <circle cx="120" cy="83" r="4" fill="#d1d5db"/>
+        <circle cx="120" cy="83" r="1.5" fill="#fff"/>
+        <circle cx="180" cy="83" r="11" fill="#1f2937"/>
+        <circle cx="180" cy="83" r="4" fill="#d1d5db"/>
+        <circle cx="180" cy="83" r="1.5" fill="#fff"/>
+
+        <!-- Pulse rings at pin base -->
+        <circle cx="150" cy="22" r="6" fill="none" stroke="#ef4444" stroke-width="1.5" opacity="0">
+          <animate attributeName="r" values="6;18;6" dur="2s" repeatCount="indefinite" begin="0s"/>
+          <animate attributeName="opacity" values="0.6;0;0.6" dur="2s" repeatCount="indefinite" begin="0s"/>
+        </circle>
+        <circle cx="150" cy="22" r="6" fill="none" stroke="#ef4444" stroke-width="1.5" opacity="0">
+          <animate attributeName="r" values="6;18;6" dur="2s" repeatCount="indefinite" begin="1s"/>
+          <animate attributeName="opacity" values="0.6;0;0.6" dur="2s" repeatCount="indefinite" begin="1s"/>
+        </circle>
+
+        <!-- Location pin (bouncing) -->
+        <g style="animation:pinBounce 1.8s ease-in-out infinite;transform-origin:150px 22px;transform-box:fill-box">
+          <circle cx="150" cy="14" r="13" fill="#ef4444"/>
+          <path d="M137 18 Q137 30 150 36 Q163 30 163 18" fill="#ef4444"/>
+          <circle cx="150" cy="14" r="5" fill="#fff"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Brand pill -->
+    <div class="brand-pill">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#1a4fd6"/>
+        <circle cx="12" cy="9" r="3" fill="#fff"/>
+      </svg>
+      <span>GarageDekho</span>
+    </div>
+
+    <!-- Headline -->
+    <h1 class="headline">Find garages near you</h1>
+
+    <!-- Subtext -->
+    <p class="subtext">Instant results from 500+ verified garages near you.</p>
+
+    <!-- Trust badges -->
+    <div class="badges">
+      <span class="badge">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <polyline points="2,6 5,9 10,3" stroke="#15803d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        500+ Garages
+      </span>
+      <span class="badge">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <polyline points="2,6 5,9 10,3" stroke="#15803d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        ₹ Best Price
+      </span>
+      <span class="badge">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <polyline points="2,6 5,9 10,3" stroke="#15803d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        30-min Response
+      </span>
+    </div>
+
+    <!-- CTA button -->
+    <button class="cta-btn" id="detectBtn" type="button" aria-live="polite">
+      <span class="pin-pulse" id="pinWrap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="3" fill="white"/>
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="8" stroke="white" stroke-width="2" fill="none" opacity="0.35"/>
+        </svg>
+      </span>
+      <span class="btn-label" id="btnText">Detect my location</span>
+    </button>
+
+    <!-- Error message -->
+    <div class="error-msg" id="errorMsg" role="alert">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M7 1L13 13H1L7 1z" fill="#dc2626"/>
+        <path d="M7 5.5v3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="7" cy="10.5" r="0.75" fill="#fff"/>
+      </svg>
+      <span id="errorText">Couldn't detect location. Please search below ↓</span>
+    </div>
+
+    <!-- Privacy note -->
+    <div class="privacy">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="3" y="11" width="18" height="11" rx="2" stroke="#9ca3af" stroke-width="1.5" fill="none"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      </svg>
+      <span>Only used to show nearby garages · Never shared</span>
+    </div>
+
+    <!-- OR divider -->
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span class="divider-text">OR</span>
+      <div class="divider-line"></div>
+    </div>
+
+    <!-- Search input -->
+    <div class="search-wrap">
+      <span class="search-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="8" stroke="#9ca3af" stroke-width="2" fill="none"/>
+          <path d="m21 21-4.35-4.35" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <input
+        type="text"
+        class="search-input"
+        id="searchInput"
+        placeholder="Search city or area..."
+        autocomplete="off"
+        aria-label="Search city or area"
+      />
+      <button class="clear-btn" id="clearBtn" aria-label="Clear search" type="button">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+          <path d="M1 1l8 8M9 1L1 9" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Popular cities -->
+    <p class="cities-label">Popular cities</p>
+    <div class="chips" id="chipsContainer">
+      <button class="chip" data-city="Mumbai" type="button">Mumbai</button>
+      <button class="chip" data-city="Delhi" type="button">Delhi</button>
+      <button class="chip" data-city="Bengaluru" type="button">Bengaluru</button>
+      <button class="chip" data-city="Pune" type="button">Pune</button>
+      <button class="chip" data-city="Hyderabad" type="button">Hyderabad</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  const overlay    = document.getElementById('overlay');
+  const card       = document.getElementById('card');
+  const closeBtn   = document.getElementById('closeBtn');
+  const detectBtn  = document.getElementById('detectBtn');
+  const pinWrap    = document.getElementById('pinWrap');
+  const btnText    = document.getElementById('btnText');
+  const errorMsg   = document.getElementById('errorMsg');
+  const errorText  = document.getElementById('errorText');
+  const searchInput= document.getElementById('searchInput');
+  const clearBtn   = document.getElementById('clearBtn');
+  const chips      = document.querySelectorAll('.chip');
+
+  /* ── Close ── */
+  function closePopup(){
+    overlay.style.transition='opacity 250ms ease';
+    overlay.style.opacity='0';
+    setTimeout(()=>overlay.remove(),250);
+  }
+  closeBtn.addEventListener('click',closePopup);
+  overlay.addEventListener('click',function(e){if(e.target===overlay)closePopup();});
+  card.addEventListener('click',function(e){e.stopPropagation();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closePopup();});
+
+  /* ── Button states ── */
+  function setButtonState(state,locationText){
+    errorMsg.classList.remove('visible');
+
+    if(state==='loading'){
+      detectBtn.disabled=true;
+      detectBtn.style.background='#1a4fd6';
+      detectBtn.innerHTML=`
+        <span style="width:18px;height:18px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.65s linear infinite;flex-shrink:0;display:block"></span>
+        <span style="font-size:15px;font-weight:600;color:rgba(255,255,255,0.92);font-family:inherit">Detecting your location...</span>
+      `;
+    }
+
+    if(state==='success'){
+      detectBtn.disabled=false;
+      detectBtn.style.background='#16a34a';
+      detectBtn.style.transition='background 300ms';
+      detectBtn.innerHTML=`
+        <span style="animation:checkPop 400ms ease-out forwards;display:flex">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <polyline points="3,12 9,18 21,6" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </span>
+        <span style="font-size:15px;font-weight:700;color:#fff;font-family:inherit">${locationText||'Location found!'}</span>
+      `;
+    }
+
+    if(state==='error'){
+      detectBtn.disabled=false;
+      detectBtn.style.background='#1a4fd6';
+      detectBtn.innerHTML=`
+        <span style="animation:pinPulse 1.5s ease-in-out infinite;display:flex">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="3" fill="white"/>
+            <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="8" stroke="white" stroke-width="2" fill="none" opacity="0.35"/>
+          </svg>
+        </span>
+        <span style="font-size:16px;font-weight:700;color:#fff;letter-spacing:0.2px;font-family:inherit">Detect my location</span>
+      `;
+      errorMsg.classList.add('visible');
+      setTimeout(()=>{
+        searchInput.classList.add('highlighted');
+        searchInput.focus();
+        searchInput.scrollIntoView({behavior:'smooth',block:'center'});
+        setTimeout(()=>searchInput.classList.remove('highlighted'),2000);
+      },100);
+    }
+  }
+
+  /* ── Detect location ── */
+  detectBtn.addEventListener('click',function(){
+    if(detectBtn.classList.contains('success'))return;
+    setButtonState('loading');
+    if(!navigator.geolocation){setButtonState('error');return;}
+    navigator.geolocation.getCurrentPosition(
+      async function(pos){
+        try{
+          const res=await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json`,
+            {headers:{'Accept-Language':'en'}}
+          );
+          const data=await res.json();
+          const a=data.address||{};
+          const city=a.suburb||a.neighbourhood||a.city_district||a.city||a.town||a.village||a.county||'Your city';
+          const state=a.state||'';
+          setButtonState('success',state?`${city}, ${state}`:city);
+        }catch(e){
+          setButtonState('error');
+        }
+      },
+      function(){setButtonState('error');},
+      {timeout:10000,maximumAge:60000}
+    );
+  });
+
+  /* ── Search clear button ── */
+  searchInput.addEventListener('input',function(){
+    if(searchInput.value.length>0){
+      clearBtn.classList.add('visible');
+    }else{
+      clearBtn.classList.remove('visible');
+      chips.forEach(c=>c.classList.remove('selected'));
+    }
+  });
+  clearBtn.addEventListener('click',function(){
+    searchInput.value='';
+    clearBtn.classList.remove('visible');
+    searchInput.focus();
+    chips.forEach(c=>c.classList.remove('selected'));
+  });
+
+  /* ── City chips ── */
+  chips.forEach(function(chip){
+    chip.addEventListener('click',function(){
+      chips.forEach(c=>c.classList.remove('selected'));
+      chip.classList.add('selected');
+      searchInput.value=chip.dataset.city;
+      clearBtn.classList.add('visible');
+      searchInput.focus();
+      chip.style.transform='scale(0.94)';
+      setTimeout(()=>chip.style.transform='scale(1)',100);
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
