@@ -116,7 +116,7 @@ export default function LocationPopup({ onClose }) {
         @media (max-width: 430px) {
           .loc-headline { font-size: 24px !important; }
           .loc-header   { padding: 18px 20px 22px 20px !important; }
-          .loc-body     { padding: 20px 20px 24px 20px !important; max-height: calc(100svh - 260px) !important; }
+          .loc-body     { padding: 20px 20px 0 20px !important; }
         }
       `}</style>
 
@@ -126,7 +126,8 @@ export default function LocationPopup({ onClose }) {
 
         <SwipeableSheet
           onClose={onClose}
-          className="animate-slide-up relative w-full max-w-sm overflow-hidden rounded-t-[24px] shadow-2xl sm:rounded-[24px]"
+          className="animate-slide-up relative flex w-full max-w-sm flex-col overflow-hidden rounded-t-[24px] shadow-2xl sm:rounded-[24px]"
+          style={{ maxHeight: "100svh" }}
         >
           {/* ── Blue top section ── */}
           <div
@@ -191,8 +192,8 @@ export default function LocationPopup({ onClose }) {
 
           {/* ── White bottom section ── */}
           <div
-            className="loc-body bg-white overflow-y-auto"
-            style={{ padding: "24px 24px 28px 24px", isolation: "isolate", maxHeight: "calc(100svh - 260px)" }}
+            className="loc-body bg-white overflow-y-auto flex-1"
+            style={{ padding: "24px 24px 0 24px", isolation: "isolate" }}
           >
             {/* Error banner */}
             {error && (
@@ -373,10 +374,10 @@ export default function LocationPopup({ onClose }) {
               </svg>
               <p className="text-[11px] text-slate-400">Only used to show nearby garages · Never shared</p>
             </div>
-          </div>
 
-          {/* Spacer — clears bottom nav bar + iOS home indicator */}
-          <div className="bg-white" style={{ paddingBottom: "max(72px, calc(env(safe-area-inset-bottom) + 72px))" }} />
+            {/* Bottom spacer — clears bottom nav bar + iOS home indicator */}
+            <div style={{ height: "max(72px, calc(env(safe-area-inset-bottom) + 65px))" }} />
+          </div>
         </SwipeableSheet>
       </div>
     </>

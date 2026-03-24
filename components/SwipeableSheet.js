@@ -15,7 +15,7 @@ const DISMISS_THRESHOLD = 110; // px dragged down to trigger close
  *     ...content...
  *   </SwipeableSheet>
  */
-export default function SwipeableSheet({ onClose, className = "", children, scrollRef, hideHandle = false }) {
+export default function SwipeableSheet({ onClose, className = "", style: styleProp, children, scrollRef, hideHandle = false }) {
   const startY    = useRef(0);
   const dragging  = useRef(false);
   const [dragY,   setDragY]   = useState(0);
@@ -61,7 +61,7 @@ export default function SwipeableSheet({ onClose, className = "", children, scro
   return (
     <div
       className={className}
-      style={{ transform: `translateY(${translateY})`, transition }}
+      style={{ transform: `translateY(${translateY})`, transition, ...styleProp }}
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}

@@ -217,7 +217,7 @@ export default function HomePage() {
     getOpenGarageCount().then(setOpenCount);
 
     const alreadyHasArea = !!location?.area;
-    if (navigator.geolocation) {
+    const doGeoLookup = () => {
       navigator.geolocation.getCurrentPosition(
         async ({ coords }) => {
           setUserCoords([coords.latitude, coords.longitude]);
@@ -236,6 +236,13 @@ export default function HomePage() {
         () => {},
         { timeout: 8000, maximumAge: 300000 }
       );
+    };
+    // Only auto-detect if user has already granted permission — avoids
+    // Chrome showing its own permission dialog before the app's LocationPopup.
+    if (navigator.geolocation) {
+      navigator.permissions?.query({ name: "geolocation" }).then((result) => {
+        if (result.state === "granted") doGeoLookup();
+      }).catch(() => {});
     }
   }, []);
 
