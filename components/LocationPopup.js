@@ -93,10 +93,8 @@ export default function LocationPopup({ onClose }) {
   return (
     <>
       <style>{`
-        @keyframes cardIn { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
         @keyframes spin    { to { transform:rotate(360deg); } }
         @keyframes fadeIn  { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
-        .loc-card { animation: cardIn 280ms ease-out forwards; }
         .loc-chip {
           font-size: 11px; padding: 5px 10px; white-space: nowrap;
           border-radius: 50px; cursor: pointer; transition: all 150ms;
@@ -115,10 +113,10 @@ export default function LocationPopup({ onClose }) {
           box-shadow: 0 0 0 3px rgba(0,86,210,0.12) !important;
           outline: none !important;
         }
-        @media (max-width: 390px) {
-          .loc-headline { font-size: 22px !important; }
-          .loc-header   { padding: 20px 20px 24px 20px !important; }
-          .loc-body     { padding: 20px !important; }
+        @media (max-width: 430px) {
+          .loc-headline { font-size: 24px !important; }
+          .loc-header   { padding: 18px 20px 22px 20px !important; }
+          .loc-body     { padding: 20px 20px 24px 20px !important; max-height: calc(100svh - 260px) !important; }
         }
       `}</style>
 
@@ -128,7 +126,7 @@ export default function LocationPopup({ onClose }) {
 
         <SwipeableSheet
           onClose={onClose}
-          className="loc-card relative w-full max-w-sm overflow-hidden rounded-t-[24px] shadow-2xl sm:rounded-[24px]"
+          className="animate-slide-up relative w-full max-w-sm overflow-hidden rounded-t-[24px] shadow-2xl sm:rounded-[24px]"
         >
           {/* ── Blue top section ── */}
           <div
@@ -193,8 +191,8 @@ export default function LocationPopup({ onClose }) {
 
           {/* ── White bottom section ── */}
           <div
-            className="loc-body bg-white"
-            style={{ padding: "24px 24px 28px 24px", isolation: "isolate" }}
+            className="loc-body bg-white overflow-y-auto"
+            style={{ padding: "24px 24px 28px 24px", isolation: "isolate", maxHeight: "calc(100svh - 260px)" }}
           >
             {/* Error banner */}
             {error && (
@@ -261,7 +259,7 @@ export default function LocationPopup({ onClose }) {
             {suggestions.length === 0 && (
               <div style={{ marginTop: 12 }}>
                 <p style={{ fontSize: 11, color: "#9ca3af", fontWeight: 500, marginBottom: 8 }}>Popular cities</p>
-                <div className="chips-scroll" style={{ display: "flex", flexWrap: "nowrap", gap: 8, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 }}>
+                <div className="chips-scroll" style={{ display: "flex", flexWrap: "nowrap", gap: 8, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2, paddingRight: 16 }}>
                   {POPULAR_CITIES.map((city) => (
                     <button
                       key={city}
@@ -317,6 +315,7 @@ export default function LocationPopup({ onClose }) {
               type="button"
               onClick={handleDetectLocation}
               disabled={locationState === "loading"}
+              className={locationState === "idle" ? "loc-pulse" : ""}
               style={{
                 display: "flex", alignItems: "center", justifyContent: "center",
                 gap: 10, width: "100%", height: 52, border: "none",
@@ -376,8 +375,8 @@ export default function LocationPopup({ onClose }) {
             </div>
           </div>
 
-          {/* iOS safe-area spacer */}
-          <div className="bg-white" style={{ paddingBottom: "max(8px, env(safe-area-inset-bottom))" }} />
+          {/* Spacer — clears bottom nav bar + iOS home indicator */}
+          <div className="bg-white" style={{ paddingBottom: "max(72px, calc(env(safe-area-inset-bottom) + 72px))" }} />
         </SwipeableSheet>
       </div>
     </>
