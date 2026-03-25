@@ -131,7 +131,7 @@ export default function LocationPopup({ onClose }) {
         <SwipeableSheet
           onClose={onClose}
           hideHandle
-          className="loc-popup-sheet animate-slide-up relative flex w-full max-w-sm flex-col overflow-hidden rounded-[24px] shadow-2xl"
+          className="loc-popup-sheet animate-slide-up relative flex w-full max-w-[440px] flex-col overflow-hidden rounded-[24px] shadow-2xl"
         >
           {/* ── Blue top section ── */}
           <div
