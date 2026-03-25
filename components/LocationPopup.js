@@ -95,10 +95,9 @@ export default function LocationPopup({ onClose }) {
       <style>{`
         @keyframes spin    { to { transform:rotate(360deg); } }
         @keyframes fadeIn  { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
-        /* Bottom sheet on mobile, floating card on desktop */
         .loc-popup-sheet {
-          max-height: 92vh;
-          max-height: 92svh;
+          max-height: 90vh;
+          max-height: 90svh;
         }
         .loc-chip {
           font-size: 11px; padding: 5px 10px; white-space: nowrap;
@@ -125,13 +124,14 @@ export default function LocationPopup({ onClose }) {
         }
       `}</style>
 
-      <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center sm:p-4">
+      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
         {/* Backdrop */}
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
         <SwipeableSheet
           onClose={onClose}
-          className="loc-popup-sheet animate-slide-up relative flex w-full flex-col overflow-hidden rounded-t-[28px] shadow-2xl sm:max-w-sm sm:rounded-[24px]"
+          hideHandle
+          className="loc-popup-sheet animate-slide-up relative flex w-full max-w-sm flex-col overflow-hidden rounded-[24px] shadow-2xl"
         >
           {/* ── Blue top section ── */}
           <div
