@@ -320,13 +320,13 @@ export default function LocationPopup({ onClose }) {
               type="button"
               onClick={handleDetectLocation}
               disabled={locationState === "loading"}
-              className={locationState === "idle" ? "loc-pulse" : ""}
+              className=""
               style={{
                 display: "flex", alignItems: "center", justifyContent: "center",
                 gap: 10, width: "100%", height: 52, border: "none",
                 borderRadius: 50, fontSize: 16, fontWeight: 700, color: "#fff",
                 background: locationState === "success" ? "#16a34a" : "#0056D2",
-                boxShadow: locationState === "success" ? "none" : "0 4px 16px rgba(0,86,210,0.3)",
+                boxShadow: "none",
                 transition: "background 300ms",
                 cursor: locationState === "loading" ? "not-allowed" : "pointer",
                 marginBottom: 8,
