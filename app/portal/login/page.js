@@ -44,7 +44,7 @@ export default function PortalLoginPage() {
     <div className="min-h-screen bg-[#001f5b]">
 
       {/* ── Hero ── */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-20 pt-14 text-center">
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-20 pt-14 text-center md:pb-14">
         {/* Dot-grid */}
         <div
           aria-hidden="true"
@@ -80,28 +80,28 @@ export default function PortalLoginPage() {
           <p className="mt-1 text-sm text-blue-200">Partner Portal</p>
 
           {/* Trust chips */}
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] font-semibold text-blue-200">
-            <span className="flex items-center gap-1">
+          <div className="mt-4 flex items-center justify-center gap-x-3 text-[11px] font-semibold text-blue-200">
+            <span className="flex items-center gap-1 whitespace-nowrap">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#86efac" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
               Verified Partner
             </span>
-            <span className="h-3 w-px bg-blue-300/40" />
-            <span className="flex items-center gap-1">
+            <span className="h-3 w-px bg-blue-300/40 shrink-0" />
+            <span className="flex items-center gap-1 whitespace-nowrap">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-              Manage Bookings
+              Bookings
             </span>
-            <span className="h-3 w-px bg-blue-300/40" />
-            <span className="flex items-center gap-1">
+            <span className="h-3 w-px bg-blue-300/40 shrink-0" />
+            <span className="flex items-center gap-1 whitespace-nowrap">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              24/7 Dashboard
+              24/7 Support
             </span>
           </div>
         </div>
       </div>
 
       {/* ── Pull-up ── */}
-      <div className="-mt-12 rounded-t-[2.5rem] bg-[#F8FAFC]">
-        <div className="mx-auto max-w-sm px-4 pb-10 pt-7" style={{ paddingBottom: "max(40px, calc(env(safe-area-inset-bottom) + 24px))" }}>
+      <div className="-mt-12 min-h-screen rounded-t-[2.5rem] bg-[#F8FAFC]">
+        <div className="mx-auto max-w-sm px-4 pt-12" style={{ paddingBottom: "max(40px, calc(env(safe-area-inset-bottom) + 24px))" }}>
 
           <h2 className="text-xl font-black tracking-tight text-slate-900">Welcome back</h2>
           <p className="mt-1 text-sm text-slate-500">Sign in to manage your garage</p>
@@ -206,15 +206,6 @@ export default function PortalLoginPage() {
               New garage partner?{" "}
               <Link href="/portal/register" className="font-bold text-[#0056D2] transition-colors duration-150 hover:underline">
                 Register here
-              </Link>
-            </p>
-          </div>
-
-          <div className="mt-6 text-center">
-            <p className="text-xs text-slate-400">
-              Customer app?{" "}
-              <Link href="/" className="font-semibold text-slate-500 underline underline-offset-2 transition-colors duration-150 hover:text-slate-700">
-                Go to GarageDekho
               </Link>
             </p>
           </div>
