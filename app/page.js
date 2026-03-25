@@ -349,19 +349,15 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-5xl px-4 md:px-8">
 
           {/* Live garages badge */}
-          <div className="mb-6 inline-flex animate-slide-up items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 backdrop-blur-sm">
-            {openCount !== null ? (
-              <>
-                <span className="relative flex h-2 w-2" aria-hidden="true">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
-                </span>
-                <span className="text-xs font-semibold text-green-300">{openCount} garages open right now</span>
-              </>
-            ) : (
-              <span className="text-xs font-semibold text-blue-200">Roadside help, when you need it most</span>
-            )}
-          </div>
+          {openCount !== null && (
+            <div className="mb-6 inline-flex animate-slide-up items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 backdrop-blur-sm">
+              <span className="relative flex h-2 w-2" aria-hidden="true">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
+              </span>
+              <span className="text-xs font-semibold text-green-300">{openCount} garages open right now</span>
+            </div>
+          )}
 
           {/* Z-pattern layout: headline left → search right (desktop) */}
           <div className="flex flex-col gap-8 md:flex-row md:items-center md:gap-14">

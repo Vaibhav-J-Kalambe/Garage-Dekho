@@ -130,7 +130,7 @@ export default function LocationPopup({ onClose }) {
 
         <SwipeableSheet
           onClose={onClose}
-          className="loc-popup-sheet animate-slide-up relative flex w-full flex-col overflow-hidden rounded-t-[24px] shadow-2xl sm:max-w-[500px] sm:rounded-[24px]"
+          className="loc-popup-sheet animate-slide-up relative flex w-full flex-col overflow-hidden rounded-t-[24px] shadow-2xl sm:max-w-[440px] sm:rounded-[24px]"
           hideHandle={false}
         >
           {/* ── Blue top section ── */}
@@ -148,7 +148,6 @@ export default function LocationPopup({ onClose }) {
               }}
             />
             {/* Glow blobs — each isolated so blur stays contained */}
-            <div className="pointer-events-none absolute -right-20 -top-20 h-32 w-32 rounded-full" style={{ background: "rgba(96,165,250,0.25)", filter: "blur(28px)" }} />
             <div className="pointer-events-none absolute -bottom-4 -left-4 h-24 w-24 rounded-full" style={{ background: "rgba(125,211,252,0.18)", filter: "blur(24px)" }} />
 
             {/* Logo row + close button */}
