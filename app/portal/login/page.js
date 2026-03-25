@@ -103,13 +103,10 @@ export default function PortalLoginPage() {
       <div className="-mt-12 min-h-screen rounded-t-[2.5rem] bg-[#F8FAFC]">
         <div className="mx-auto max-w-sm px-4 pt-12" style={{ paddingBottom: "max(40px, calc(env(safe-area-inset-bottom) + 24px))" }}>
 
-          <h2 className="text-xl font-black tracking-tight text-slate-900">Welcome back</h2>
-          <p className="mt-1 text-sm text-slate-500">Sign in to manage your garage</p>
-
           {/* Error */}
           <div aria-live="polite" aria-atomic="true">
             {error && (
-              <div role="alert" className="mt-4 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+              <div role="alert" className="mb-3 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" className="mt-0.5 shrink-0" aria-hidden="true">
                   <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
                 </svg>
@@ -119,8 +116,10 @@ export default function PortalLoginPage() {
           </div>
 
           {/* Form card */}
-          <div className="mt-5 rounded-2xl bg-white p-5 shadow-card">
-            <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          <div className="rounded-2xl bg-white p-5 shadow-card">
+            <h2 className="text-xl font-black tracking-tight text-slate-900">Welcome back</h2>
+            <p className="mt-1 mb-5 text-sm text-slate-500">Sign in to manage your garage</p>
+            <form onSubmit={handleLogin} className="flex flex-col gap-4 mt-0">
 
               {/* Email */}
               <div className="flex flex-col gap-1.5">
