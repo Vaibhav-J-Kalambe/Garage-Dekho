@@ -462,7 +462,7 @@ export default function HomePage() {
               <div>
                 {/* text-xl (20px) for section headers, tracking-tight (design guide) */}
                 <h2 id="services-heading" className="text-xl font-black tracking-tight text-slate-900">
-                  What do you need?
+                  How can we help you?
                 </h2>
                 <p className="mt-1 text-sm leading-relaxed text-slate-400">
                   Tap a service to find nearby garages
