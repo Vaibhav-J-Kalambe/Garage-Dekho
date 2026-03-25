@@ -95,17 +95,10 @@ export default function LocationPopup({ onClose }) {
       <style>{`
         @keyframes spin    { to { transform:rotate(360deg); } }
         @keyframes fadeIn  { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
-        /* Mobile: full-screen sheet. Desktop (sm+): capped floating card */
+        /* Bottom sheet on mobile, floating card on desktop */
         .loc-popup-sheet {
-          height: 100vh;
-          height: -webkit-fill-available;
-          height: 100svh;
-        }
-        @media (min-width: 640px) {
-          .loc-popup-sheet {
-            height: auto;
-            max-height: 90vh;
-          }
+          max-height: 92vh;
+          max-height: 92svh;
         }
         .loc-chip {
           font-size: 11px; padding: 5px 10px; white-space: nowrap;
@@ -133,18 +126,17 @@ export default function LocationPopup({ onClose }) {
       `}</style>
 
       <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center sm:p-4">
-        {/* Backdrop — desktop only; on mobile the card is full-screen */}
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm sm:block" onClick={onClose} />
+        {/* Backdrop */}
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
         <SwipeableSheet
           onClose={onClose}
-          hideHandle
-          className="loc-popup-sheet animate-slide-up relative flex w-full flex-col overflow-hidden shadow-2xl sm:max-w-sm sm:rounded-[24px]"
+          className="loc-popup-sheet animate-slide-up relative flex w-full flex-col overflow-hidden rounded-t-[28px] shadow-2xl sm:max-w-sm sm:rounded-[24px]"
         >
           {/* ── Blue top section ── */}
           <div
             className="loc-header relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]"
-            style={{ padding: "max(24px, calc(env(safe-area-inset-top) + 16px)) 24px 28px 24px", flexShrink: 0 }}
+            style={{ padding: "24px 24px 28px 24px", flexShrink: 0 }}
           >
             {/* Dot-grid texture */}
             <div
