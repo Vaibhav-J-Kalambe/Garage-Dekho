@@ -95,6 +95,12 @@ export default function LocationPopup({ onClose }) {
       <style>{`
         @keyframes spin    { to { transform:rotate(360deg); } }
         @keyframes fadeIn  { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
+        /* max-height fallback chain for Safari < 15.4 (no svh support) */
+        .loc-popup-sheet {
+          max-height: 100vh;
+          max-height: -webkit-fill-available;
+          max-height: 100svh;
+        }
         .loc-chip {
           font-size: 11px; padding: 5px 10px; white-space: nowrap;
           border-radius: 50px; cursor: pointer; transition: all 150ms;
@@ -120,19 +126,18 @@ export default function LocationPopup({ onClose }) {
         }
       `}</style>
 
-      <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4">
+      <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center sm:p-4">
         {/* Backdrop — only this element has backdrop-filter */}
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
         <SwipeableSheet
           onClose={onClose}
-          className="animate-slide-up relative flex w-full max-w-sm flex-col overflow-hidden rounded-t-[24px] shadow-2xl sm:rounded-[24px]"
-          style={{ maxHeight: "100svh" }}
+          className="loc-popup-sheet animate-slide-up relative flex w-full max-w-sm flex-col overflow-hidden rounded-t-[24px] shadow-2xl sm:rounded-[24px]"
         >
           {/* ── Blue top section ── */}
           <div
             className="loc-header relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]"
-            style={{ padding: "24px 24px 28px 24px" }}
+            style={{ padding: "24px 24px 28px 24px", flexShrink: 0 }}
           >
             {/* Dot-grid texture */}
             <div
@@ -375,8 +380,8 @@ export default function LocationPopup({ onClose }) {
               <p className="text-[11px] text-slate-400">Only used to show nearby garages · Never shared</p>
             </div>
 
-            {/* Bottom spacer — clears bottom nav bar + iOS home indicator */}
-            <div style={{ height: "max(72px, calc(env(safe-area-inset-bottom) + 65px))" }} />
+            {/* Bottom spacer — clears iOS home indicator only (nav is now below z-index) */}
+            <div style={{ height: "max(24px, calc(env(safe-area-inset-bottom) + 16px))" }} />
           </div>
         </SwipeableSheet>
       </div>
