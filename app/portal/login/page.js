@@ -41,7 +41,7 @@ export default function PortalLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#001f5b]">
+    <div className="flex min-h-screen flex-col bg-[#F8FAFC]">
 
       {/* ── Hero ── */}
       <div className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-20 pt-14 text-center md:pb-14">
@@ -100,7 +100,7 @@ export default function PortalLoginPage() {
       </div>
 
       {/* ── Pull-up ── */}
-      <div className="-mt-12 min-h-screen rounded-t-[2.5rem] bg-[#F8FAFC]">
+      <div className="-mt-12 flex-1 rounded-t-[2.5rem] bg-[#F8FAFC]">
         <div className="mx-auto max-w-sm px-4 pt-12" style={{ paddingBottom: "max(40px, calc(env(safe-area-inset-bottom) + 24px))" }}>
 
           {/* Error */}
