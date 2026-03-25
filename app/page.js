@@ -331,7 +331,7 @@ export default function HomePage() {
       ══════════════════════════════════════════════════════════ */}
       <section
         aria-label="Search for garages"
-        className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] px-4 pb-28 pt-[77px] md:px-8 md:pb-36 md:pt-[93px]"
+        className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-28 pt-[77px] md:pb-36 md:pt-[93px]"
       >
         {/* Dot-grid texture — subtle ambient pattern (2026 trend: cinematic fields) */}
         <div
@@ -346,7 +346,7 @@ export default function HomePage() {
         <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-blue-400/10 blur-3xl" />
         <div aria-hidden="true" className="pointer-events-none absolute -bottom-16 left-0 h-56 w-56 rounded-full bg-indigo-500/15 blur-3xl" />
 
-        <div className="relative mx-auto max-w-5xl">
+        <div className="relative mx-auto max-w-5xl px-4 md:px-8">
 
           {/* Live garages badge */}
           <div className="mb-6 inline-flex animate-slide-up items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 backdrop-blur-sm">
