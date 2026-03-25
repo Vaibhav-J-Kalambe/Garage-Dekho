@@ -41,10 +41,10 @@ export default function PortalLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F8FAFC]">
+    <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
 
       {/* ── Hero ── */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-20 pt-14 text-center md:pb-14">
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-32 pt-14 text-center">
         {/* Dot-grid */}
         <div
           aria-hidden="true"
@@ -100,8 +100,8 @@ export default function PortalLoginPage() {
       </div>
 
       {/* ── Pull-up ── */}
-      <div className="-mt-12 flex-1 rounded-t-[2.5rem] bg-[#F8FAFC]">
-        <div className="mx-auto max-w-sm px-4 pt-20" style={{ paddingBottom: "max(40px, calc(env(safe-area-inset-bottom) + 24px))" }}>
+      <div className="relative -mt-12 flex-1 rounded-t-[3rem] bg-[#F8FAFC] flex flex-col justify-center overflow-y-auto">
+        <div className="mx-auto w-full max-w-sm px-4 py-10" style={{ paddingBottom: "max(40px, calc(env(safe-area-inset-bottom) + 40px))" }}>
 
           {/* Error */}
           <div aria-live="polite" aria-atomic="true">
@@ -116,7 +116,7 @@ export default function PortalLoginPage() {
           </div>
 
           {/* Form card */}
-          <div className="rounded-2xl bg-white p-6 shadow-card">
+          <div className="rounded-3xl bg-white p-6 shadow-card">
             <h2 className="text-2xl font-black tracking-tight text-slate-900">Welcome back</h2>
             <p className="mt-1.5 mb-6 text-sm text-slate-500">Sign in to manage your garage</p>
             <form onSubmit={handleLogin} className="flex flex-col gap-5 mt-0">
@@ -201,7 +201,7 @@ export default function PortalLoginPage() {
               </button>
             </form>
 
-            <p className="mt-7 text-center text-sm text-slate-500">
+            <p className="mt-6 text-center text-sm text-slate-500">
               New garage partner?{" "}
               <Link href="/portal/register" className="font-bold text-[#0056D2] transition-colors duration-150 hover:underline">
                 Register here
