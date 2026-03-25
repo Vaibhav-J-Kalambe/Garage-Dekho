@@ -2,11 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
-import {
-  Siren, MapPin, Clock, CheckCircle2, X, ChevronRight,
-  Phone, MessageCircle, Loader2, Users, AlertTriangle,
-  Navigation, Shield,
-} from "lucide-react";
 import { supabase } from "../../../lib/supabase";
 import { usePortalAuth } from "../../../context/PortalAuthContext";
 
@@ -30,37 +25,46 @@ function haversine(lat1, lng1, lat2, lng2) {
 
 function timeAgo(dateStr) {
   const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
-  if (diff < 60)  return `${diff}s ago`;
+  if (diff < 60)   return `${diff}s ago`;
   if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
   return `${Math.floor(diff / 3600)}h ago`;
 }
 
-// ── Main component
+// ── Inline SVG helpers ────────────────────────────────────────────────────────
+function IconClose({ size = 16, ...p })    { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true" {...p}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>; }
+function IconBack({ size = 16, ...p })     { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...p}><path d="M19 12H5M12 5l-7 7 7 7"/></svg>; }
+function IconCheck({ size = 16, ...p })    { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...p}><polyline points="20 6 9 17 4 12"/></svg>; }
+function IconCheckCircle({ size = 16, ...p }) { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...p}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>; }
+function IconPin({ size = 16, ...p })      { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...p}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>; }
+function IconClock({ size = 16, ...p })    { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...p}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>; }
+function IconNav({ size = 16, ...p })      { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...p}><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>; }
+function IconUsers({ size = 32, ...p })    { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>; }
+function IconShield({ size = 12, ...p })   { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true" {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>; }
+function IconSiren({ size = 32, ...p })    { return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...p}><path d="M11.5 2C6.81 2 3 5.81 3 10.5V19h18v-8.5C21 5.81 17.19 2 12.5 2"/><path d="M12 6v4"/><path d="M19 10h2M3 10H1M19.07 4.93l-1.41 1.41M6.34 6.34 4.93 4.93"/><path d="M3 19h18v2H3z"/></svg>; }
+function IconSpinner({ size = 16, ...p })  { return <svg className="animate-spin" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true" {...p}><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round"/></svg>; }
+
+// ── Main component ────────────────────────────────────────────────────────────
 export default function PortalSosPage() {
   const { garage } = usePortalAuth();
 
   const [pendingSos,   setPendingSos]   = useState([]);
-  const [activeSos,    setActiveSos]    = useState([]); // accepted / arrived by this garage
+  const [activeSos,    setActiveSos]    = useState([]);
   const [completedSos, setCompletedSos] = useState([]);
   const [loading,      setLoading]      = useState(true);
 
-  // Dispatch modal state
-  const [dispatching,  setDispatching]  = useState(null); // sos_request row being dispatched
+  const [dispatching,  setDispatching]  = useState(null);
   const [mechanics,    setMechanics]    = useState([]);
   const [selMechanic,  setSelMechanic]  = useState(null);
   const [dispatching2, setDispatching2] = useState(false);
 
-  // Live tracking state
-  const [tracking,    setTracking]    = useState(null); // { request, assignment }
+  const [tracking,    setTracking]    = useState(null);
   const [mechCoords,  setMechCoords]  = useState(null);
 
-  // OTP verification state
-  const [otpInput,       setOtpInput]       = useState("");
-  const [otpError,       setOtpError]       = useState(null);
-  const [verifying,      setVerifying]      = useState(false);
+  const [otpInput,  setOtpInput]  = useState("");
+  const [otpError,  setOtpError]  = useState(null);
+  const [verifying, setVerifying] = useState(false);
 
-  // Dispatch error
-  const [dispatchError,  setDispatchError]  = useState(null);
+  const [dispatchError, setDispatchError] = useState(null);
 
   const channelRef = useRef(null);
   const trackRef   = useRef(null);
@@ -79,7 +83,6 @@ export default function PortalSosPage() {
   async function fetchAllSos() {
     setLoading(true);
     const today = new Date(); today.setHours(0, 0, 0, 0);
-
     const { data } = await supabase
       .from("sos_requests")
       .select("*, sos_assignments(*)")
@@ -94,7 +97,6 @@ export default function PortalSosPage() {
         : null,
     }));
 
-    // isMyJob: prefer garage_id match, fallback to garage_name for older records
     const isMyJob = (r) =>
       r.assignment?.garage_id
         ? r.assignment.garage_id === garage.id
@@ -128,20 +130,16 @@ export default function PortalSosPage() {
     trackRef.current = supabase
       .channel(`portal-track-${requestId}`)
       .on("postgres_changes", {
-        event: "UPDATE",
-        schema: "public",
-        table: "sos_assignments",
+        event: "UPDATE", schema: "public", table: "sos_assignments",
         filter: `request_id=eq.${requestId}`,
       }, (payload) => {
         const d = payload.new;
-        if (d.mechanic_lat && d.mechanic_lng) {
-          setMechCoords([d.mechanic_lat, d.mechanic_lng]);
-        }
+        if (d.mechanic_lat && d.mechanic_lng) setMechCoords([d.mechanic_lat, d.mechanic_lng]);
       })
       .subscribe();
   }
 
-  async function handleAccept(req) {
+  function handleAccept(req) {
     setDispatching(req);
     setSelMechanic(null);
     setDispatchError(null);
@@ -150,9 +148,7 @@ export default function PortalSosPage() {
   async function confirmDispatch() {
     if (!selMechanic || !dispatching) return;
     setDispatching2(true);
-
     const mechLink = `${window.location.origin}/sos/mechanic/${dispatching.id}`;
-
     const res = await fetch("/api/sos/accept", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -166,23 +162,15 @@ export default function PortalSosPage() {
     });
 
     if (res.ok) {
-      // Mark mechanic as busy
-      await supabase
-        .from("portal_mechanics")
-        .update({ status: "busy" })
-        .eq("id", selMechanic.id);
-
-      // Send WhatsApp to mechanic with their tracking link
+      await supabase.from("portal_mechanics").update({ status: "busy" }).eq("id", selMechanic.id);
       if (selMechanic.phone) {
         const msg = encodeURIComponent(
           `🚨 SOS Job Assigned!\n\nIssue: ${dispatching.issue_type}\nLocation: ${dispatching.user_address || "Shared on map"}\n\nOpen your tracking link:\n${mechLink}`
         );
         const digits = selMechanic.phone.replace(/\D/g, "");
-        // If number already starts with country code (10+ digits with leading digits != 10), use as-is; else prepend 91
         const waNumber = digits.length > 10 ? digits : `91${digits}`;
         window.open(`https://wa.me/${waNumber}?text=${msg}`, "_blank");
       }
-
       setDispatching(null);
       setDispatching2(false);
       fetchAllSos();
@@ -214,11 +202,8 @@ export default function PortalSosPage() {
       body: JSON.stringify({ requestId: tracking.id, otp: otpInput.trim() }),
     });
     if (res.ok) {
-      // Mark mechanic available again
       const mechanic = mechanics.find((m) => m.name === tracking.assignment?.mechanic_name);
-      if (mechanic) {
-        await supabase.from("portal_mechanics").update({ status: "available" }).eq("id", mechanic.id);
-      }
+      if (mechanic) await supabase.from("portal_mechanics").update({ status: "available" }).eq("id", mechanic.id);
       trackRef.current?.unsubscribe();
       setTracking(null);
       fetchAllSos();
@@ -228,20 +213,21 @@ export default function PortalSosPage() {
     setVerifying(false);
   }
 
-  // ── Tracking overlay
+  // ── Tracking overlay (full-screen map — keep compact layout) ─────────────
   if (tracking) {
     const userCoords = [tracking.user_lat, tracking.user_lng];
-    const isArrived = tracking.status === "arrived";
+    const isArrived  = tracking.status === "arrived";
     return (
-      <div className="flex h-dvh flex-col bg-slate-100 pb-20">
+      <div className="flex h-dvh flex-col bg-slate-100" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
         {/* Map */}
         <div className="flex-1 relative">
           <SosMap userCoords={userCoords} mechanicCoords={mechCoords} className="h-full w-full" />
           <button
             onClick={() => { setTracking(null); trackRef.current?.unsubscribe(); }}
-            className="absolute top-4 left-4 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md text-slate-700 hover:bg-slate-50"
+            aria-label="Close tracking"
+            className="absolute left-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-md text-slate-700 transition-colors duration-150 hover:bg-slate-50 active:scale-95"
           >
-            <X className="h-4 w-4" />
+            <IconClose />
           </button>
           <div className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-black/70 backdrop-blur-sm px-4 py-2">
             <span className={`h-2 w-2 rounded-full ${isArrived ? "bg-green-400" : "bg-blue-400 animate-ping"}`} />
@@ -254,7 +240,7 @@ export default function PortalSosPage() {
         {/* Bottom sheet */}
         <div className="rounded-t-3xl bg-white p-5 shadow-2xl space-y-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0056D2] text-xl font-black text-white">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0056D2] text-xl font-black text-white shrink-0">
               {(tracking.assignment?.mechanic_name || "M").charAt(0)}
             </div>
             <div>
@@ -269,14 +255,12 @@ export default function PortalSosPage() {
             </div>
           ) : (
             <div className="space-y-3">
-              <div className="rounded-2xl bg-green-50 px-4 py-3 text-sm text-green-700 font-bold flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4" /> Mechanic has arrived at customer location!
+              <div className="flex items-center gap-2 rounded-2xl bg-green-50 px-4 py-3 text-sm font-bold text-green-700">
+                <IconCheckCircle size={16} className="text-green-600 shrink-0" />
+                Mechanic has arrived at customer location!
               </div>
-
               <div>
-                <p className="text-xs font-black uppercase tracking-wide text-slate-500 mb-2">
-                  Enter OTP from Customer
-                </p>
+                <p className="mb-2 text-xs font-black uppercase tracking-wide text-slate-500">Enter OTP from Customer</p>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -286,20 +270,21 @@ export default function PortalSosPage() {
                     value={otpInput}
                     onChange={(e) => { setOtpInput(e.target.value.replace(/\D/g, "").slice(0, 4)); setOtpError(null); }}
                     placeholder="_ _ _ _"
-                    className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-2xl font-black tracking-[0.5em] text-slate-900 outline-none focus:border-[#0056D2] focus:ring-2 focus:ring-[#0056D2]/20"
+                    style={{ fontSize: 16 }}
+                    className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-2xl font-black tracking-[0.5em] text-slate-900 outline-none transition-[border-color,box-shadow] duration-150 focus:border-[#0056D2] focus:ring-2 focus:ring-[#0056D2]/15 min-h-[44px]"
                   />
                   <button
                     onClick={handleVerifyOtp}
                     disabled={verifying}
-                    className="flex items-center gap-1.5 rounded-xl bg-[#0056D2] px-5 py-3 text-sm font-bold text-white transition hover:brightness-110 active:scale-95 disabled:opacity-60"
+                    className="flex min-h-[44px] items-center gap-1.5 rounded-xl bg-[#0056D2] px-5 text-sm font-bold text-white transition-[filter,transform] duration-150 hover:brightness-110 active:scale-95 disabled:opacity-60"
                   >
-                    {verifying ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+                    {verifying ? <IconSpinner stroke="white" /> : <IconCheck size={16} stroke="white" />}
                     Verify
                   </button>
                 </div>
                 {otpError && <p className="mt-2 text-xs text-red-500">{otpError}</p>}
-                <p className="mt-2 text-xs text-slate-400 flex items-center gap-1">
-                  <Shield className="h-3 w-3" /> OTP is shown on the customer's screen
+                <p className="mt-2 flex items-center gap-1 text-xs text-slate-400">
+                  <IconShield className="shrink-0" /> OTP is shown on the customer's screen
                 </p>
               </div>
             </div>
@@ -309,209 +294,284 @@ export default function PortalSosPage() {
     );
   }
 
-  // ── Dispatch modal
+  // ── Dispatch modal ────────────────────────────────────────────────────────
   if (dispatching) {
     return (
-      <div className="flex min-h-screen flex-col bg-slate-100 pb-24">
-        {/* Header */}
-        <div className="bg-[#0F172A] px-5 pt-5 pb-5">
+      <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
+
+        {/* Hero */}
+        <div
+          data-hero
+          className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-28 pt-14 text-center"
+        >
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-40"
+            style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
+          <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
+          <div aria-hidden="true" className="pointer-events-none absolute -bottom-10 -left-10 h-56 w-56 rounded-full bg-sky-300/20 blur-3xl" />
+
           <button
             onClick={() => setDispatching(null)}
-            className="mb-3 flex items-center gap-2 text-sm text-slate-400"
+            aria-label="Cancel"
+            className="absolute left-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white transition-colors duration-150 hover:bg-white/25 active:scale-95"
           >
-            <X className="h-4 w-4" /> Cancel
+            <IconBack />
           </button>
-          <h1 className="text-lg font-black text-white">Dispatch Mechanic</h1>
-          <p className="text-sm text-slate-400 mt-1">
-            {ISSUE_ICONS[dispatching.issue_type] || "⚠️"} {dispatching.issue_type} ·{" "}
-            {dispatching.user_address || "Customer location"}
-          </p>
+
+          <div className="relative z-10 mx-auto max-w-sm px-4">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-lg">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+              </svg>
+            </div>
+            <h1 className="text-2xl font-black text-white">Dispatch Mechanic</h1>
+            <p className="mt-1 text-sm text-blue-200">
+              {ISSUE_ICONS[dispatching.issue_type] || "⚠️"} {dispatching.issue_type} · {dispatching.user_address || "Customer location"}
+            </p>
+          </div>
         </div>
 
-        <div className="px-4 pt-4 space-y-4">
-          <p className="text-xs font-black uppercase tracking-widest text-slate-500">Select Mechanic</p>
+        {/* Pull-up */}
+        <div className="relative -mt-12 flex-1 rounded-t-[3rem] bg-[#F8FAFC] overflow-y-auto">
+          <div
+            className="mx-auto w-full max-w-sm px-4 py-8 space-y-4"
+            style={{ paddingBottom: "max(40px, calc(env(safe-area-inset-bottom) + 40px))" }}
+          >
+            <p className="text-xs font-black uppercase tracking-widest text-slate-500">Select Mechanic</p>
 
-          {mechanics.length === 0 ? (
-            <div className="rounded-2xl bg-white p-6 text-center shadow-sm">
-              <Users className="h-8 w-8 text-slate-300 mx-auto mb-2" />
-              <p className="text-sm font-semibold text-slate-600">No mechanics added yet.</p>
-              <p className="text-xs text-slate-400 mt-1">Add your team in the Team tab first.</p>
-            </div>
-          ) : (
-            mechanics.map((m) => (
+            {mechanics.length === 0 ? (
+              <div className="rounded-2xl bg-white p-6 text-center shadow-card">
+                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
+                  <IconUsers size={28} className="text-slate-300" />
+                </div>
+                <p className="text-sm font-semibold text-slate-600">No mechanics added yet.</p>
+                <p className="mt-1 text-xs text-slate-400">Add your team in the Team tab first.</p>
+              </div>
+            ) : (
+              mechanics.map((m) => (
+                <button
+                  key={m.id}
+                  onClick={() => m.status === "available" && setSelMechanic(m)}
+                  disabled={m.status !== "available"}
+                  className={`w-full flex items-center gap-4 rounded-2xl bg-white p-4 shadow-card text-left transition-[box-shadow,transform] duration-150 min-h-[72px] ${
+                    m.status !== "available" ? "opacity-50 cursor-not-allowed" :
+                    selMechanic?.id === m.id ? "ring-2 ring-[#0056D2] shadow-[0_0_0_2px_rgba(0,86,210,0.15)]" :
+                    "hover:shadow-md active:scale-[0.98]"
+                  }`}
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#0056D2] text-lg font-black text-white">
+                    {m.name.charAt(0)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-black text-slate-900 truncate">{m.name}</p>
+                    <p className="text-xs text-slate-500">{m.specialization}</p>
+                  </div>
+                  <div className={`shrink-0 flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
+                    m.status === "available" ? "bg-green-100 text-green-700" :
+                    m.status === "busy"      ? "bg-red-100 text-red-700" :
+                                               "bg-slate-100 text-slate-600"
+                  }`}>
+                    <span className={`h-1.5 w-1.5 rounded-full ${
+                      m.status === "available" ? "bg-green-500" :
+                      m.status === "busy"      ? "bg-red-500" : "bg-slate-400"
+                    }`} />
+                    {m.status.charAt(0).toUpperCase() + m.status.slice(1)}
+                  </div>
+                  {selMechanic?.id === m.id && (
+                    <IconCheckCircle size={18} className="text-[#0056D2] shrink-0" />
+                  )}
+                </button>
+              ))
+            )}
+
+            {dispatchError && (
+              <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
+                {dispatchError}
+              </div>
+            )}
+
+            {selMechanic && (
               <button
-                key={m.id}
-                onClick={() => m.status === "available" && setSelMechanic(m)}
-                disabled={m.status !== "available"}
-                className={`w-full flex items-center gap-4 rounded-2xl bg-white p-4 shadow-sm text-left transition ${
-                  m.status !== "available" ? "opacity-50 cursor-not-allowed" :
-                  selMechanic?.id === m.id ? "ring-2 ring-[#0056D2] shadow-[0_0_0_2px_rgba(0,86,210,0.2)]" :
-                  "hover:bg-slate-50 active:scale-[0.98]"
-                }`}
+                onClick={confirmDispatch}
+                disabled={dispatching2}
+                aria-busy={dispatching2}
+                className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-[#0056D2] text-base font-black text-white shadow-glow-primary transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0056D2] text-lg font-black text-white shrink-0">
-                  {m.name.charAt(0)}
-                </div>
-                <div className="flex-1">
-                  <p className="font-black text-slate-900">{m.name}</p>
-                  <p className="text-xs text-slate-500">{m.specialization}</p>
-                </div>
-                <div className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
-                  m.status === "available" ? "bg-green-100 text-green-700" :
-                  m.status === "busy"      ? "bg-red-100 text-red-700" :
-                                             "bg-slate-100 text-slate-600"
-                }`}>
-                  <span className={`h-1.5 w-1.5 rounded-full ${
-                    m.status === "available" ? "bg-green-500" :
-                    m.status === "busy"      ? "bg-red-500" : "bg-slate-400"
-                  }`} />
-                  {m.status.charAt(0).toUpperCase() + m.status.slice(1)}
-                </div>
-                {selMechanic?.id === m.id && (
-                  <CheckCircle2 className="h-5 w-5 text-[#0056D2] shrink-0" />
-                )}
+                {dispatching2 ? <IconSpinner stroke="white" size={18} /> : <IconNav size={18} stroke="white" />}
+                {dispatching2 ? "Dispatching…" : `Dispatch ${selMechanic.name}`}
               </button>
-            ))
-          )}
-
-          {dispatchError && (
-            <div className="rounded-2xl bg-red-50 border border-red-200 px-4 py-3 text-sm font-semibold text-red-600">
-              {dispatchError}
-            </div>
-          )}
-
-          {selMechanic && (
-            <button
-              onClick={confirmDispatch}
-              disabled={dispatching2}
-              className="w-full flex items-center justify-center gap-2 rounded-2xl bg-[#0056D2] py-4 text-base font-black text-white shadow-[0_8px_24px_rgba(0,86,210,0.4)] transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
-            >
-              {dispatching2 ? <Loader2 className="h-5 w-5 animate-spin" /> : <Navigation className="h-5 w-5" />}
-              {dispatching2 ? "Dispatching…" : `Dispatch ${selMechanic.name}`}
-            </button>
-          )}
+            )}
+          </div>
         </div>
       </div>
     );
   }
 
-  // ── Main SOS list
+  // ── Main SOS list ─────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-slate-100 pb-24">
-      {/* Header */}
-      <div className="bg-[#0F172A] px-5 pt-5 pb-5">
-        <h1 className="text-lg font-black text-white">SOS Alerts</h1>
-        <p className="text-xs text-slate-400 mt-0.5">Real-time emergency requests near you</p>
+    <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
+
+      {/* Hero */}
+      <div
+        data-hero
+        className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-28 pt-14 text-center"
+      >
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-40"
+          style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute -bottom-10 -left-10 h-56 w-56 rounded-full bg-red-500/15 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute left-1/4 top-1/2 h-40 w-40 rounded-full bg-indigo-400/15 blur-2xl" />
+
+        <div className="relative z-10 mx-auto max-w-sm px-4">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-lg">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+          <h1 className="text-2xl font-black text-white">SOS Alerts</h1>
+          <p className="mt-1 text-sm text-blue-200">Real-time emergency requests near you</p>
+
+          {/* Live indicator chips */}
+          <div className="mt-4 flex items-center justify-center gap-3 text-[11px] font-semibold text-blue-200">
+            {pendingSos.length > 0 ? (
+              <span className="flex items-center gap-1 whitespace-nowrap">
+                <span className="h-2 w-2 rounded-full bg-red-400 animate-ping" />
+                {pendingSos.length} incoming
+              </span>
+            ) : (
+              <span className="flex items-center gap-1 whitespace-nowrap">
+                <span className="h-2 w-2 rounded-full bg-green-400" />
+                No pending alerts
+              </span>
+            )}
+            {activeSos.length > 0 && (
+              <>
+                <span className="h-3 w-px bg-blue-300/40 shrink-0" />
+                <span className="flex items-center gap-1 whitespace-nowrap">
+                  <span className="h-2 w-2 rounded-full bg-blue-400" />
+                  {activeSos.length} active
+                </span>
+              </>
+            )}
+          </div>
+        </div>
       </div>
 
-      <div className="px-4 pt-4 space-y-4">
-        {loading ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="h-8 w-8 rounded-full border-4 border-[#0056D2] border-t-transparent animate-spin" />
-          </div>
-        ) : (
-          <>
-            {/* Incoming */}
-            {pendingSos.length > 0 && (
-              <div>
-                <p className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">
-                  Incoming ({pendingSos.length})
-                </p>
-                <div className="space-y-3">
-                  {pendingSos.map((req) => (
-                    <IncomingSosCard key={req.id} req={req} onAccept={() => handleAccept(req)} />
-                  ))}
-                </div>
-              </div>
-            )}
+      {/* Pull-up */}
+      <div
+        className="relative -mt-12 flex-1 rounded-t-[3rem] bg-[#F8FAFC] overflow-y-auto"
+        style={{ paddingBottom: "max(96px, calc(env(safe-area-inset-bottom) + 96px))" }}
+      >
+        <div className="mx-auto max-w-sm px-4 pt-6 space-y-5">
 
-            {/* Active (dispatched by this garage) */}
-            {activeSos.length > 0 && (
-              <div>
-                <p className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">
-                  Active Jobs ({activeSos.length})
-                </p>
-                <div className="space-y-3">
-                  {activeSos.map((req) => (
-                    <ActiveSosCard key={req.id} req={req} onTrack={() => openTracking(req)} />
-                  ))}
-                </div>
-              </div>
-            )}
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <div className="h-8 w-8 rounded-full border-4 border-[#0056D2] border-t-transparent animate-spin" />
+            </div>
+          ) : (
+            <>
+              {/* Incoming */}
+              {pendingSos.length > 0 && (
+                <section>
+                  <p className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">
+                    Incoming ({pendingSos.length})
+                  </p>
+                  <div className="space-y-3">
+                    {pendingSos.map((req) => (
+                      <IncomingSosCard key={req.id} req={req} onAccept={() => handleAccept(req)} />
+                    ))}
+                  </div>
+                </section>
+              )}
 
-            {/* Completed today */}
-            {completedSos.length > 0 && (
-              <div>
-                <p className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">
-                  Completed Today ({completedSos.length})
-                </p>
-                <div className="space-y-2">
-                  {completedSos.map((req) => (
-                    <div key={req.id} className="flex items-center gap-3 rounded-2xl bg-white px-4 py-3 shadow-sm">
-                      <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-slate-900 truncate">{req.issue_type}</p>
-                        <p className="text-xs text-slate-400">{req.assignment?.mechanic_name} · Verified</p>
+              {/* Active */}
+              {activeSos.length > 0 && (
+                <section>
+                  <p className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">
+                    Active Jobs ({activeSos.length})
+                  </p>
+                  <div className="space-y-3">
+                    {activeSos.map((req) => (
+                      <ActiveSosCard key={req.id} req={req} onTrack={() => openTracking(req)} />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Completed today */}
+              {completedSos.length > 0 && (
+                <section>
+                  <p className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">
+                    Completed Today ({completedSos.length})
+                  </p>
+                  <div className="space-y-2">
+                    {completedSos.map((req) => (
+                      <div key={req.id} className="flex items-center gap-3 rounded-2xl bg-white px-4 py-3 shadow-card">
+                        <IconCheckCircle size={18} className="text-green-500 shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-slate-900 truncate">{req.issue_type}</p>
+                          <p className="text-xs text-slate-400">{req.assignment?.mechanic_name} · Verified</p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+                    ))}
+                  </div>
+                </section>
+              )}
 
-            {pendingSos.length === 0 && activeSos.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-200 mb-4">
-                  <Siren className="h-8 w-8 text-slate-400" />
+              {pendingSos.length === 0 && activeSos.length === 0 && (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
+                    <IconSiren size={30} className="text-slate-400" />
+                  </div>
+                  <p className="font-bold text-slate-700">No active SOS alerts</p>
+                  <p className="mt-1 text-sm text-slate-400">New alerts will appear here in real-time</p>
                 </div>
-                <p className="font-bold text-slate-600">No active SOS alerts</p>
-                <p className="text-sm text-slate-400 mt-1">New alerts will appear here in real-time</p>
-              </div>
-            )}
-          </>
-        )}
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
+// ── Sub-components ────────────────────────────────────────────────────────────
 function IncomingSosCard({ req, onAccept }) {
   return (
-    <div className="rounded-2xl bg-white shadow-sm overflow-hidden border-l-4 border-red-500">
+    <div className="overflow-hidden rounded-2xl border-l-4 border-red-500 bg-white shadow-card">
       <div className="p-4">
-        <div className="flex items-start justify-between mb-3">
+        <div className="mb-3 flex items-start justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xl">{ISSUE_ICONS[req.issue_type] || "⚠️"}</span>
+            <span className="text-xl" aria-hidden="true">{ISSUE_ICONS[req.issue_type] || "⚠️"}</span>
             <div>
               <p className="font-black text-slate-900">{req.issue_type}</p>
-              <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
-                <Clock className="h-3 w-3" /> {timeAgo(req.created_at)}
+              <p className="mt-0.5 flex items-center gap-1 text-xs text-slate-500">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                {timeAgo(req.created_at)}
               </p>
             </div>
           </div>
-          <span className="flex items-center gap-1 rounded-full bg-red-100 px-2.5 py-1 text-xs font-bold text-red-600">
+          <span className="flex items-center gap-1 rounded-full bg-red-100 px-2.5 py-1 text-xs font-bold text-red-600 shrink-0">
             <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-ping" /> LIVE
           </span>
         </div>
 
-        <div className="flex items-center gap-1.5 text-sm text-slate-600 mb-3">
-          <MapPin className="h-4 w-4 text-slate-400 shrink-0" />
+        <div className="mb-3 flex items-center gap-1.5 text-sm text-slate-600">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           <span className="truncate">{req.user_address || "Location shared"}</span>
           {req.distance !== null && (
-            <span className="text-xs font-bold text-[#0056D2] shrink-0">
+            <span className="shrink-0 text-xs font-bold text-[#0056D2]">
               · {req.distance < 1 ? `${(req.distance * 1000).toFixed(0)}m` : `${req.distance.toFixed(1)}km`}
             </span>
           )}
         </div>
 
-        <div className="flex gap-2">
-          <button
-            onClick={onAccept}
-            className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-[#0056D2] py-2.5 text-sm font-bold text-white transition hover:brightness-110 active:scale-95"
-          >
-            <Navigation className="h-4 w-4" /> Accept & Dispatch
-          </button>
-        </div>
+        <button
+          onClick={onAccept}
+          className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-[#0056D2] text-sm font-bold text-white transition-[filter,transform] duration-150 hover:brightness-110 active:scale-95"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          Accept &amp; Dispatch
+        </button>
       </div>
     </div>
   );
@@ -520,22 +580,32 @@ function IncomingSosCard({ req, onAccept }) {
 function ActiveSosCard({ req, onTrack }) {
   const isArrived = req.status === "arrived";
   return (
-    <div className={`rounded-2xl bg-white shadow-sm overflow-hidden border-l-4 ${isArrived ? "border-green-500" : "border-blue-500"}`}>
+    <div className={`overflow-hidden rounded-2xl border-l-4 bg-white shadow-card ${isArrived ? "border-green-500" : "border-blue-500"}`}>
       <div className="p-4">
-        <div className="flex items-start justify-between mb-2">
+        <div className="mb-3 flex items-start justify-between">
           <div>
             <p className="font-black text-slate-900">{req.issue_type}</p>
             <p className="text-xs text-slate-500">{req.assignment?.mechanic_name} dispatched</p>
           </div>
-          <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${isArrived ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"}`}>
+          <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${isArrived ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"}`}>
             {isArrived ? "Arrived" : "En Route"}
           </span>
         </div>
         <button
           onClick={onTrack}
-          className="w-full flex items-center justify-center gap-2 rounded-xl border border-slate-200 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95"
+          className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 text-sm font-bold text-slate-700 transition-colors duration-150 hover:bg-slate-100 active:scale-95"
         >
-          {isArrived ? <><CheckCircle2 className="h-4 w-4 text-green-500" /> Verify OTP</> : <><Navigation className="h-4 w-4" /> Live Track</>}
+          {isArrived ? (
+            <>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              Verify OTP
+            </>
+          ) : (
+            <>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+              Live Track
+            </>
+          )}
         </button>
       </div>
     </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Users, Plus, Phone, Wrench, X, Loader2, Pencil, Trash2, CheckCircle2 } from "lucide-react";
 import { supabase } from "../../../lib/supabase";
 import { usePortalAuth } from "../../../context/PortalAuthContext";
 
@@ -16,20 +15,25 @@ const STATUS_STYLES = {
   offline:   "bg-slate-100 text-slate-500",
 };
 
+const STATUS_DOT = {
+  available: "bg-green-500",
+  busy:      "bg-red-500",
+  offline:   "bg-slate-400",
+};
+
 export default function PortalMechanicsPage() {
   const { garage } = usePortalAuth();
   const [mechanics, setMechanics] = useState([]);
   const [loading,   setLoading]   = useState(true);
   const [showForm,  setShowForm]  = useState(false);
-  const [editing,   setEditing]   = useState(null); // mechanic row being edited
+  const [editing,   setEditing]   = useState(null);
   const [saving,    setSaving]    = useState(false);
-  const [deleting,       setDeleting]       = useState(null);
-  const [confirmDelete,  setConfirmDelete]  = useState(null); // mechanic id awaiting confirm
+  const [deleting,      setDeleting]      = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
-  // Form state
-  const [name,   setName]   = useState("");
-  const [phone,  setPhone]  = useState("");
-  const [spec,   setSpec]   = useState("General");
+  const [name,  setName]  = useState("");
+  const [phone, setPhone] = useState("");
+  const [spec,  setSpec]  = useState("General");
 
   useEffect(() => {
     if (!garage) return;
@@ -62,7 +66,6 @@ export default function PortalMechanicsPage() {
   async function handleSave() {
     if (!name.trim()) return;
     setSaving(true);
-
     if (editing) {
       await supabase.from("portal_mechanics").update({
         name: name.trim(), phone: phone.trim(), specialization: spec,
@@ -73,7 +76,6 @@ export default function PortalMechanicsPage() {
         name: name.trim(), phone: phone.trim(), specialization: spec,
       });
     }
-
     setSaving(false);
     setShowForm(false);
     fetchMechanics();
@@ -93,197 +95,313 @@ export default function PortalMechanicsPage() {
     fetchMechanics();
   }
 
-  // ── Add / Edit form
+  // ── Add / Edit form ──────────────────────────────────────────────────────────
   if (showForm) {
     return (
-      <div className="flex min-h-screen flex-col bg-slate-100 pb-24">
-        <div className="bg-[#0F172A] px-5 pt-5 pb-5">
-          <button onClick={() => setShowForm(false)} className="mb-3 flex items-center gap-2 text-sm text-slate-400">
-            <X className="h-4 w-4" /> Cancel
+      <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
+
+        {/* Hero */}
+        <div
+          data-hero
+          className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-28 pt-14 text-center"
+        >
+          {/* Dot-grid */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 opacity-40"
+            style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "28px 28px" }}
+          />
+          {/* Glow blobs */}
+          <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
+          <div aria-hidden="true" className="pointer-events-none absolute -bottom-10 -left-10 h-56 w-56 rounded-full bg-sky-300/20 blur-3xl" />
+
+          {/* Cancel / back */}
+          <button
+            onClick={() => setShowForm(false)}
+            aria-label="Cancel"
+            className="absolute left-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white transition-colors duration-150 hover:bg-white/25 active:scale-95"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M19 12H5M12 5l-7 7 7 7"/>
+            </svg>
           </button>
-          <h1 className="text-lg font-black text-white">{editing ? "Edit Mechanic" : "Add Mechanic"}</h1>
+
+          <div className="relative z-10 mx-auto max-w-sm px-4">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-lg">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0056D2" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+              </svg>
+            </div>
+            <h1 className="text-2xl font-black text-white">{editing ? "Edit Mechanic" : "Add Mechanic"}</h1>
+            <p className="mt-1 text-sm text-blue-200">{editing ? "Update team member details" : "Add a new team member"}</p>
+          </div>
         </div>
 
-        <div className="px-4 pt-5 space-y-4">
-          <Field label="Full Name">
-            <input
-              type="text" required value={name} onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Suresh Kumar"
-              className="w-full rounded-xl border border-slate-200 bg-white py-3 px-4 text-sm text-slate-900 outline-none focus:border-[#0056D2] focus:ring-2 focus:ring-[#0056D2]/20 transition"
-            />
-          </Field>
+        {/* Pull-up */}
+        <div className="relative -mt-12 flex-1 rounded-t-[3rem] bg-[#F8FAFC] overflow-y-auto">
+          <div
+            className="mx-auto w-full max-w-sm px-4 py-8"
+            style={{ paddingBottom: "max(40px, calc(env(safe-area-inset-bottom) + 40px))" }}
+          >
+            <div className="rounded-3xl bg-white p-6 shadow-card space-y-5">
 
-          <Field label="Phone Number">
-            <input
-              type="tel" value={phone} onChange={(e) => setPhone(e.target.value)}
-              placeholder="+91 98765 43210"
-              className="w-full rounded-xl border border-slate-200 bg-white py-3 px-4 text-sm text-slate-900 outline-none focus:border-[#0056D2] focus:ring-2 focus:ring-[#0056D2]/20 transition"
-            />
-          </Field>
+              {/* Name */}
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="mech-name" className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                  Full Name <span className="text-red-400">*</span>
+                </label>
+                <input
+                  id="mech-name"
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="e.g. Suresh Kumar"
+                  autoComplete="name"
+                  style={{ fontSize: 16 }}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 px-4 text-slate-900 outline-none transition-[border-color,box-shadow] duration-150 focus:border-[#0056D2] focus:bg-white focus:ring-2 focus:ring-[#0056D2]/15 min-h-[44px]"
+                />
+              </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-black uppercase tracking-wide text-slate-500">Specialization</label>
-            <div className="grid grid-cols-2 gap-2">
-              {SPECIALIZATIONS.map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setSpec(s)}
-                  className={`rounded-xl border px-3 py-2.5 text-sm font-semibold text-left transition ${
-                    spec === s
-                      ? "border-[#0056D2] bg-[#0056D2]/10 text-[#0056D2]"
-                      : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                  }`}
-                >
-                  {spec === s && <CheckCircle2 className="inline h-3.5 w-3.5 mr-1.5" />}
-                  {s}
-                </button>
-              ))}
+              {/* Phone */}
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="mech-phone" className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                  Phone Number
+                </label>
+                <input
+                  id="mech-phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+91 98765 43210"
+                  autoComplete="tel"
+                  style={{ fontSize: 16 }}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 px-4 text-slate-900 outline-none transition-[border-color,box-shadow] duration-150 focus:border-[#0056D2] focus:bg-white focus:ring-2 focus:ring-[#0056D2]/15 min-h-[44px]"
+                />
+              </div>
+
+              {/* Specialization */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-bold uppercase tracking-wide text-slate-500">Specialization</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {SPECIALIZATIONS.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setSpec(s)}
+                      className={`flex items-center gap-1.5 rounded-xl border px-3 py-2.5 text-sm font-semibold text-left transition-colors duration-150 min-h-[44px] ${
+                        spec === s
+                          ? "border-[#0056D2] bg-[#0056D2]/10 text-[#0056D2]"
+                          : "border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300"
+                      }`}
+                    >
+                      {spec === s && (
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="shrink-0">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                      )}
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Submit */}
+              <button
+                onClick={handleSave}
+                disabled={saving || !name.trim()}
+                aria-busy={saving}
+                className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-[#0056D2] text-sm font-bold text-white shadow-glow-primary transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
+              >
+                {saving ? (
+                  <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round"/>
+                  </svg>
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                )}
+                {saving ? "Saving…" : editing ? "Save Changes" : "Add Mechanic"}
+              </button>
             </div>
           </div>
-
-          <button
-            onClick={handleSave}
-            disabled={saving || !name.trim()}
-            className="w-full flex items-center justify-center gap-2 rounded-2xl bg-[#0056D2] py-4 text-base font-black text-white shadow-[0_8px_24px_rgba(0,86,210,0.3)] transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
-          >
-            {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <CheckCircle2 className="h-5 w-5" />}
-            {saving ? "Saving…" : editing ? "Save Changes" : "Add Mechanic"}
-          </button>
         </div>
-
       </div>
     );
   }
 
-  // ── Main list
+  // ── Main list ────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-slate-100 pb-24">
-      {/* Header */}
-      <div className="bg-[#0F172A] px-5 pt-5 pb-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-black text-white">My Team</h1>
-            <p className="text-xs text-slate-400 mt-0.5">{mechanics.length} mechanic{mechanics.length !== 1 ? "s" : ""}</p>
+    <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
+
+      {/* Hero */}
+      <div
+        data-hero
+        className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-28 pt-14 text-center"
+      >
+        {/* Dot-grid */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-40"
+          style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "28px 28px" }}
+        />
+        {/* Glow blobs */}
+        <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute -bottom-10 -left-10 h-56 w-56 rounded-full bg-sky-300/20 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute left-1/4 top-1/2 h-40 w-40 rounded-full bg-indigo-400/15 blur-2xl" />
+
+        <div className="relative z-10 mx-auto max-w-sm px-4">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-lg">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0056D2" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
           </div>
-          <button
-            onClick={openAdd}
-            className="flex items-center gap-2 rounded-xl bg-[#0056D2] px-4 py-2 text-sm font-bold text-white transition hover:brightness-110 active:scale-95"
-          >
-            <Plus className="h-4 w-4" /> Add
-          </button>
+          <h1 className="text-2xl font-black text-white">My Team</h1>
+          <p className="mt-1 text-sm text-blue-200">
+            {loading ? "Loading…" : `${mechanics.length} mechanic${mechanics.length !== 1 ? "s" : ""}`}
+            {!loading && mechanics.length > 0 && " · Tap status to cycle"}
+          </p>
         </div>
       </div>
 
-      <div className="px-4 pt-4 space-y-3">
-        {loading ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="h-8 w-8 rounded-full border-4 border-[#0056D2] border-t-transparent animate-spin" />
-          </div>
-        ) : mechanics.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-200 mb-4">
-              <Users className="h-8 w-8 text-slate-400" />
-            </div>
-            <p className="font-bold text-slate-600">No mechanics yet</p>
-            <p className="text-sm text-slate-400 mt-1">Add your team to dispatch them for SOS jobs</p>
-            <button
-              onClick={openAdd}
-              className="mt-5 flex items-center gap-2 rounded-xl bg-[#0056D2] px-5 py-2.5 text-sm font-bold text-white"
-            >
-              <Plus className="h-4 w-4" /> Add First Mechanic
-            </button>
-          </div>
-        ) : (
-          mechanics.map((m) => (
-            <div key={m.id} className="rounded-2xl bg-white shadow-sm p-4">
-              <div className="flex items-center gap-3">
-                {/* Avatar */}
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0056D2] text-lg font-black text-white shrink-0">
-                  {m.name.charAt(0).toUpperCase()}
-                </div>
+      {/* Pull-up */}
+      <div
+        className="relative -mt-12 flex-1 rounded-t-[3rem] bg-[#F8FAFC] overflow-y-auto"
+        style={{ paddingBottom: "max(96px, calc(env(safe-area-inset-bottom) + 96px))" }}
+      >
+        <div className="mx-auto max-w-sm px-4 pt-6">
 
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <p className="font-black text-slate-900">{m.name}</p>
-                  <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                    <span className="flex items-center gap-1 text-xs text-slate-500">
-                      <Wrench className="h-3 w-3" /> {m.specialization}
-                    </span>
-                    {m.phone && (
-                      <a
-                        href={`tel:${m.phone}`}
-                        className="flex items-center gap-1 text-xs text-[#0056D2]"
-                      >
-                        <Phone className="h-3 w-3" /> {m.phone}
-                      </a>
+          {/* Add button */}
+          <button
+            onClick={openAdd}
+            className="mb-5 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-[#0056D2] text-sm font-bold text-white shadow-glow-primary transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98]"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Add Mechanic
+          </button>
+
+          {/* Content */}
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <div className="h-8 w-8 rounded-full border-4 border-[#0056D2] border-t-transparent animate-spin" />
+            </div>
+          ) : mechanics.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+              <p className="font-bold text-slate-700">No mechanics yet</p>
+              <p className="mt-1 text-sm text-slate-400">Add your team to dispatch them for SOS jobs</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {mechanics.map((m) => (
+                <div key={m.id} className="rounded-2xl bg-white shadow-card p-4">
+                  <div className="flex items-center gap-3">
+                    {/* Avatar */}
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#0056D2] text-lg font-black text-white">
+                      {m.name.charAt(0).toUpperCase()}
+                    </div>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-black text-slate-900 truncate">{m.name}</p>
+                      <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                        <span className="flex items-center gap-1 text-xs text-slate-500">
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                          </svg>
+                          {m.specialization}
+                        </span>
+                        {m.phone && (
+                          <a href={`tel:${m.phone}`} className="flex items-center gap-1 text-xs text-[#0056D2]">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+                              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.44 2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.12 6.12l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                            {m.phone}
+                          </a>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Status badge — tap to cycle */}
+                    <button
+                      onClick={() => cycleStatus(m)}
+                      aria-label={`Status: ${m.status}. Tap to change.`}
+                      className={`shrink-0 flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition-colors duration-150 min-h-[32px] ${STATUS_STYLES[m.status]}`}
+                    >
+                      <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${STATUS_DOT[m.status]}`} />
+                      {m.status.charAt(0).toUpperCase() + m.status.slice(1)}
+                    </button>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="mt-3 border-t border-slate-100 pt-3">
+                    {confirmDelete === m.id ? (
+                      <div className="flex items-center gap-2">
+                        <p className="flex-1 text-xs font-semibold text-slate-600">Remove {m.name}?</p>
+                        <button
+                          onClick={() => setConfirmDelete(null)}
+                          className="min-h-[36px] rounded-lg border border-slate-200 px-3 text-xs font-semibold text-slate-600 transition-colors duration-150 hover:bg-slate-100 active:scale-95"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => handleDelete(m.id)}
+                          disabled={deleting === m.id}
+                          className="flex min-h-[36px] items-center gap-1 rounded-lg bg-red-500 px-3 text-xs font-bold text-white transition-colors duration-150 hover:bg-red-600 active:scale-95 disabled:opacity-60"
+                        >
+                          {deleting === m.id ? (
+                            <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" aria-hidden="true">
+                              <circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round"/>
+                            </svg>
+                          ) : (
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                              <path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                            </svg>
+                          )}
+                          Yes, Remove
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => openEdit(m)}
+                          className="flex min-h-[36px] items-center gap-1.5 rounded-lg px-3 text-xs font-semibold text-slate-600 transition-colors duration-150 hover:bg-slate-100 active:scale-95"
+                        >
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                          </svg>
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => setConfirmDelete(m.id)}
+                          className="flex min-h-[36px] items-center gap-1.5 rounded-lg px-3 text-xs font-semibold text-red-500 transition-colors duration-150 hover:bg-red-50 active:scale-95"
+                        >
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+                            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                            <path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                          </svg>
+                          Remove
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
-
-                {/* Status badge (tap to cycle) */}
-                <button
-                  onClick={() => cycleStatus(m)}
-                  className={`shrink-0 flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition ${STATUS_STYLES[m.status]}`}
-                >
-                  <span className={`h-1.5 w-1.5 rounded-full ${
-                    m.status === "available" ? "bg-green-500" :
-                    m.status === "busy"      ? "bg-red-500" : "bg-slate-400"
-                  }`} />
-                  {m.status.charAt(0).toUpperCase() + m.status.slice(1)}
-                </button>
-              </div>
-
-              {/* Actions */}
-              <div className="mt-3 pt-3 border-t border-slate-100">
-                {confirmDelete === m.id ? (
-                  <div className="flex items-center gap-2">
-                    <p className="flex-1 text-xs font-semibold text-slate-600">Remove {m.name}?</p>
-                    <button
-                      onClick={() => setConfirmDelete(null)}
-                      className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={() => handleDelete(m.id)}
-                      disabled={deleting === m.id}
-                      className="flex items-center gap-1 rounded-lg bg-red-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-red-600 transition disabled:opacity-60"
-                    >
-                      {deleting === m.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
-                      Yes, Remove
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => openEdit(m)}
-                      className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition"
-                    >
-                      <Pencil className="h-3.5 w-3.5" /> Edit
-                    </button>
-                    <button
-                      onClick={() => setConfirmDelete(m.id)}
-                      className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-50 transition"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" /> Remove
-                    </button>
-                  </div>
-                )}
-              </div>
+              ))}
             </div>
-          ))
-        )}
+          )}
+        </div>
       </div>
-    </div>
-  );
-}
-
-function Field({ label, children }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-black uppercase tracking-wide text-slate-500">{label}</label>
-      {children}
     </div>
   );
 }

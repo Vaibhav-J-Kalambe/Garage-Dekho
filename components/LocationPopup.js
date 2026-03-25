@@ -100,11 +100,11 @@ export default function LocationPopup({ onClose }) {
           max-height: 90svh;
         }
         .loc-chip {
-          font-size: 11px; padding: 5px 10px; white-space: nowrap;
+          font-size: 13px; padding: 6px 14px; white-space: nowrap;
           border-radius: 50px; cursor: pointer; transition: all 150ms;
           font-family: inherit; border: 1px solid #e5e7eb;
           background: #f9fafb; color: #374151; font-weight: 500;
-          min-height: 30px; display: inline-flex; align-items: center;
+          min-height: 40px; display: inline-flex; align-items: center;
           flex-shrink: 0;
         }
         .loc-chip:active { transform: scale(0.96); }
@@ -124,14 +124,14 @@ export default function LocationPopup({ onClose }) {
         }
       `}</style>
 
-      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center sm:p-4">
         {/* Backdrop */}
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
         <SwipeableSheet
           onClose={onClose}
-          hideHandle
-          className="loc-popup-sheet animate-slide-up relative flex w-full max-w-[440px] flex-col overflow-hidden rounded-[24px] shadow-2xl"
+          className="loc-popup-sheet animate-slide-up relative flex w-full flex-col overflow-hidden rounded-t-[24px] shadow-2xl sm:max-w-[500px] sm:rounded-[24px]"
+          hideHandle={false}
         >
           {/* ── Blue top section ── */}
           <div
@@ -148,7 +148,7 @@ export default function LocationPopup({ onClose }) {
               }}
             />
             {/* Glow blobs — each isolated so blur stays contained */}
-            <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full" style={{ background: "rgba(96,165,250,0.25)", filter: "blur(28px)" }} />
+            <div className="pointer-events-none absolute -right-20 -top-20 h-32 w-32 rounded-full" style={{ background: "rgba(96,165,250,0.25)", filter: "blur(28px)" }} />
             <div className="pointer-events-none absolute -bottom-4 -left-4 h-24 w-24 rounded-full" style={{ background: "rgba(125,211,252,0.18)", filter: "blur(24px)" }} />
 
             {/* Logo row + close button */}

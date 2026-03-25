@@ -41,7 +41,7 @@ const HOURS_OPTIONS = [
 function StepIndicator({ current }) {
   const labels = ["Basic Info", "Location", "Services", "Hours & Contact", "Review"];
   return (
-    <div className="mb-8 flex items-start justify-between px-2">
+    <div className="mb-2 flex items-start justify-between px-2">
       {labels.map((label, i) => {
         const step   = i + 1;
         const done   = step < current;
@@ -49,20 +49,22 @@ function StepIndicator({ current }) {
         return (
           <div key={step} className="relative flex flex-1 flex-col items-center gap-1">
             {i > 0 && (
-              <div className={`absolute left-0 top-4 h-0.5 w-1/2 -translate-y-1/2 transition-all duration-500 ${done ? "bg-green-500" : active ? "bg-primary" : "bg-slate-200"}`} />
+              <div className={`absolute left-0 top-4 h-0.5 w-1/2 -translate-y-1/2 transition-all duration-500 ${done ? "bg-green-500" : active ? "bg-[#0056D2]" : "bg-slate-200"}`} />
             )}
             {i < labels.length - 1 && (
               <div className={`absolute right-0 top-4 h-0.5 w-1/2 -translate-y-1/2 transition-all duration-500 ${done ? "bg-green-500" : "bg-slate-200"}`} />
             )}
             <div className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full text-xs font-black transition-all duration-300 ${
               done   ? "bg-green-500 text-white" :
-              active ? "bg-primary text-white ring-4 ring-white" :
-                       "bg-slate-200 text-slate-700"
+              active ? "bg-[#0056D2] text-white ring-4 ring-[#0056D2]/20" :
+                       "bg-slate-200 text-slate-500"
             }`}>
-              {done ? <CheckCircle2 className="h-4 w-4" /> : step}
+              {done ? (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              ) : step}
             </div>
             <span className={`mt-1 text-center text-[10px] font-bold leading-tight ${
-              active ? "text-primary" : done ? "text-green-500" : "text-slate-400"
+              active ? "text-[#0056D2]" : done ? "text-green-600" : "text-slate-400"
             } ${active ? "block" : "hidden sm:block"}`}>{label}</span>
           </div>
         );
@@ -285,45 +287,75 @@ export default function PartnerPage() {
 
   // ── Main Form ─────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#001f5b]">
+    <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
 
       {/* ── Hero ── */}
       <div
         data-hero
-        className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] px-4 pb-16 pt-[77px] sm:pb-20 md:px-8"
+        className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-32 pt-[77px] text-center"
       >
         {/* Dot grid */}
         <div
           className="pointer-events-none absolute inset-0 opacity-40"
-          style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "28px 28px" }}
-          aria-hidden
+          style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "28px 28px" }}
+          aria-hidden="true"
         />
         {/* Glow blobs */}
-        <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-blue-400/30 blur-3xl" aria-hidden />
-        <div className="pointer-events-none absolute -bottom-8 left-1/3 h-48 w-48 rounded-full bg-sky-300/20 blur-3xl" aria-hidden />
-        <div className="pointer-events-none absolute left-0 top-1/2 h-40 w-40 rounded-full bg-indigo-400/15 blur-2xl" aria-hidden />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute -bottom-10 -left-10 h-56 w-56 rounded-full bg-sky-300/20 blur-3xl" />
 
-        <div className="relative mx-auto flex max-w-lg items-center justify-between">
-          <div>
-            <a href="/" className="text-xl font-black text-white">GarageDekho</a>
-            <p className="mt-1 text-xs font-semibold uppercase tracking-widest text-blue-200/70">Partner Onboarding</p>
-            <h1 className="mt-2 text-[26px] font-black leading-tight text-white">List Your Garage</h1>
-            <p className="mt-1 text-sm text-blue-100/70">Reach customers actively searching for garages near you</p>
+        {/* Back to home */}
+        <a
+          href="/"
+          aria-label="Back to GarageDekho"
+          className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white transition-colors duration-150 hover:bg-white/25 active:scale-95"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M19 12H5M12 5l-7 7 7 7"/>
+          </svg>
+        </a>
+
+        {/* Logo + heading */}
+        <div className="relative z-10 mx-auto max-w-sm px-4">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-lg">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0056D2" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
           </div>
-          <div className="hidden h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm sm:flex">
-            <Wrench className="h-8 w-8 text-white/80" />
+          <h1 className="text-2xl font-black text-white">GarageDekho</h1>
+          <p className="mt-1 text-sm text-blue-200">Partner Onboarding</p>
+
+          {/* Trust chips */}
+          <div className="mt-4 flex items-center justify-center gap-x-3 text-[11px] font-semibold text-blue-200">
+            <span className="flex items-center gap-1 whitespace-nowrap">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#86efac" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+              Free Listing
+            </span>
+            <span className="h-3 w-px bg-blue-300/40 shrink-0" />
+            <span className="flex items-center gap-1 whitespace-nowrap">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              5 min setup
+            </span>
+            <span className="h-3 w-px bg-blue-300/40 shrink-0" />
+            <span className="flex items-center gap-1 whitespace-nowrap">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              1000+ Partners
+            </span>
           </div>
         </div>
       </div>
 
       {/* ── Pull-up card ── */}
       <div
-        className="-mt-12 min-h-screen rounded-t-[2.5rem] bg-[#F8FAFC] px-4 pt-8 md:px-8"
+        className="relative -mt-12 flex-1 rounded-t-[3rem] bg-[#F8FAFC] overflow-y-auto px-4 pt-8 md:px-8"
         style={{ paddingBottom: "max(2.5rem, calc(env(safe-area-inset-bottom) + 1.5rem))" }}
       >
         <div className="mx-auto max-w-lg">
 
-          <StepIndicator current={step} />
+          {/* Step indicator */}
+          <div className="mb-6">
+            <StepIndicator current={step} />
+          </div>
 
           <div className="rounded-3xl bg-white p-5 shadow-card sm:p-6 space-y-5">
 
