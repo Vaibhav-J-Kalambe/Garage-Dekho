@@ -127,7 +127,7 @@ function AnimatedSearchButton() {
       type="submit"
       aria-label="Search garages"
       onMouseEnter={() => iconRef.current?.startAnimation()}
-      className="shimmer-btn flex shrink-0 items-center gap-2 rounded-xl bg-amber-400 px-5 py-3 text-sm font-bold text-slate-900 shadow-[0_4px_16px_rgba(245,158,11,0.4)] transition-[transform,background-color] duration-150 hover:bg-amber-300 hover:scale-[1.03] active:scale-[0.97] min-h-[44px]"
+      className="shimmer-btn flex shrink-0 items-center gap-2 rounded-xl bg-amber-300 px-5 py-3 text-sm font-bold text-slate-900 shadow-none transition-[transform,background-color,box-shadow] duration-150 hover:bg-amber-400 hover:shadow-[0_4px_16px_rgba(245,158,11,0.4)] hover:scale-[1.03] active:scale-[0.97] min-h-[44px]"
     >
       <SearchIcon ref={iconRef} size={15} />
       Search
