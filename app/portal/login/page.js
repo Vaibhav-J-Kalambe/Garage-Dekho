@@ -101,7 +101,7 @@ export default function PortalLoginPage() {
 
       {/* ── Pull-up ── */}
       <div className="-mt-12 flex-1 rounded-t-[2.5rem] bg-[#F8FAFC]">
-        <div className="mx-auto max-w-sm px-4 pt-12" style={{ paddingBottom: "max(40px, calc(env(safe-area-inset-bottom) + 24px))" }}>
+        <div className="mx-auto max-w-sm px-4 pt-20" style={{ paddingBottom: "max(40px, calc(env(safe-area-inset-bottom) + 24px))" }}>
 
           {/* Error */}
           <div aria-live="polite" aria-atomic="true">
@@ -116,10 +116,10 @@ export default function PortalLoginPage() {
           </div>
 
           {/* Form card */}
-          <div className="rounded-2xl bg-white p-5 shadow-card">
-            <h2 className="text-xl font-black tracking-tight text-slate-900">Welcome back</h2>
-            <p className="mt-1 mb-5 text-sm text-slate-500">Sign in to manage your garage</p>
-            <form onSubmit={handleLogin} className="flex flex-col gap-4 mt-0">
+          <div className="rounded-2xl bg-white p-6 shadow-card">
+            <h2 className="text-2xl font-black tracking-tight text-slate-900">Welcome back</h2>
+            <p className="mt-1.5 mb-6 text-sm text-slate-500">Sign in to manage your garage</p>
+            <form onSubmit={handleLogin} className="flex flex-col gap-5 mt-0">
 
               {/* Email */}
               <div className="flex flex-col gap-1.5">
@@ -189,7 +189,7 @@ export default function PortalLoginPage() {
                 type="submit"
                 disabled={loading}
                 aria-busy={loading}
-                className="mt-1 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-[#0056D2] text-sm font-bold text-white shadow-glow-primary transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
+                className="mt-2 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-[#0056D2] text-sm font-bold text-white shadow-glow-primary transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
               >
                 {loading && (
                   <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" aria-hidden="true">
@@ -201,7 +201,7 @@ export default function PortalLoginPage() {
               </button>
             </form>
 
-            <p className="mt-5 text-center text-sm text-slate-500">
+            <p className="mt-7 text-center text-sm text-slate-500">
               New garage partner?{" "}
               <Link href="/portal/register" className="font-bold text-[#0056D2] transition-colors duration-150 hover:underline">
                 Register here
