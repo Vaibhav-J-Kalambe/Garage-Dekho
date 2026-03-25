@@ -5,6 +5,41 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
 
+const FEATURES = [
+  {
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#86efac" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>
+      </svg>
+    ),
+    text: "Verified Partner Badge",
+  },
+  {
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+      </svg>
+    ),
+    text: "Live Bookings & SOS Requests",
+  },
+  {
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+    ),
+    text: "Reach Thousands of Customers",
+  },
+  {
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      </svg>
+    ),
+    text: "24/7 Partner Support",
+  },
+];
+
 export default function PortalLoginPage() {
   const router = useRouter();
   const [email,    setEmail]    = useState("");
@@ -41,85 +76,137 @@ export default function PortalLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
+    <div className="flex min-h-screen">
 
-      {/* ── Hero ── */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-32 pt-14 text-center">
-        {/* Dot-grid */}
+      {/* ── Left panel — desktop only ── */}
+      <div className="relative hidden overflow-hidden lg:flex lg:w-[52%] lg:flex-col bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
+
+        {/* Dot-grid texture */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-40"
+          className="pointer-events-none absolute inset-0 opacity-30"
           style={{
-            backgroundImage: "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)",
+            backgroundImage: "radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px)",
             backgroundSize: "28px 28px",
           }}
         />
         {/* Glow blobs */}
-        <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute -bottom-10 -left-10 h-56 w-56 rounded-full bg-sky-300/20 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-blue-400/25 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute bottom-0 right-0 h-72 w-72 rounded-full bg-sky-300/15 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute left-1/3 top-1/2 h-48 w-48 rounded-full bg-indigo-400/15 blur-2xl" />
 
         {/* Back to home */}
         <Link
           href="/"
           aria-label="Back to GarageDekho"
-          className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white transition-colors duration-150 hover:bg-white/25 active:scale-95"
+          className="absolute left-6 top-6 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white transition-colors duration-150 hover:bg-white/25 active:scale-95"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M19 12H5M12 5l-7 7 7 7"/>
           </svg>
         </Link>
 
-        {/* Logo + heading */}
-        <div className="relative z-10 mx-auto max-w-sm px-4">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-lg">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0056D2" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-            </svg>
-          </div>
-          <h1 className="text-2xl font-black text-white">GarageDekho</h1>
-          <p className="mt-1 text-sm text-blue-200">Partner Portal</p>
+        {/* Content */}
+        <div className="relative z-10 flex flex-1 flex-col justify-between px-12 py-16">
 
-          {/* Trust chips */}
-          <div className="mt-4 flex items-center justify-center gap-x-3 text-[11px] font-semibold text-blue-200">
-            <span className="flex items-center gap-1 whitespace-nowrap">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#86efac" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-              Verified Partner
-            </span>
-            <span className="h-3 w-px bg-blue-300/40 shrink-0" />
-            <span className="flex items-center gap-1 whitespace-nowrap">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-              Bookings
-            </span>
-            <span className="h-3 w-px bg-blue-300/40 shrink-0" />
-            <span className="flex items-center gap-1 whitespace-nowrap">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              24/7 Support
-            </span>
+          {/* Top: logo + heading */}
+          <div>
+            {/* Logo */}
+            <div className="mb-10 flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white shadow-md">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0056D2" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                </svg>
+              </div>
+              <div>
+                <p className="text-lg font-black text-white leading-none">GarageDekho</p>
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-blue-200/70">Partner Portal</p>
+              </div>
+            </div>
+
+            {/* Headline */}
+            <h1 className="text-[2.6rem] font-black leading-[1.1] text-white">
+              Grow Your<br />Garage Business
+            </h1>
+            <p className="mt-4 max-w-xs text-base text-blue-100/75 leading-relaxed">
+              Join hundreds of trusted garages already using GarageDekho to reach more customers.
+            </p>
+
+            {/* Features */}
+            <ul className="mt-10 flex flex-col gap-4">
+              {FEATURES.map((f, i) => (
+                <li key={i} className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10">
+                    {f.icon}
+                  </div>
+                  <span className="text-sm font-semibold text-blue-50">{f.text}</span>
+                </li>
+              ))}
+            </ul>
           </div>
+
+          {/* Bottom: testimonial */}
+          <div className="rounded-2xl bg-white/10 p-5 backdrop-blur-sm border border-white/10">
+            <p className="text-sm font-medium text-white/90 leading-relaxed">
+              "GarageDekho doubled our walk-ins within the first month. The booking system is seamless!"
+            </p>
+            <div className="mt-3 flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-sm font-black text-white">R</div>
+              <div>
+                <p className="text-sm font-bold text-white">Rajesh Kumar</p>
+                <p className="text-xs text-blue-200/70">Owner, Kumar Auto Works · Mumbai</p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      {/* ── Pull-up ── */}
-      <div className="relative -mt-12 flex-1 rounded-t-[3rem] bg-[#F8FAFC] flex flex-col justify-center overflow-y-auto">
-        <div className="mx-auto w-full max-w-sm px-4 py-10" style={{ paddingBottom: "max(40px, calc(env(safe-area-inset-bottom) + 40px))" }}>
+      {/* ── Right panel — form ── */}
+      <div className="flex flex-1 flex-col bg-white">
 
-          {/* Error */}
-          <div aria-live="polite" aria-atomic="true">
-            {error && (
-              <div role="alert" className="mb-3 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" className="mt-0.5 shrink-0" aria-hidden="true">
-                  <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
-                </svg>
-                <p className="text-xs font-semibold text-red-600">{error}</p>
-              </div>
-            )}
+        {/* Mobile top bar */}
+        <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3 lg:hidden">
+          <Link
+            href="/"
+            aria-label="Back"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200 active:scale-95"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M19 12H5M12 5l-7 7 7 7"/>
+            </svg>
+          </Link>
+          <div className="flex items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#0056D2]">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+              </svg>
+            </div>
+            <span className="text-sm font-black text-slate-900">GarageDekho</span>
           </div>
+          <div className="w-9" />
+        </div>
 
-          {/* Form card */}
-          <div className="rounded-3xl bg-white p-6 shadow-card">
-            <h2 className="text-2xl font-black tracking-tight text-slate-900">Welcome back</h2>
-            <p className="mt-1.5 mb-6 text-sm text-slate-500">Sign in to manage your garage</p>
-            <form onSubmit={handleLogin} className="flex flex-col gap-5 mt-0">
+        {/* Form area */}
+        <div className="flex flex-1 items-center justify-center px-6 py-10" style={{ paddingBottom: "max(40px, calc(env(safe-area-inset-bottom) + 40px))" }}>
+          <div className="w-full max-w-sm">
+
+            <h2 className="text-[1.85rem] font-black tracking-tight text-slate-900">Welcome back</h2>
+            <p className="mt-1.5 mb-8 text-sm text-slate-500">Sign in to manage your garage</p>
+
+            {/* Error */}
+            <div aria-live="polite" aria-atomic="true">
+              {error && (
+                <div role="alert" className="mb-5 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" className="mt-0.5 shrink-0" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+                  </svg>
+                  <p className="text-xs font-semibold text-red-600">{error}</p>
+                </div>
+              )}
+            </div>
+
+            <form onSubmit={handleLogin} className="flex flex-col gap-5">
 
               {/* Email */}
               <div className="flex flex-col gap-1.5">
@@ -189,7 +276,7 @@ export default function PortalLoginPage() {
                 type="submit"
                 disabled={loading}
                 aria-busy={loading}
-                className="mt-2 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-[#0056D2] text-sm font-bold text-white shadow-glow-primary transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
+                className="mt-1 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-[#0056D2] text-sm font-bold text-white shadow-glow-primary transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
               >
                 {loading && (
                   <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" aria-hidden="true">
@@ -207,10 +294,16 @@ export default function PortalLoginPage() {
                 Register here
               </Link>
             </p>
-          </div>
 
+          </div>
         </div>
+
+        {/* Footer */}
+        <p className="pb-6 text-center text-xs text-slate-400">
+          © {new Date().getFullYear()} GarageDekho · All rights reserved
+        </p>
       </div>
+
     </div>
   );
 }
