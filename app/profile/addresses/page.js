@@ -98,7 +98,7 @@ export default function AddressesPage() {
 
       {/* ── Pull-up card ── */}
       <div
-        className="-mt-12 min-h-screen rounded-t-[2.5rem] bg-[#F8FAFC] px-4 pt-6"
+        className="-mt-12 min-h-screen rounded-t-[2.5rem] bg-white px-4 pt-6"
         style={{ paddingBottom: "max(7rem, calc(env(safe-area-inset-bottom) + 5rem))" }}
       >
         <div className="mx-auto max-w-lg space-y-4">

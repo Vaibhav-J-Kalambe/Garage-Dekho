@@ -163,7 +163,7 @@ export default function PortalProfilePage() {
 
       {/* ── Pull-up ── */}
       <div
-        className="relative -mt-12 flex-1 rounded-t-[3rem] bg-[#F8FAFC] overflow-y-auto"
+        className="relative -mt-12 flex-1 rounded-t-[3rem] bg-white overflow-y-auto"
         style={{ paddingBottom: "max(96px, calc(env(safe-area-inset-bottom) + 96px))" }}
       >
         <div className="mx-auto max-w-sm px-4 pt-6 space-y-4">

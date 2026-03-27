@@ -57,7 +57,7 @@ export default function HelpPage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-white">
       <header className="sticky top-0 z-20 glass border-b border-white/40 px-4 py-3">
         <div className="mx-auto flex max-w-5xl items-center gap-3">
           <button onClick={() => router.back()} className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-100 bg-white/80 text-slate-600 shadow-sm transition hover:border-primary/40 hover:text-primary active:scale-95">

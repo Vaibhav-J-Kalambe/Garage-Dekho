@@ -347,7 +347,7 @@ export default function PartnerPage() {
 
       {/* ── Pull-up card ── */}
       <div
-        className="relative -mt-12 flex-1 rounded-t-[3rem] bg-[#F8FAFC] overflow-y-auto px-4 pt-8 md:px-8"
+        className="relative -mt-12 flex-1 rounded-t-[3rem] bg-white overflow-y-auto px-4 pt-8 md:px-8"
         style={{ paddingBottom: "max(2.5rem, calc(env(safe-area-inset-bottom) + 1.5rem))" }}
       >
         <div className="mx-auto max-w-lg">

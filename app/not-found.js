@@ -3,7 +3,7 @@ import { MapPin, Home, Navigation } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#F8FAFC] px-4 text-center">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-white px-4 text-center">
 
       {/* Big 404 */}
       <p className="text-[96px] font-black leading-none text-slate-100 select-none">404</p>

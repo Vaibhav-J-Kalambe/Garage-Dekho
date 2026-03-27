@@ -86,7 +86,7 @@ export default function PortalDashboard() {
 
   if (loading || !garage) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC]">
+      <div className="flex min-h-screen items-center justify-center bg-white">
         <div className="h-8 w-8 rounded-full border-4 border-[#0056D2] border-t-transparent animate-spin" />
       </div>
     );
@@ -137,7 +137,7 @@ export default function PortalDashboard() {
       </div>
 
       {/* ── Pull-up content ── */}
-      <div className="relative -mt-12 rounded-t-[3rem] bg-[#F8FAFC]" style={{ paddingBottom: "max(96px, calc(env(safe-area-inset-bottom) + 96px))" }}>
+      <div className="relative -mt-12 rounded-t-[3rem] bg-white" style={{ paddingBottom: "max(96px, calc(env(safe-area-inset-bottom) + 96px))" }}>
         <div className="mx-auto max-w-2xl px-4 pt-6 space-y-4">
 
           {/* Active SOS Alert Banner */}

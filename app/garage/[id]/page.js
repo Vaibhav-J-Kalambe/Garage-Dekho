@@ -129,7 +129,7 @@ export default function GarageDetailPage({ params }) {
 
   if (!garage) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC]">
+      <div className="flex min-h-screen items-center justify-center bg-white">
         <div className="text-center">
           <p className="text-slate-400">Garage not found.</p>
           <Link href="/" className="mt-3 block text-sm font-semibold text-primary">
@@ -223,7 +223,7 @@ export default function GarageDetailPage({ params }) {
       </div>
 
       {/* ── Main content — pulled up over hero ── */}
-      <div className="relative -mt-6 rounded-t-[2.5rem] bg-[#F8FAFC]">
+      <div className="relative -mt-6 rounded-t-[2.5rem] bg-white">
         <div className="mx-auto max-w-5xl px-4 pb-36 pt-5 md:px-8 md:pb-10">
 
           {/* ── Desktop: 2-column layout ── */}

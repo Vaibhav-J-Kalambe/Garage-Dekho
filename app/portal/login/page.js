@@ -139,7 +139,7 @@ export default function PortalLoginPage() {
       </div>
 
       {/* ── Right panel — form ── */}
-      <div className="flex flex-1 flex-col bg-slate-50">
+      <div className="flex flex-1 flex-col bg-white">
 
         {/* Mobile top bar */}
         <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3 lg:hidden">

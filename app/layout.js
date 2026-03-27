@@ -36,7 +36,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.variable}>
       <body
-        className="bg-slate-50 text-slate-900 font-sans antialiased"
+        className="bg-white text-slate-900 font-sans antialiased"
         suppressHydrationWarning
       >
         <NavigationProgress />

@@ -157,7 +157,7 @@ export default function AdminPage() {
   /* ── Password screen ── */
   if (!authed) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F8FAFC] px-4">
+      <div className="flex min-h-screen items-center justify-center bg-white px-4">
         <div className="w-full max-w-sm">
           <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
             <Lock className="h-6 w-6 text-primary" />
@@ -194,7 +194,7 @@ export default function AdminPage() {
 
   /* ── Admin form ── */
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="sticky top-0 z-10 border-b border-slate-100 bg-white/95 px-4 py-3 backdrop-blur-sm">
         <div className="mx-auto flex max-w-2xl items-center justify-between">

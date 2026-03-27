@@ -333,7 +333,7 @@ export default function BookingsPage() {
         </div>
       </div>
 
-      <div className="relative -mt-12 rounded-t-[2.5rem] bg-[#F8FAFC]">
+      <div className="relative -mt-12 rounded-t-[2.5rem] bg-white">
       <main aria-label="My bookings" className="mx-auto flex max-w-5xl flex-col gap-5 px-4 md:px-8 pb-28 md:pb-10 pt-5 md:pt-8">
 
         {/* Tab switcher */}

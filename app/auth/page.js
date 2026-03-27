@@ -127,7 +127,7 @@ function AuthForm() {
   }
 
   return (
-    <div className="min-h-[101vh] bg-[#F8FAFC]">
+    <div className="min-h-[101vh] bg-white">
 
       {/* ── Hero band ── */}
       <div data-hero className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] px-4 pb-20 pt-[77px] text-center">
@@ -169,7 +169,7 @@ function AuthForm() {
       </div>
 
       {/* ── Form pulled up ── */}
-      <div className="relative -mt-12 rounded-t-[2.5rem] bg-[#F8FAFC]">
+      <div className="relative -mt-12 rounded-t-[2.5rem] bg-white">
         <div className="mx-auto max-w-sm px-4 pb-28 pt-6">
 
           {/* Login / Sign Up tabs — always visible */}

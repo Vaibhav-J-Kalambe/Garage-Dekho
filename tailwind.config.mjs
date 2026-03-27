@@ -11,10 +11,17 @@ export default {
         sans: ["var(--font-inter)", "system-ui", "-apple-system", "sans-serif"],
       },
       colors: {
-        primary:     "#0056D2",
-        accent:      "#FF6B00",
-        brandOrange: "#FF6B00",
-        background:  "#F8FAFC",
+        // ── Design Tokens (change accent here to retheme entire app) ──
+        accent:          "#1A6FD4",   // Electric Blue — CTAs, links, active states
+        "accent-light":  "#E8F1FB",   // Accent tint — icon bg, badge bg
+        primary:         "#1C1C1E",   // Near-black — headings, dark surfaces
+        surface:         "#F7F7F5",   // Page background
+        card:            "#FFFFFF",   // Card surface
+        border:          "#E0DFD8",   // Subtle dividers and card borders
+        muted:           "#888888",   // Secondary text, placeholders
+        // Legacy aliases (kept to avoid breaking other pages during migration)
+        brandOrange:     "#FF6B00",
+        background:      "#F7F7F5",
       },
       keyframes: {
         shimmer: {

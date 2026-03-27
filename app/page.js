@@ -50,16 +50,15 @@ function haversine(lat1, lng1, lat2, lng2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-// Service categories — animated icons animate on hover by default
+// Service categories with Apple-style flat icon tiles + starting prices
 const SERVICES = [
-  { label: "Bike Service",   icon: Bike,        color: "from-blue-500 to-indigo-600",  href: "/near-me?type=2-Wheeler", animated: false },
-  { label: "Car Service",    icon: Car,         color: "from-violet-500 to-purple-600", href: "/near-me?type=4-Wheeler", animated: false },
-  { label: "Oil Change",     icon: DropletIcon, color: "from-cyan-500 to-sky-600",      href: "/near-me?q=oil+change",   animated: true  },
-  { label: "Tyre Repair",    icon: GaugeIcon,   color: "from-slate-500 to-slate-700",   href: "/near-me?q=tyre",         animated: true  },
-  { label: "Battery Jump",   icon: ZapIcon,     color: "from-amber-500 to-orange-500",  href: "/near-me?q=battery",      animated: true  },
-  { label: "Towing",         icon: TruckIcon,   color: "from-rose-500 to-red-600",      href: "/near-me?q=towing",       animated: true  },
-  { label: "AC Repair",      icon: WindIcon,    color: "from-teal-500 to-emerald-600",  href: "/near-me?q=ac+repair",    animated: true  },
-  { label: "General Repair", icon: WrenchIcon,  color: "from-primary to-blue-500",      href: "/near-me",                animated: true  },
+  { label: "Bike Service",   icon: Bike,        href: "/near-me?type=2-Wheeler", animated: false, price: "from ₹299", bg: "#EBF3FC", iconColor: "#1A6FD4" },
+  { label: "Car Service",    icon: Car,         href: "/near-me?type=4-Wheeler", animated: false, price: "from ₹499", bg: "#F0EEFF", iconColor: "#7C3AED" },
+  { label: "Oil Change",     icon: DropletIcon, href: "/near-me?q=oil+change",   animated: true,  price: "from ₹349", bg: "#E0F7FA", iconColor: "#0097A7" },
+  { label: "Tyre Repair",    icon: GaugeIcon,   href: "/near-me?q=tyre",         animated: true,  price: "from ₹199", bg: "#F3F4F6", iconColor: "#374151" },
+  { label: "Battery Jump",   icon: ZapIcon,     href: "/near-me?q=battery",      animated: true,  price: "from ₹249", bg: "#FFFBEB", iconColor: "#D97706" },
+  { label: "Towing",         icon: TruckIcon,   href: "/near-me?q=towing",       animated: true,  price: "from ₹599", bg: "#FFF1F2", iconColor: "#E11D48" },
+  { label: "AC Repair",      icon: WindIcon,    href: "/near-me?q=ac+repair",    animated: true,  price: "from ₹799", bg: "#ECFDF5", iconColor: "#059669" },
 ];
 
 function daysSince(dateStr) {
@@ -321,479 +320,284 @@ export default function HomePage() {
   const wrenchRef = useRef(null);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
+    <div
+      className="min-h-screen"
+      style={{ backgroundColor: "#F7F7F5", fontFamily: "-apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif" }}
+    >
       <Header />
       {showLocationPopup && <LocationPopup onClose={() => setShowLocationPopup(false)} />}
 
-      {/* ══════════════════════════════════════════════════════════
-          HERO — dark navy gradient, dot-grid texture, 8px-grid spacing
-          pt-12/pb-32 = 48px/128px — generous breathing room (design guide §3)
-      ══════════════════════════════════════════════════════════ */}
-      <section
-        aria-label="Search for garages"
-        className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-28 pt-[77px] md:pb-36 md:pt-[93px]"
-      >
-        {/* Dot-grid texture — subtle ambient pattern (2026 trend: cinematic fields) */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{
-            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)",
-            backgroundSize: "28px 28px",
-          }}
-        />
-        {/* Ambient glow blobs */}
-        <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-blue-400/10 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute -bottom-16 left-0 h-56 w-56 rounded-full bg-indigo-500/15 blur-3xl" />
+      {/* ── HERO AREA ── */}
+      <div style={{ paddingTop: 64 }}>
 
-        <div className="relative mx-auto max-w-5xl px-4 md:px-8">
-
-          {/* Live garages badge */}
-          {openCount !== null && (
-            <div className="mb-6 inline-flex animate-slide-up items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 backdrop-blur-sm">
-              <span className="relative flex h-2 w-2" aria-hidden="true">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
-              </span>
-              <span className="text-xs font-semibold text-green-300">{openCount} garages open right now</span>
-            </div>
-          )}
-
-          {/* Z-pattern layout: headline left → search right (desktop) */}
-          <div className="flex flex-col gap-8 md:flex-row md:items-center md:gap-14">
-
-            {/* Headline — text-5xl (48px) for hero per design guide */}
-            <div className="animate-slide-up delay-75 md:flex-1">
-              <p className="mb-3 text-sm font-medium tracking-wide text-blue-200/80">
-                {getGreeting()}{user?.user_metadata?.full_name
-                  ? `, ${user.user_metadata.full_name.split(" ")[0]}`
-                  : ""}
+        {/* Mobile greeting bar */}
+        <div className="md:hidden" style={{ padding: "12px 20px 0" }}>
+          <div className="flex items-center justify-between">
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "#888888", margin: 0 }}>
+                {getGreeting()}
               </p>
-              {/* tracking-tight on headings, 1.05 line-height (design guide typography) */}
-              <h1 className="text-4xl font-black leading-[1.06] tracking-tight text-white sm:text-5xl md:text-6xl">
-                Find Your<br />
-                <span className="relative inline-block text-amber-300">
-                  Mechanic
-                  {/* Decorative underline — adds personality without color changes */}
-                  <svg
-                    aria-hidden="true"
-                    className="absolute -bottom-2 left-0 w-full"
-                    viewBox="0 0 220 8"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M3 6C44 2 88 1.5 110 4C132 6.5 176 6 217 2" stroke="#F59E0B" strokeWidth="2.5" strokeLinecap="round" opacity="0.65" />
-                  </svg>
+              <p style={{ fontSize: 17, fontWeight: 700, color: "#1C1C1E", marginTop: 2, marginBottom: 0 }}>
+                {user?.user_metadata?.full_name?.split(" ")[0] || "Welcome"}
+              </p>
+            </div>
+            <Link href="/profile" aria-label="View profile">
+              <div style={{ width: 38, height: 38, borderRadius: "50%", backgroundColor: "#1A6FD4", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <span style={{ color: "#fff", fontWeight: 700, fontSize: 15, lineHeight: 1 }}>
+                  {(user?.user_metadata?.full_name || user?.email || "G")[0].toUpperCase()}
                 </span>
-                .
-              </h1>
-              {/* 50-75 char line length, leading-relaxed (1.5x) for body (design guide) */}
-              <p className="mt-4 max-w-xs text-base font-medium leading-relaxed text-blue-200/75">
-                Trusted garages · Verified experts · Fixed pricing
-              </p>
-            </div>
-
-            {/* Search card — frosted glass, prominent CTA */}
-            <form
-              onSubmit={handleSearch}
-              aria-label="Search garages form"
-              className="animate-slide-up delay-100 md:flex-1"
-            >
-              <div className="rounded-2xl border border-white/15 bg-white/10 p-3 shadow-[0_8px_32px_rgba(0,0,0,0.2)] backdrop-blur-md">
-                {userArea && (
-                  <div className="mb-3 flex items-center gap-1.5 px-2">
-                    <MapPinIcon size={12} className="text-blue-300" aria-hidden="true" />
-                    <span className="text-xs font-medium text-blue-200">{userArea}</span>
-                  </div>
-                )}
-                <div className="flex gap-2">
-                  {/* Search input — clear focus state, WCAG 2.2 */}
-                  <div className="flex flex-1 items-center gap-2.5 rounded-xl bg-white px-4 py-3.5 shadow-sm focus-within:ring-2 focus-within:ring-primary/30">
-                    <SearchIcon size={16} className="shrink-0 text-slate-400" aria-hidden="true" />
-                    <input
-                      type="text"
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Search garage, service, or area…"
-                      aria-label="Search garages"
-                      className="flex-1 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
-                    />
-                  </div>
-                  <AnimatedSearchButton />
-                </div>
-
-                {/* Quick-search pills — horizontal scroll, no wrapping, one-tap navigation */}
-                <div className="mt-3 flex gap-1.5 overflow-x-auto px-1 pb-1 scrollbar-hide">
-                  {["Tyre Repair", "Oil Change", "Battery", "AC Repair"].map((q) => (
-                    <button
-                      key={q}
-                      type="button"
-                      aria-label={`Quick search: ${q}`}
-                      onClick={() => router.push(`/near-me?q=${encodeURIComponent(q)}`)}
-                      className="shrink-0 rounded-full bg-white/15 px-3.5 py-2 text-xs font-semibold text-white transition-[transform,background-color] duration-150 hover:bg-white/25 active:scale-95"
-                    >
-                      {q}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </form>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════
-          CONTENT — pulled over hero (-mt-12), white rounded surface
-      ══════════════════════════════════════════════════════════ */}
-      <div id="main-content" className="relative -mt-12 rounded-t-[2.5rem] bg-[#F8FAFC]">
-
-        {/* ── Main content — gap-10 (40px) between sections ── */}
-        {/* Section breathing room: 48-64px recommended; gap-10=40px, gap-12=48px */}
-        <main className="mx-auto flex max-w-5xl flex-col gap-10 px-4 pb-36 pt-8 md:px-8 md:pb-16 md:pt-12">
-
-          {/* ── SERVICES ───────────────────────────────────────────── */}
-          <section aria-labelledby="services-heading" className="animate-slide-up delay-150">
-            <div className="mb-5 flex items-center justify-between">
-              <div>
-                {/* text-xl (20px) for section headers, tracking-tight (design guide) */}
-                <h2 id="services-heading" className="text-xl font-black tracking-tight text-slate-900">
-                  How can we help you?
-                </h2>
-                <p className="mt-1 text-sm leading-relaxed text-slate-400">
-                  Tap a service to find nearby garages
-                </p>
-              </div>
-              <Link
-                href="/near-me"
-                className="flex items-center gap-0.5 rounded-lg px-2 py-1 text-sm font-bold text-primary hover:bg-primary/5 active:scale-95"
-              >
-                All <ChevronRightIcon size={14} aria-hidden="true" />
-              </Link>
-            </div>
-
-            {/* 4-col mobile, 8-col desktop */}
-            <div className="grid grid-cols-4 gap-x-2 gap-y-4 md:grid-cols-8 md:gap-x-3">
-              {SERVICES.map(({ label, icon: Icon, color, href, animated }) => (
-                <Link
-                  key={label}
-                  href={href}
-                  aria-label={label}
-                  className="group flex flex-col items-center gap-2 min-h-[72px]"
-                >
-                  {/* Card: hover -translate-y-1 + shadow (design guide hover: scale/lift) */}
-                  <div
-                    className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${color} text-white shadow-sm transition-[transform,box-shadow] duration-200 group-hover:-translate-y-1 group-hover:shadow-md group-active:scale-95 md:h-16 md:w-16`}
-                  >
-                    {animated
-                      ? <Icon size={24} className="text-white" />
-                      : <Icon className="h-6 w-6 text-white md:h-7 md:w-7" />}
-                  </div>
-                  {/* 50-75 char limit per label — these are short, fine */}
-                  <span className="w-16 text-center text-xs font-semibold leading-tight text-slate-600 transition-colors duration-150 group-hover:text-primary">
-                    {label}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </section>
-
-          {/* ── QUICK ACTIONS: Book Again + SOS ───────────────────── */}
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 animate-slide-up delay-200">
-
-            {/* Book Again — card padding p-5 (20px) ≈ design guide's 24px recommendation */}
-            <MagicCard
-              className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-card transition-[transform,box-shadow] duration-200 hover:shadow-card-hover hover:-translate-y-0.5"
-              onMouseEnter={() => rotateRef.current?.startAnimation()}
-            >
-              <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${serviceDue ? "bg-amber-100 text-amber-600" : "bg-primary/10 text-primary"}`}>
-                <RotateCcwIcon ref={rotateRef} size={18} aria-hidden="true" />
-              </div>
-              <div className="relative z-10 min-w-0 flex-1">
-                {lastBookingLoading ? (
-                  <div className="space-y-2">
-                    <div className="h-3 w-20 animate-pulse rounded-full bg-slate-100" />
-                    <div className="h-4 w-36 animate-pulse rounded-full bg-slate-100" />
-                  </div>
-                ) : serviceDue ? (
-                  <>
-                    <p className="text-xs font-bold uppercase tracking-wide text-amber-600">Service due!</p>
-                    <p className="truncate text-sm font-bold text-slate-900">{daysAgo}d since {lastBooking.service_name}</p>
-                  </>
-                ) : lastBooking ? (
-                  <>
-                    <p className="text-xs font-semibold text-slate-400">Last visited</p>
-                    <p className="truncate text-sm font-bold text-slate-900 leading-snug">{lastBooking.garage_name} · {lastBooking.service_name}</p>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-xs font-semibold text-slate-400">No bookings yet</p>
-                    <p className="text-sm font-bold text-slate-900">Find a garage near you</p>
-                  </>
-                )}
-              </div>
-              <Link
-                href={lastBooking ? `/garage/${lastBooking.garage_id}` : "/near-me"}
-                className={`relative z-10 shrink-0 rounded-full px-4 py-2 text-xs font-bold text-white transition-[transform,filter] duration-200 hover:brightness-110 hover:scale-[1.03] active:scale-[0.97] ${
-                  serviceDue
-                    ? "bg-amber-500 shadow-[0_4px_12px_rgba(245,158,11,0.4)]"
-                    : "bg-primary shadow-glow-primary"
-                }`}
-              >
-                {serviceDue ? "Book Now" : lastBooking ? "Book Again" : "Explore"}
-              </Link>
-            </MagicCard>
-
-            {/* SOS — desktop only; mobile uses bottom nav SOS button */}
-            <Link href="/sos" className="hidden md:block" aria-label="Roadside SOS emergency help">
-              <div className="flex h-full items-center gap-4 rounded-2xl bg-gradient-to-r from-[#B71C1C] to-[#D32F2F] p-5 text-white shadow-sos transition-[transform,filter] duration-200 hover:brightness-105 hover:-translate-y-0.5 active:scale-[0.98]">
-                <div aria-hidden="true" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/15">
-                  <AlertTriangle className="h-5 w-5" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  {/* text-lg for card title (18px), text-sm for sub (14px) — clear hierarchy */}
-                  <p className="text-lg font-black leading-tight tracking-tight">Roadside Emergency?</p>
-                  <p className="mt-1 text-sm leading-relaxed text-red-200">24/7 instant assistance · One tap away</p>
-                </div>
-                <ChevronRightIcon size={18} className="shrink-0 text-white/50" aria-hidden="true" />
               </div>
             </Link>
+          </div>
+        </div>
 
+        {/* Hero heading */}
+        <div className="mx-auto max-w-5xl" style={{ padding: "20px 20px 0" }}>
+          {openCount !== null && (
+            <div className="flex items-center" style={{ gap: 6, marginBottom: 12 }}>
+              <span className="relative flex" style={{ width: 8, height: 8, flexShrink: 0 }}>
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full bg-green-500" style={{ width: 8, height: 8 }} />
+              </span>
+              <span style={{ fontSize: 11, fontWeight: 600, color: "#888888" }}>{openCount} garages open now</span>
+            </div>
+          )}
+          <h1 style={{ fontSize: 34, fontWeight: 700, color: "#1C1C1E", lineHeight: 1.2, margin: 0 }}>
+            Find Your Garage.
+          </h1>
+          <p style={{ fontSize: 12, color: "#888888", marginTop: 8, marginBottom: 0 }}>
+            Trusted · Verified · Fixed pricing
+          </p>
+        </div>
+
+        {/* Search bar */}
+        <div className="mx-auto max-w-5xl" style={{ padding: "14px 20px 0" }}>
+          <form onSubmit={handleSearch} aria-label="Search garages">
+            <div style={{ backgroundColor: "#FFFFFF", borderRadius: 12, border: "0.5px solid #E0DFD8", padding: "0 14px", display: "flex", alignItems: "center", gap: 10, minHeight: 48 }}>
+              <SearchIcon size={16} style={{ color: "#888888", flexShrink: 0 }} aria-hidden="true" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Tyre repair, oil change, AC…"
+                aria-label="Search garages"
+                style={{ flex: 1, background: "transparent", fontSize: 15, color: "#1C1C1E", outline: "none", border: "none", padding: "14px 0" }}
+              />
+              {search.trim() && (
+                <button
+                  type="submit"
+                  style={{ backgroundColor: "#1A6FD4", color: "#fff", fontSize: 13, fontWeight: 700, borderRadius: 8, padding: "6px 14px", border: "none", cursor: "pointer", flexShrink: 0, minHeight: 32 }}
+                >
+                  Search
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {/* ── MAIN CONTENT ── */}
+      <main
+        className="mx-auto max-w-5xl"
+        style={{ padding: "28px 20px", paddingBottom: "max(120px, calc(env(safe-area-inset-bottom) + 100px))" }}
+      >
+
+        {/* ── SERVICES GRID ── */}
+        <section aria-labelledby="services-heading">
+          <div className="flex items-center justify-between" style={{ marginBottom: 14 }}>
+            <p id="services-heading" style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "#1C1C1E", margin: 0 }}>
+              Services
+            </p>
+          </div>
+          <div className="grid grid-cols-4" style={{ gap: 10 }}>
+            {SERVICES.map(({ label, icon: Icon, href, animated, price, bg, iconColor }) => (
+              <Link key={label} href={href} aria-label={`${label} — ${price}`}>
+                <div
+                  style={{ backgroundColor: "#FFFFFF", borderRadius: 12, border: "0.5px solid #E0DFD8", padding: "12px 6px", display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}
+                  className="transition-[transform] duration-150 hover:-translate-y-0.5 active:scale-95"
+                >
+                  <div style={{ width: 40, height: 40, borderRadius: 10, backgroundColor: bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    {animated
+                      ? <Icon size={20} style={{ color: iconColor }} />
+                      : <Icon style={{ width: 20, height: 20, color: iconColor }} />}
+                  </div>
+                  <p style={{ fontSize: 11, fontWeight: 700, color: "#1C1C1E", textAlign: "center", lineHeight: 1.3, margin: 0 }}>{label}</p>
+                  <p style={{ fontSize: 10, color: "#888888", margin: 0, textAlign: "center" }}>{price}</p>
+                </div>
+              </Link>
+            ))}
+            {/* See All */}
+            <Link href="/near-me" aria-label="See all services">
+              <div
+                style={{ backgroundColor: "#1A6FD4", borderRadius: 12, padding: "12px 6px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 5, minHeight: 90 }}
+                className="transition-[filter] duration-150 hover:brightness-110 active:scale-95"
+              >
+                <ChevronRightIcon size={20} style={{ color: "#FFFFFF" }} aria-hidden="true" />
+                <p style={{ fontSize: 11, fontWeight: 700, color: "#FFFFFF", textAlign: "center", margin: 0 }}>See All</p>
+              </div>
+            </Link>
+          </div>
+        </section>
+
+        {/* ── SOS BANNER ── */}
+        <section style={{ marginTop: 20 }} aria-label="Roadside emergency SOS">
+          <Link href="/sos" aria-label="SOS — 24/7 roadside assistance">
+            <div
+              style={{ backgroundColor: "#1C1C1E", borderRadius: 12, border: "0.5px solid #2A2A2C", padding: "16px 18px", display: "flex", alignItems: "center", gap: 14 }}
+              className="transition-[transform] duration-150 hover:-translate-y-0.5 active:scale-[0.99]"
+            >
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "#FF4D2D", margin: 0 }}>
+                  Emergency
+                </p>
+                <p style={{ fontSize: 18, fontWeight: 700, color: "#FFFFFF", lineHeight: 1.25, margin: "5px 0 0" }}>
+                  SOS Help — 24/7
+                </p>
+                <p style={{ fontSize: 12, color: "#888888", margin: "4px 0 0" }}>
+                  Instant roadside assistance
+                </p>
+              </div>
+              <div style={{ width: 44, height: 44, borderRadius: "50%", backgroundColor: "#1A6FD4", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <ChevronRightIcon size={18} style={{ color: "#FFFFFF" }} aria-hidden="true" />
+              </div>
+            </div>
+          </Link>
+        </section>
+
+        {/* ── TOP RATED GARAGES ── */}
+        <section aria-labelledby="garages-heading" style={{ marginTop: 28 }}>
+          <div className="flex items-center justify-between" style={{ marginBottom: 14 }}>
+            <p id="garages-heading" style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "#1C1C1E", margin: 0 }}>
+              {isPersonalized ? "Recommended for You" : userCoords ? "Nearby Garages" : "Top Rated"}
+            </p>
+            <Link href="/near-me" style={{ fontSize: 12, fontWeight: 600, color: "#1A6FD4", textDecoration: "none" }}>
+              View all
+            </Link>
           </div>
 
-          {/* ── NEARBY GARAGES ────────────────────────────────────── */}
-          <section aria-labelledby="garages-heading">
-            <div className="mb-5 flex items-center justify-between">
-              <div>
-                <h2 id="garages-heading" className="text-xl font-black tracking-tight text-slate-900">
-                  {isPersonalized
-                    ? "Recommended for You"
-                    : userCoords
-                    ? "Garages Near You"
-                    : "Top Rated Garages"}
-                </h2>
-                {isPersonalized ? (
-                  <p className="mt-1 text-sm font-semibold leading-relaxed text-primary">
-                    Based on your last {lastBooking.service_name}
-                  </p>
-                ) : userArea ? (
-                  <div className="mt-1 flex items-center gap-1 text-sm text-slate-400">
-                    <MapPinIcon size={13} aria-hidden="true" />
-                    <span>{userArea}</span>
-                  </div>
-                ) : null}
-              </div>
-              <Link
-                href="/near-me"
-                className="flex items-center gap-0.5 rounded-lg px-2 py-1 text-sm font-bold text-primary hover:bg-primary/5 active:scale-95"
-              >
-                View all <ChevronRightIcon size={14} aria-hidden="true" />
-              </Link>
-            </div>
-
-            {garagesLoading ? (
-              <Skeleton.GarageList count={3} />
-            ) : personalizedGarages.length === 0 ? (
-              <EmptyState preset="near-me" />
-            ) : (
-              <div className="flex flex-col gap-3 md:grid md:grid-cols-2 md:gap-4">
-                {personalizedGarages.map((garage, i) => (
-                  <Link
-                    key={garage.id}
-                    href={`/garage/${garage.id}`}
-                    className="block animate-slide-up"
-                    style={{ animationDelay: `${i * 60}ms` }}
+          {garagesLoading ? (
+            <Skeleton.GarageList count={3} />
+          ) : personalizedGarages.length === 0 ? (
+            <EmptyState preset="near-me" />
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {personalizedGarages.map((garage, i) => (
+                <Link key={garage.id} href={`/garage/${garage.id}`} aria-label={`Book ${garage.name}`}>
+                  <div
+                    style={{ backgroundColor: "#FFFFFF", borderRadius: 12, border: "0.5px solid #E0DFD8", padding: "14px 16px", display: "flex", alignItems: "center", gap: 14 }}
+                    className="transition-[transform] duration-150 hover:-translate-y-0.5 active:scale-[0.99]"
                   >
-                    <MagicCard className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-card transition-[transform,box-shadow] duration-200 hover:shadow-card-hover hover:-translate-y-0.5 active:scale-[0.99]">
-
-                      {/* Garage photo */}
-                      <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl">
-                        <Image
-                          src={garage.image || "/placeholder-garage.svg"}
-                          alt={`${garage.name} garage`}
-                          fill
-                          priority={i === 0}
-                          className={`object-cover transition-transform duration-300 hover:scale-105 ${!garage.isOpen ? "opacity-70 grayscale-[20%]" : ""}`}
-                          sizes="80px"
+                    {/* Garage photo */}
+                    <div className="relative" style={{ width: 68, height: 68, borderRadius: 10, overflow: "hidden", flexShrink: 0 }}>
+                      <Image
+                        src={garage.image || "/placeholder-garage.svg"}
+                        alt={`${garage.name} garage`}
+                        fill
+                        priority={i === 0}
+                        className="object-cover"
+                        sizes="68px"
+                      />
+                      {garage.isOpen && (
+                        <span
+                          aria-label="Open now"
+                          style={{ position: "absolute", bottom: 4, right: 4, width: 8, height: 8, borderRadius: "50%", border: "1.5px solid white", backgroundColor: "#22C55E" }}
                         />
-                        {garage.isOpen && (
-                          <span
-                            aria-label="Open now"
-                            className="absolute bottom-1 right-1 h-2.5 w-2.5 rounded-full border-2 border-white bg-green-500"
-                          />
+                      )}
+                    </div>
+
+                    {/* Garage info */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div className="flex items-center" style={{ gap: 5 }}>
+                        <p style={{ fontSize: 14, fontWeight: 700, color: "#1C1C1E", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {garage.name}
+                        </p>
+                        {garage.verified && (
+                          <CircleCheckIcon size={13} style={{ color: "#1A6FD4", flexShrink: 0 }} aria-label="Verified" />
                         )}
                       </div>
 
-                      {/* Garage info — visual hierarchy: name > speciality > rating */}
-                      <div className="relative z-10 min-w-0 flex-1">
-                        <div className="flex items-center gap-1">
-                          <h3 className="truncate text-sm font-bold leading-snug text-slate-900">{garage.name}</h3>
-                          {garage.verified && (
-                            <CircleCheckIcon size={14} className="shrink-0 text-primary" aria-label="Verified garage" />
-                          )}
-                        </div>
-                        {/* text-xs (12px) for secondary — clear step down in hierarchy */}
-                        <p className="mt-0.5 truncate text-xs leading-relaxed text-slate-500">{garage.speciality}</p>
-                        <div className="mt-2 flex items-center gap-1">
-                          <Star className="h-3 w-3 fill-amber-400 text-amber-400" aria-hidden="true" />
-                          <span className="text-xs font-bold text-slate-700">{garage.rating}</span>
-                          <span className="text-xs text-slate-400">({garage.reviews} reviews)</span>
-                        </div>
-                      </div>
-
-                      {/* Right col — distance, save, open/closed */}
-                      <div className="relative z-10 flex shrink-0 flex-col items-end gap-2">
-                        <SaveButton
-                          garageId={garage.id}
-                          isSaved={savedIds.has(garage.id)}
-                          isBursting={heartBurst === garage.id}
-                          onToggle={toggleSave}
-                        />
-                        <span className="text-xs font-bold text-primary">{garage.distance}</span>
-                        <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold tracking-wide ${
-                          garage.isOpen ? "bg-green-50 text-green-600" : "bg-slate-100 text-slate-400"
-                        }`}>
-                          {garage.isOpen ? "Open" : "Closed"}
+                      {/* Trust badge pills */}
+                      <div className="flex flex-wrap" style={{ gap: 4, marginTop: 5 }}>
+                        {garage.verified && (
+                          <span style={{ fontSize: 10, fontWeight: 600, color: "#1A6FD4", backgroundColor: "#EBF3FC", borderRadius: 6, padding: "2px 7px", lineHeight: 1.5 }}>
+                            Verified
+                          </span>
+                        )}
+                        <span style={{ fontSize: 10, fontWeight: 600, color: "#16A34A", backgroundColor: "#F0FDF4", borderRadius: 6, padding: "2px 7px", lineHeight: 1.5 }}>
+                          Fixed Price
                         </span>
                       </div>
 
-                    </MagicCard>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </section>
+                      {/* Rating + distance + type */}
+                      <div className="flex items-center" style={{ gap: 8, marginTop: 6 }}>
+                        <div className="flex items-center" style={{ gap: 3 }}>
+                          <Star style={{ width: 11, height: 11, fill: "#F59E0B", color: "#F59E0B" }} aria-hidden="true" />
+                          <span style={{ fontSize: 12, fontWeight: 700, color: "#1C1C1E" }}>{garage.rating}</span>
+                          <span style={{ fontSize: 12, color: "#888888" }}>({garage.reviews})</span>
+                        </div>
+                        {garage.distance && <span style={{ fontSize: 12, color: "#888888" }}>{garage.distance}</span>}
+                        {garage.type && <span style={{ fontSize: 12, color: "#888888" }}>{garage.type}</span>}
+                      </div>
+                    </div>
 
-          {/* ── TRUST STRIP — 3 equal columns ──────────────────────── */}
-          {/* Padding inside cards: p-5 = 20px (design guide: 24-32px; this is ~20px which is acceptable for compact strips) */}
-          <section aria-label="Why choose GarageDekho" className="animate-slide-up delay-200">
-            <div className="grid grid-cols-3 gap-3 md:gap-4">
-              {[
-                { icon: ShieldCheckIcon, label: "Fixed Pricing",    sub: "No hidden charges",       color: "text-primary bg-blue-50",      animated: true  },
-                { icon: BadgeCheck,      label: "Verified Experts", sub: "Quality-checked garages",  color: "text-emerald-600 bg-emerald-50", animated: false },
-                { icon: ClockIcon,       label: "Fast Response",    sub: "Avg. 15 min arrival",     color: "text-amber-600 bg-amber-50",    animated: true  },
-              ].map(({ icon: Icon, label, sub, color, animated }) => (
-                <div
-                  key={label}
-                  className="flex flex-col items-center gap-3 rounded-2xl bg-white p-4 text-center shadow-card transition-[transform,box-shadow] duration-200 hover:shadow-card-hover hover:-translate-y-0.5 md:p-5"
-                >
-                  {/* Icon in tinted circle — proximity groups icon+label */}
-                  <div className={`flex h-11 w-11 items-center justify-center rounded-full ${color}`}>
-                    {animated
-                      ? <Icon size={20} />
-                      : <Icon className="h-5 w-5" />}
+                    {/* Right: open badge + Book CTA */}
+                    <div className="flex flex-col items-end justify-between" style={{ flexShrink: 0, gap: 8, alignSelf: "stretch" }}>
+                      <span style={{
+                        fontSize: 10, fontWeight: 600, borderRadius: 6, padding: "2px 8px", lineHeight: 1.5,
+                        backgroundColor: garage.isOpen ? "#F0FDF4" : "#F5F5F5",
+                        color: garage.isOpen ? "#16A34A" : "#888888",
+                      }}>
+                        {garage.isOpen ? "Open" : "Closed"}
+                      </span>
+                      <button
+                        onClick={(e) => { e.preventDefault(); router.push(`/garage/${garage.id}`); }}
+                        style={{ backgroundColor: "#1A6FD4", color: "#FFFFFF", fontSize: 12, fontWeight: 700, borderRadius: 8, padding: "7px 16px", border: "none", cursor: "pointer", minHeight: 32 }}
+                      >
+                        Book
+                      </button>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold leading-tight text-slate-800 md:text-sm">{label}</p>
-                    <p className="mt-0.5 text-xs leading-relaxed text-slate-400">{sub}</p>
-                  </div>
-                </div>
+                </Link>
               ))}
             </div>
-          </section>
+          )}
+        </section>
 
-          {/* ── PROMO BANNER ─────────────────────────────────────────── */}
-          {/* High saturation CTA — unmissable (design guide 2026 trend) */}
-          <div className="flex items-center gap-4 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 p-5 text-white shadow-promo animate-slide-up delay-200">
-            <div aria-hidden="true" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/20">
-              <Tag className="h-5 w-5" />
+        {/* ── FOOTER ── */}
+        <footer style={{ borderTop: "0.5px solid #E0DFD8", paddingTop: 24, marginTop: 32 }} role="contentinfo">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p style={{ fontSize: 13, fontWeight: 700, color: "#1C1C1E", margin: 0 }}>GarageDekho</p>
+              <p style={{ fontSize: 12, color: "#888888", marginTop: 6, lineHeight: 1.6, maxWidth: 280, marginBottom: 0 }}>
+                Hyperlocal automotive services — find trusted garages, book instantly, get roadside help 24/7.
+              </p>
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-base font-black leading-tight tracking-tight">First service free!</p>
-              <p className="mt-0.5 text-sm leading-relaxed text-amber-100">Free inspection on your first booking</p>
-            </div>
-            <Link
-              href="/offers"
-              aria-label="Claim free first service offer"
-              className="shrink-0 rounded-full bg-white px-4 py-2 text-sm font-bold text-orange-600 shadow-sm transition-[transform,background-color] duration-200 hover:bg-white/90 hover:scale-[1.03] active:scale-[0.97]"
-            >
-              Claim
-            </Link>
-          </div>
-
-          {/* ── PARTNER BANNER ───────────────────────────────────────── */}
-          {/* Dark bg + BorderBeam = premium feel. padding p-7 = 28px ≈ design guide 24-32px */}
-          <section
-            aria-label="List your garage as a partner"
-            className="border-beam-card animate-slide-up delay-300 overflow-hidden rounded-3xl bg-gradient-to-br from-[#080f1f] via-[#0d1a35] to-[#080f1f] p-6 text-white md:p-8"
-            onMouseEnter={() => wrenchRef.current?.startAnimation()}
-          >
-            {/* Ambient glows — soft gradients (2026 design trend) */}
-            <div aria-hidden="true" className="pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full bg-primary/20 blur-3xl" />
-            <div aria-hidden="true" className="pointer-events-none absolute bottom-0 left-1/4 h-24 w-24 rounded-full bg-amber-400/10 blur-2xl" />
-
-            <div className="relative flex items-center justify-between gap-8">
-              <div className="min-w-0 flex-1">
-                {/* Tag chip — proximity groups the chip above the heading */}
-                <span className="inline-block rounded-full border border-blue-500/30 bg-blue-500/15 px-3 py-1 text-xs font-black uppercase tracking-widest text-blue-300">
-                  For Garage Owners
-                </span>
-                {/* text-3xl (30px) for section banner heading — strong hierarchy */}
-                <h2 className="mt-3 text-2xl font-black leading-tight tracking-tight md:text-3xl">
-                  Grow your business<br />with GarageDekho
-                </h2>
-                <p className="mt-2 text-sm leading-relaxed text-slate-400">
-                  Zero listing fee · 10,000+ customers · Real-time SOS jobs
-                </p>
+            <nav aria-label="Footer navigation" className="grid grid-cols-2" style={{ gap: "6px 40px" }}>
+              {[
+                { label: "Near Me",     href: "/near-me"  },
+                { label: "Bookings",    href: "/bookings" },
+                { label: "Offers",      href: "/offers"   },
+                { label: "SOS Help",    href: "/sos"      },
+                { label: "For Garages", href: "/partner"  },
+                { label: "Profile",     href: "/profile"  },
+              ].map(({ label, href }) => (
                 <Link
-                  href="/partner"
-                  aria-label="List your garage as a GarageDekho partner"
-                  className="shimmer-btn mt-6 inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 text-sm font-black text-white shadow-glow-primary transition-[transform,filter] duration-200 hover:brightness-110 hover:scale-[1.03] active:scale-[0.97]"
+                  key={label}
+                  href={href}
+                  style={{ fontSize: 12, color: "#888888", fontWeight: 500 }}
+                  className="transition-colors duration-150 hover:text-[#1A6FD4]"
                 >
-                  List Your Garage <ArrowRightIcon size={16} aria-hidden="true" />
+                  {label}
                 </Link>
-              </div>
+              ))}
+            </nav>
+          </div>
+          <p style={{ fontSize: 11, color: "#888888", marginTop: 20, textAlign: "center" }}>
+            © {new Date().getFullYear()} GarageDekho. All rights reserved.
+          </p>
+        </footer>
 
-              {/* Wrench illustration — animates on banner hover via ref */}
-              <div className="hidden shrink-0 flex-col items-center gap-3 md:flex">
-                <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-                  <WrenchIcon ref={wrenchRef} size={44} className="text-primary" aria-hidden="true" />
-                </div>
-                <p className="text-center text-xs font-semibold leading-relaxed text-slate-500">
-                  Join 500+<br />partner garages
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* ── FOOTER ───────────────────────────────────────────────── */}
-          {/* Consistent spacing: pt-8 = 32px above fold, text-sm for links */}
-          <footer className="border-t border-slate-100 pt-8" role="contentinfo">
-            <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-              <div className="max-w-xs">
-                <p className="text-base font-black text-slate-900">GarageDekho</p>
-                {/* 50-75 char line length for readability (design guide) */}
-                <p className="mt-2 text-sm leading-relaxed text-slate-400">
-                  Hyperlocal automotive services — find trusted garages, book instantly, get roadside help 24/7.
-                </p>
-              </div>
-              {/* 2-col link grid — consistent spacing gap-y-2, gap-x-12 */}
-              <nav aria-label="Footer navigation" className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm">
-                {[
-                  { label: "Near Me",     href: "/near-me"  },
-                  { label: "Bookings",    href: "/bookings" },
-                  { label: "Offers",      href: "/offers"   },
-                  { label: "SOS Help",    href: "/sos"      },
-                  { label: "For Garages", href: "/partner"  },
-                  { label: "Profile",     href: "/profile"  },
-                ].map(({ label, href }) => (
-                  <Link
-                    key={label}
-                    href={href}
-                    className="font-medium text-slate-500 transition-colors duration-200 hover:text-primary"
-                  >
-                    {label}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-            <p className="mt-8 text-center text-xs text-slate-300">
-              © {new Date().getFullYear()} GarageDekho. All rights reserved.
-            </p>
-          </footer>
-
-        </main>
-      </div>
+      </main>
     </div>
   );
 }
