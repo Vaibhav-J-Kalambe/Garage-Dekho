@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 
 const VARIANTS = {
   primary:
-    "bg-primary text-white shadow-glow-primary hover:brightness-110 active:brightness-95",
+    "bg-gradient-to-b from-[#0056b7] to-[#006de6] text-white shadow-glow-primary hover:brightness-110 active:brightness-95",
   secondary:
     "bg-white border border-[#c2c6d8]/50 text-[#424656] hover:border-[#0056b7]/40 hover:text-[#0056b7] hover:bg-[#d8e2ff]/10",
   ghost:

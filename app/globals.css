@@ -15,7 +15,8 @@ body {
 }
 
 body {
-  background-color: #f9f9fe;
+  background: linear-gradient(160deg, #f5f6ff 0%, #f9f9fe 40%, #f3f4fb 100%);
+  background-attachment: fixed;
   color: #1a1c1f;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -74,7 +75,7 @@ button, a, [role="button"] {
   .shadow-nav        { box-shadow: 0 -1px 0 rgba(0,0,0,0.04), 0 -8px 24px rgba(0,0,0,0.06); }
 
   /* ── Glow shadows for CTAs ── */
-  .shadow-glow-primary { box-shadow: 0 4px 16px rgba(0, 86, 210, 0.38); }
+  .shadow-glow-primary { box-shadow: 0 4px 16px rgba(0, 86, 183, 0.38); }
   .shadow-glow-accent  { box-shadow: 0 4px 16px rgba(255, 107, 0, 0.38); }
 
   /* ── Glassmorphism ── */
@@ -208,7 +209,7 @@ button, a, [role="button"] {
   border-radius: inherit;
   background: radial-gradient(
     380px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(0, 86, 210, 0.07),
+    rgba(0, 86, 183, 0.07),
     transparent 70%
   );
   opacity: 0;
@@ -300,8 +301,8 @@ button, a, [role="button"] {
 
 /* ── Location popup — subtle pulse on detect CTA ── */
 @keyframes loc-pulse {
-  0%, 100% { box-shadow: 0 4px 16px rgba(26, 79, 214, 0.35); }
-  50%       { box-shadow: 0 4px 28px rgba(26, 79, 214, 0.60); }
+  0%, 100% { box-shadow: 0 4px 16px rgba(0, 86, 183, 0.35); }
+  50%       { box-shadow: 0 4px 28px rgba(0, 86, 183, 0.60); }
 }
 .loc-pulse {
   animation: loc-pulse 2s ease-in-out infinite;

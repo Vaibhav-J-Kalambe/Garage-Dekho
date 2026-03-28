@@ -95,10 +95,10 @@ export default function BottomNav() {
     <nav
       aria-label="Main navigation"
       className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
-      style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
+      style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))", paddingLeft: 16, paddingRight: 16 }}
     >
-      {/* Glassmorphic nav bar */}
-      <div className="mx-auto flex max-w-md items-center justify-around rounded-t-3xl bg-white/90 px-2 pt-3 backdrop-blur-xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)] border-t border-[#f3f3f8]">
+      {/* Floating pill nav bar */}
+      <div className="mx-auto flex max-w-md items-center justify-around rounded-[32px] bg-white/95 px-2 pt-2 pb-2 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-[#e8e8f0]">
         {NAV_ITEMS.map(({ label, href, icon, iconFilled, isSOS, isHome }) => {
           const active = isHome ? pathname === "/" : pathname.startsWith(href);
 

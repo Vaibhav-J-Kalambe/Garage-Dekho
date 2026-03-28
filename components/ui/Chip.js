@@ -14,7 +14,7 @@ export default function Chip({
       aria-pressed={active}
       onClick={onClick}
       className={[
-        "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors duration-150 active:scale-95",
+        "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2.5 min-h-[44px] text-xs font-semibold transition-colors duration-150 active:scale-95",
         active
           ? "bg-[#0056b7] text-white shadow-glow-primary"
           : "bg-[#f3f3f8] text-[#424656] hover:bg-[#ededf2]",

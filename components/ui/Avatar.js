@@ -9,12 +9,12 @@ const SIZES = {
 };
 
 const GRADIENTS = [
-  "from-blue-500 to-indigo-600",
-  "from-violet-500 to-purple-600",
-  "from-rose-500 to-pink-600",
-  "from-emerald-500 to-teal-600",
-  "from-amber-500 to-orange-600",
-  "from-cyan-500 to-sky-600",
+  "from-[#0056b7] to-[#006de6]",
+  "from-[#4c4aca] to-[#6664e4]",
+  "from-[#a33200] to-[#cc4204]",
+  "from-[#ba1a1a] to-[#c62828]",
+  "from-[#0056b7] to-[#4c4aca]",
+  "from-[#424656] to-[#1a1c1f]",
 ];
 
 function getGradient(name = "") {
