@@ -118,7 +118,7 @@ export default function ProfilePage() {
 
   async function handleAddVehicle(e) {
     e.preventDefault();
-    if (!user) return;
+    if (!user) { showToast("Please sign in to add a vehicle."); router.push("/auth"); return; }
     if (!vBrand) { showToast("Please select a brand."); return; }
     if (!vModel.trim()) { showToast("Please enter the model name."); return; }
     if (!validatePlate(vNumber)) {
@@ -259,7 +259,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <main aria-label="User profile" className="mx-auto flex max-w-5xl flex-col gap-6 px-4 md:px-8 pb-28 md:pb-10 pt-4 md:pt-6">
+      <main aria-label="User profile" className="mx-auto flex max-w-5xl flex-col gap-6 px-4 md:px-8 pb-52 md:pb-10 pt-4 md:pt-6">
 
         <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
 
