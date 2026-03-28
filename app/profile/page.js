@@ -211,17 +211,17 @@ export default function ProfilePage() {
 
       {/* ── Profile Header ── */}
       <div style={{ paddingTop: 64 }}>
-        <div className="mx-auto max-w-5xl px-4 md:px-8 pt-8 pb-4">
-          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656] mb-4">Profile</p>
+        <div className="mx-auto max-w-5xl px-4 md:px-8 pt-4 md:pt-8 pb-3 md:pb-4">
+          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656] mb-2 md:mb-4">Profile</p>
 
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-3 md:gap-5">
             {/* Avatar */}
             <div className="relative shrink-0">
-              <div className="h-20 w-20 rounded-full bg-[#d8e2ff] flex items-center justify-center overflow-hidden">
+              <div className="h-14 w-14 md:h-20 md:w-20 rounded-full bg-[#d8e2ff] flex items-center justify-center overflow-hidden">
                 {avatarUrl ? (
                   <img src={avatarUrl} alt={name} className="h-full w-full object-cover" />
                 ) : (
-                  <span className="text-3xl font-bold text-[#0056b7]">{initial}</span>
+                  <span className="text-2xl md:text-3xl font-bold text-[#0056b7]">{initial}</span>
                 )}
               </div>
               <button
@@ -240,22 +240,22 @@ export default function ProfilePage() {
 
             {/* Name + email + stats */}
             <div className="min-w-0 flex-1">
-              <h1 className="text-2xl font-bold text-[#1a1c1f] capitalize truncate">{name}</h1>
-              <p className="mt-0.5 text-sm text-[#424656] truncate">{email}</p>
-              <div className="mt-3 flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-[#f3f3f8] px-4 py-2 text-sm font-bold text-[#424656]">
+              <h1 className="text-lg md:text-2xl font-bold text-[#1a1c1f] capitalize truncate">{name}</h1>
+              <p className="mt-0.5 text-xs md:text-sm text-[#424656] truncate">{email}</p>
+              <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                <span className="rounded-full bg-[#f3f3f8] px-3 py-1 text-xs font-bold text-[#424656]">
                   {bookingCount ?? "…"} Bookings
                 </span>
-                <span className="rounded-full bg-[#f3f3f8] px-4 py-2 text-sm font-bold text-[#424656]">
+                <span className="rounded-full bg-[#f3f3f8] px-3 py-1 text-xs font-bold text-[#424656]">
                   {vehicles.length} Vehicles
                 </span>
                 {bookingCount >= 10 ? (
-                  <span className="flex items-center gap-1 rounded-full bg-amber-50 px-4 py-2 text-sm font-bold text-amber-600">
-                    <Flame className="h-3.5 w-3.5" /> Loyal Member
+                  <span className="flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-600">
+                    <Flame className="h-3 w-3" /> Loyal Member
                   </span>
                 ) : bookingCount >= 3 ? (
-                  <span className="flex items-center gap-1 rounded-full bg-amber-50 px-4 py-2 text-sm font-bold text-amber-600">
-                    <Flame className="h-3.5 w-3.5" /> {bookingCount}-booking streak
+                  <span className="flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-600">
+                    <Flame className="h-3 w-3" /> {bookingCount}-booking streak
                   </span>
                 ) : null}
               </div>
@@ -264,7 +264,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <main aria-label="User profile" className="mx-auto flex max-w-5xl flex-col gap-6 px-4 md:px-8 pb-52 md:pb-10 pt-4 md:pt-6">
+      <main aria-label="User profile" className="mx-auto flex max-w-5xl flex-col gap-4 md:gap-6 px-4 md:px-8 pb-52 md:pb-10 pt-2 md:pt-6">
 
         <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
 
@@ -272,7 +272,7 @@ export default function ProfilePage() {
           <div className="flex flex-col gap-4 md:w-72 md:shrink-0">
 
             {/* My Vehicles card */}
-            <div className="bg-white rounded-3xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10">
+            <div className="bg-white rounded-3xl p-4 md:p-6 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10">
               <div className="mb-4 flex items-center justify-between">
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]">Garage</p>
@@ -446,7 +446,7 @@ export default function ProfilePage() {
                         key={label}
                         type="button"
                         onClick={() => showToast(`${label} — coming soon`)}
-                        className="bg-white rounded-2xl flex w-full items-center gap-4 p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10 transition hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] active:scale-[0.98] text-left"
+                        className="bg-white rounded-2xl flex w-full items-center gap-3 p-3 md:p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10 transition hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] active:scale-[0.98] text-left"
                       >
                         <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconBg} ${iconColor}`}>
                           <Icon className="h-5 w-5" />
@@ -458,7 +458,7 @@ export default function ProfilePage() {
                       <Link
                         key={label}
                         href={href}
-                        className="bg-white rounded-2xl flex items-center gap-4 p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10 transition hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] active:scale-[0.98]"
+                        className="bg-white rounded-2xl flex items-center gap-3 p-3 md:p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10 transition hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] active:scale-[0.98]"
                       >
                         <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconBg} ${iconColor}`}>
                           <Icon className="h-5 w-5" />
