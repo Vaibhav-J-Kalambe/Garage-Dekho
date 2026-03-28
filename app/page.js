@@ -352,11 +352,11 @@ export default function HomePage() {
             </div>
 
             {/* Right column: search bar + location */}
-            <div className="mt-6 md:mt-0">
-              <form onSubmit={handleSearch} aria-label="Search garages" className="flex items-center gap-3">
+            <div className="mt-4 md:mt-0">
+              <form onSubmit={handleSearch} aria-label="Search garages" className="flex items-center gap-2 w-full">
                 <div
-                  className="bg-white rounded-2xl flex items-center gap-3 px-4 shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[#c2c6d8]/10 flex-1"
-                  style={{ minHeight: 56 }}
+                  className="bg-white rounded-2xl flex items-center gap-3 px-4 shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[#c2c6d8]/10 flex-1 min-w-0"
+                  style={{ minHeight: 52 }}
                 >
                   <SearchIcon size={16} style={{ color: "#424656", flexShrink: 0 }} aria-hidden="true" />
                   <input
@@ -373,7 +373,7 @@ export default function HomePage() {
                   type="submit"
                   aria-label="Search"
                   className="rounded-xl flex items-center justify-center shrink-0 transition-[filter] duration-200 hover:brightness-110 active:scale-95"
-                  style={{ width: 48, height: 48, background: "linear-gradient(to bottom, #0056b7, #006de6)" }}
+                  style={{ width: 44, height: 44, minWidth: 44, background: "linear-gradient(to bottom, #0056b7, #006de6)" }}
                 >
                   <SearchIcon size={18} style={{ color: "#fff" }} aria-hidden="true" />
                 </button>
