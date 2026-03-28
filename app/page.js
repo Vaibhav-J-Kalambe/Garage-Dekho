@@ -303,7 +303,7 @@ export default function HomePage() {
 
       <main
         style={{ paddingTop: 64 }}
-        className="mx-auto max-w-screen-xl px-4 md:px-6 pb-32 md:pb-8"
+        className="mx-auto max-w-screen-xl px-4 md:px-6 pb-52 md:pb-8"
       >
 
         {/* ── HERO SECTION ── */}
