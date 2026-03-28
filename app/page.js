@@ -496,7 +496,7 @@ export default function HomePage() {
         <section className="mb-6 md:mb-12" aria-labelledby="garages-heading">
           <div className="flex items-end justify-between mb-3 md:mb-5">
             <div>
-              <h2 id="garages-heading" className="text-xl md:text-3xl font-bold tracking-[-0.02em] text-[#1a1c1f]">
+              <h2 id="garages-heading" className="text-xl md:text-3xl font-black tracking-[-0.02em] text-[#1a1c1f]">
                 {isPersonalized ? "Recommended for you" : "Top rated garages near you"}
               </h2>
               {userArea && (
