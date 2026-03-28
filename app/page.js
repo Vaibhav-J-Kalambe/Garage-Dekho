@@ -458,7 +458,7 @@ export default function HomePage() {
         <section className="mb-6 md:mb-12">
           <div className="flex justify-between items-end mb-3">
             <div>
-              <h2 className="text-xl md:text-3xl font-bold tracking-[-0.02em] text-[#1a1c1f]">How can we help?</h2>
+              <h2 className="text-xl md:text-3xl font-black tracking-[-0.02em] text-[#1a1c1f]">How can we help?</h2>
               <p className="text-xs md:text-sm text-[#727687] mt-1">Professional care for every need</p>
             </div>
             <Link href="/near-me" className="text-sm font-bold" style={{ color: "#0056b7" }}>
