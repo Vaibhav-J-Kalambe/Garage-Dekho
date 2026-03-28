@@ -198,8 +198,8 @@ export default function GarageDetailPage({ params }) {
           </div>
         </div>
 
-        {/* Open/Closed badge — top right of image area */}
-        <div className="absolute top-24 right-4">
+        {/* Open/Closed badge — bottom right of image area */}
+        <div className="absolute bottom-4 right-4">
           <span
             className={`rounded-full px-3 py-1.5 text-xs font-bold shadow-lg ${
               garage.isOpen
