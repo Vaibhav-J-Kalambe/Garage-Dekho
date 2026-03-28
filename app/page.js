@@ -303,11 +303,11 @@ export default function HomePage() {
 
       <main
         style={{ paddingTop: 64 }}
-        className="mx-auto max-w-screen-xl px-4 md:px-6 pb-52 md:pb-8"
+        className="mx-auto max-w-screen-xl px-4 md:px-6 pb-52 md:pb-8 overflow-x-hidden"
       >
 
         {/* ── HERO SECTION ── */}
-        <section className="pt-5 pb-4 md:pt-8 md:pb-6">
+        <section className="pt-3 pb-3 md:pt-8 md:pb-6">
           <div className="md:grid md:grid-cols-2 md:gap-12 md:items-center">
 
             {/* Left column: greeting + H1 + trust badges */}
@@ -403,7 +403,7 @@ export default function HomePage() {
             {/* Book Again card (or empty state) */}
             {!lastBookingLoading && lastBooking && lastBooking.status === "completed" ? (
               <Link href={`/garage/${lastBooking.garage_id}`} aria-label={`Book again at ${lastBooking.garage_name}`}>
-                <div className="bg-white rounded-2xl p-5 shadow-[0_4px_24px_rgba(0,0,0,0.05)] border border-[#c2c6d8]/10 flex items-center gap-4 h-full transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] active:scale-[0.99]">
+                <div className="bg-white rounded-2xl p-4 shadow-[0_4px_24px_rgba(0,0,0,0.05)] border border-[#c2c6d8]/10 flex items-center gap-4 h-full transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] active:scale-[0.99]">
                   <div className="flex items-center justify-center rounded-2xl shrink-0" style={{ width: 44, height: 44, backgroundColor: "#d8e2ff" }}>
                     <RotateCcwIcon size={18} style={{ color: "#0056b7" }} />
                   </div>
@@ -456,10 +456,10 @@ export default function HomePage() {
 
         {/* ── HOW CAN WE HELP — service tiles ── */}
         <section className="mb-6 md:mb-12">
-          <div className="flex justify-between items-end mb-5">
+          <div className="flex justify-between items-end mb-3">
             <div>
               <h2 className="text-xl md:text-3xl font-bold tracking-[-0.02em] text-[#1a1c1f]">How can we help?</h2>
-              <p className="text-sm text-[#727687] mt-1.5">Professional care for every need</p>
+              <p className="text-xs md:text-sm text-[#727687] mt-1">Professional care for every need</p>
             </div>
             <Link href="/near-me" className="text-sm font-bold" style={{ color: "#0056b7" }}>
               View all
@@ -469,8 +469,8 @@ export default function HomePage() {
           <div className="md:hidden grid grid-cols-4 gap-x-4 gap-y-6">
             {SERVICES.map(({ label, icon: Icon, href, animated, gradient }) => (
               <Link key={label} href={href} aria-label={label} className="flex flex-col items-center gap-2 active:scale-95 transition-transform duration-150">
-                <div className="flex items-center justify-center rounded-[18px] shadow-[0_4px_12px_rgba(0,0,0,0.18)]" style={{ width: 64, height: 64, background: gradient }}>
-                  {animated ? <Icon size={28} style={{ color: "#fff" }} /> : <Icon style={{ width: 28, height: 28, color: "#fff" }} />}
+                <div className="flex items-center justify-center rounded-[16px] shadow-[0_4px_12px_rgba(0,0,0,0.18)]" style={{ width: 56, height: 56, background: gradient }}>
+                  {animated ? <Icon size={24} style={{ color: "#fff" }} /> : <Icon style={{ width: 24, height: 24, color: "#fff" }} />}
                 </div>
                 <p className="text-[11px] font-semibold text-center leading-tight text-[#1a1c1f]">{label}</p>
               </Link>
