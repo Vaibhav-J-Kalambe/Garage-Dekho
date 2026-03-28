@@ -52,13 +52,14 @@ function haversine(lat1, lng1, lat2, lng2) {
 
 // Service categories with Apple-style flat icon tiles + starting prices
 const SERVICES = [
-  { label: "Bike Service",   icon: Bike,        href: "/near-me?type=2-Wheeler", animated: false, bg: "#d8e2ff", iconColor: "#0056b7" },
-  { label: "Car Service",    icon: Car,         href: "/near-me?type=4-Wheeler", animated: false, bg: "#e2dfff", iconColor: "#4c4aca" },
-  { label: "Oil Change",     icon: DropletIcon, href: "/near-me?q=oil+change",   animated: true,  bg: "#d8e2ff", iconColor: "#0056b7" },
-  { label: "Tyre Repair",    icon: GaugeIcon,   href: "/near-me?q=tyre",         animated: true,  bg: "#e8e8f0", iconColor: "#424656" },
-  { label: "Battery Jump",   icon: ZapIcon,     href: "/near-me?q=battery",      animated: true,  bg: "#ffdbd0", iconColor: "#a33200" },
-  { label: "Towing",         icon: TruckIcon,   href: "/near-me?q=towing",       animated: true,  bg: "#ffdad6", iconColor: "#ba1a1a" },
-  { label: "AC Repair",      icon: WindIcon,    href: "/near-me?q=ac+repair",    animated: true,  bg: "#e2dfff", iconColor: "#4c4aca" },
+  { label: "Bike Service",    icon: Bike,        href: "/near-me?type=2-Wheeler", animated: false, gradient: "linear-gradient(135deg,#4f6fff,#3b54e0)" },
+  { label: "Car Service",     icon: Car,         href: "/near-me?type=4-Wheeler", animated: false, gradient: "linear-gradient(135deg,#a855f7,#7c3aed)" },
+  { label: "Oil Change",      icon: DropletIcon, href: "/near-me?q=oil+change",   animated: true,  gradient: "linear-gradient(135deg,#06b6d4,#0891b2)" },
+  { label: "Tyre Repair",     icon: GaugeIcon,   href: "/near-me?q=tyre",         animated: true,  gradient: "linear-gradient(135deg,#4b5563,#1f2937)" },
+  { label: "Battery Jump",    icon: ZapIcon,     href: "/near-me?q=battery",      animated: true,  gradient: "linear-gradient(135deg,#f97316,#ea580c)" },
+  { label: "Towing",          icon: TruckIcon,   href: "/near-me?q=towing",       animated: true,  gradient: "linear-gradient(135deg,#ef4444,#dc2626)" },
+  { label: "AC Repair",       icon: WindIcon,    href: "/near-me?q=ac+repair",    animated: true,  gradient: "linear-gradient(135deg,#10b981,#059669)" },
+  { label: "General Repair",  icon: WrenchIcon,  href: "/near-me?q=general",      animated: true,  gradient: "linear-gradient(135deg,#6366f1,#4338ca)" },
 ];
 
 function daysSince(dateStr) {
@@ -343,131 +344,160 @@ export default function HomePage() {
 
         {/* ── HERO SECTION ── */}
         <section className="pt-8 pb-6">
+          <div className="md:grid md:grid-cols-2 md:gap-12 md:items-center">
 
-          {/* Mobile greeting (hidden on md+) */}
-          <div className="md:hidden mb-6">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#727687]">
-              {getGreeting()}
-            </p>
-            <p className="text-lg font-bold text-[#1a1c1f] mt-1 tracking-tight">
-              {user?.user_metadata?.full_name?.split(" ")[0] || (user ? "Welcome back" : "Hello")}
-            </p>
-          </div>
+            {/* Left column: greeting + H1 + trust badges */}
+            <div>
+              {/* Greeting + open count — visible on all screens */}
+              <div className="flex items-center gap-2 mb-4 flex-wrap">
+                <span className="text-sm text-[#727687]">{getGreeting()}</span>
+                {openCount !== null && (
+                  <>
+                    <span className="text-[#727687]">—</span>
+                    <span className="relative flex shrink-0" style={{ width: 8, height: 8 }}>
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full bg-green-500" style={{ width: 8, height: 8 }} />
+                    </span>
+                    <span className="text-sm font-semibold text-green-600">{openCount} garage{openCount !== 1 ? "s" : ""} open now</span>
+                  </>
+                )}
+              </div>
 
-          {/* Open count pill */}
-          {openCount !== null && (
-            <div className="flex items-center gap-2 mb-4">
-              <span className="relative flex" style={{ width: 8, height: 8, flexShrink: 0 }}>
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex rounded-full bg-green-500" style={{ width: 8, height: 8 }} />
-              </span>
-              <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]">
-                {openCount} garages open now
-              </span>
+              {/* H1 */}
+              <h1 className="text-[3rem] md:text-[3.75rem] font-black tracking-[-0.03em] text-[#1a1c1f] leading-[1.05] mb-6">
+                Find Your<br /><span style={{ color: "#0056b7" }}>Mechanic.</span>
+              </h1>
+
+              {/* Trust badges */}
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { icon: <ShieldCheckIcon size={13} />, label: "Verified Experts" },
+                  { icon: <CircleCheckIcon size={13} />, label: "Fixed Pricing" },
+                  { icon: <ClockIcon size={13} />, label: "15-min Response" },
+                ].map(({ icon, label }) => (
+                  <span
+                    key={label}
+                    className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold"
+                    style={{ backgroundColor: "#d8e2ff", color: "#0056b7" }}
+                  >
+                    {icon}
+                    {label}
+                  </span>
+                ))}
+              </div>
             </div>
-          )}
 
-          {/* Editorial heading */}
-          <h1 className="text-[3rem] md:text-[3.75rem] font-black tracking-[-0.03em] text-[#1a1c1f] leading-[1.05] mb-7">
-            Find Your<br /><span style={{ color: "#0056b7" }}>Mechanic.</span>
-          </h1>
-
-          {/* Search bar */}
-          <form onSubmit={handleSearch} aria-label="Search garages">
-            <div
-              className="bg-white rounded-2xl flex items-center gap-3 px-4 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10"
-              style={{ minHeight: 52 }}
-            >
-              <SearchIcon size={16} style={{ color: "#424656", flexShrink: 0 }} aria-hidden="true" />
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Tyre repair, oil change, AC…"
-                aria-label="Search garages"
-                inputMode="search"
-                style={{ flex: 1, background: "transparent", fontSize: 16, color: "#1a1c1f", outline: "none", border: "none", padding: "14px 0" }}
-              />
-              {search.trim() && (
+            {/* Right column: search bar + location */}
+            <div className="mt-6 md:mt-0">
+              <form onSubmit={handleSearch} aria-label="Search garages" className="flex items-center gap-3">
+                <div
+                  className="bg-white rounded-2xl flex items-center gap-3 px-4 shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[#c2c6d8]/10 flex-1"
+                  style={{ minHeight: 56 }}
+                >
+                  <SearchIcon size={16} style={{ color: "#424656", flexShrink: 0 }} aria-hidden="true" />
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search garage, service…"
+                    aria-label="Search garages"
+                    inputMode="search"
+                    style={{ flex: 1, background: "transparent", fontSize: 16, color: "#1a1c1f", outline: "none", border: "none", padding: "14px 0" }}
+                  />
+                </div>
                 <button
                   type="submit"
-                  className="rounded-xl px-4 py-2 text-sm font-bold text-white shrink-0 min-h-[36px] transition-[filter] duration-150 hover:brightness-110 active:scale-95"
-                  style={{ backgroundColor: "#0056b7" }}
+                  aria-label="Search"
+                  className="rounded-xl flex items-center justify-center shrink-0 transition-[filter] duration-200 hover:brightness-110 active:scale-95"
+                  style={{ width: 48, height: 48, background: "linear-gradient(to bottom, #0056b7, #006de6)" }}
                 >
-                  Search
+                  <SearchIcon size={18} style={{ color: "#fff" }} aria-hidden="true" />
                 </button>
-              )}
+              </form>
+
+              {/* Location */}
+              <div className="mt-3">
+                {!userArea ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowLocationPopup(true)}
+                    className="flex items-center gap-2 text-sm font-semibold text-[#0056b7] hover:opacity-80 transition-opacity active:scale-95"
+                  >
+                    <MapPinIcon size={14} />
+                    Detect my location
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setShowLocationPopup(true)}
+                    className="flex items-center gap-2 text-sm text-[#424656] hover:text-[#0056b7] transition-colors"
+                  >
+                    <MapPinIcon size={14} style={{ color: "#0056b7" }} />
+                    <span>{userArea}</span>
+                  </button>
+                )}
+              </div>
             </div>
-          </form>
-
-          {/* Detect location button */}
-          {!userArea && (
-            <button
-              type="button"
-              onClick={() => setShowLocationPopup(true)}
-              className="mt-3 flex items-center gap-2 text-sm font-semibold text-[#0056b7] hover:opacity-80 transition-opacity active:scale-95"
-            >
-              <MapPinIcon size={14} />
-              Detect my location
-            </button>
-          )}
-          {userArea && (
-            <button
-              type="button"
-              onClick={() => setShowLocationPopup(true)}
-              className="mt-3 flex items-center gap-2 text-sm text-[#424656] hover:text-[#0056b7] transition-colors"
-            >
-              <MapPinIcon size={14} style={{ color: "#0056b7" }} />
-              <span>{userArea}</span>
-            </button>
-          )}
-
-          {/* Trust badges row */}
-          <div className="mt-6 flex flex-wrap gap-2">
-            {[
-              { icon: <ShieldCheckIcon size={13} />, label: "Verified Experts" },
-              { icon: <CircleCheckIcon size={13} />, label: "Fixed Pricing" },
-              { icon: <ClockIcon size={13} />, label: "15-min Response" },
-            ].map(({ icon, label }) => (
-              <span
-                key={label}
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold"
-                style={{ backgroundColor: "#d8e2ff", color: "#0056b7" }}
-              >
-                {icon}
-                {label}
-              </span>
-            ))}
           </div>
         </section>
 
-        {/* ── LAST BOOKING "Book Again" subtle card ── */}
-        {!lastBookingLoading && lastBooking && lastBooking.status === "completed" && (
-          <section className="mb-8">
-            <Link href={`/garage/${lastBooking.garage_id}`} aria-label={`Book again at ${lastBooking.garage_name}`}>
-              <div
-                className="bg-white rounded-3xl p-5 shadow-[0_4px_24px_rgba(0,0,0,0.05)] border border-[#c2c6d8]/10 flex items-center gap-4 transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] active:scale-[0.99]"
-              >
-                <div
-                  className="flex items-center justify-center rounded-2xl shrink-0"
-                  style={{ width: 44, height: 44, backgroundColor: "#d8e2ff" }}
-                >
-                  <RotateCcwIcon size={18} style={{ color: "#0056b7" }} />
+        {/* ── BOOKING CARD + SOS — side by side on desktop ── */}
+        <section className="mb-12">
+          <div className="md:grid md:grid-cols-2 md:gap-4 flex flex-col gap-4">
+
+            {/* Book Again card (or empty state) */}
+            {!lastBookingLoading && lastBooking && lastBooking.status === "completed" ? (
+              <Link href={`/garage/${lastBooking.garage_id}`} aria-label={`Book again at ${lastBooking.garage_name}`}>
+                <div className="bg-white rounded-2xl p-5 shadow-[0_4px_24px_rgba(0,0,0,0.05)] border border-[#c2c6d8]/10 flex items-center gap-4 h-full transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] active:scale-[0.99]">
+                  <div className="flex items-center justify-center rounded-2xl shrink-0" style={{ width: 44, height: 44, backgroundColor: "#d8e2ff" }}>
+                    <RotateCcwIcon size={18} style={{ color: "#0056b7" }} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]">Book Again</p>
+                    <p className="text-sm font-bold text-[#1a1c1f] truncate mt-0.5">{lastBooking.service_name} at {lastBooking.garage_name}</p>
+                    {serviceDue && <p className="text-xs text-[#ba1a1a] mt-0.5 font-semibold">Service overdue — {daysAgo} days ago</p>}
+                  </div>
+                  <ChevronRightIcon size={16} style={{ color: "#424656", flexShrink: 0 }} />
+                </div>
+              </Link>
+            ) : (
+              <Link href="/near-me" aria-label="Find a garage near you">
+                <div className="bg-white rounded-2xl p-5 shadow-[0_4px_24px_rgba(0,0,0,0.05)] border border-[#c2c6d8]/10 flex items-center gap-4 transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] active:scale-[0.99]">
+                  <div className="flex items-center justify-center rounded-2xl shrink-0" style={{ width: 44, height: 44, backgroundColor: "#d8e2ff" }}>
+                    <RotateCcwIcon size={18} style={{ color: "#0056b7" }} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[11px] text-[#727687]">No bookings yet</p>
+                    <p className="text-sm font-bold text-[#1a1c1f] mt-0.5">Find a garage near you</p>
+                  </div>
+                  <span className="shrink-0 rounded-full px-4 py-2 text-sm font-bold text-white transition-[filter] duration-200 hover:brightness-110" style={{ background: "linear-gradient(to bottom, #0056b7, #006de6)" }}>
+                    Explore
+                  </span>
+                </div>
+              </Link>
+            )}
+
+            {/* SOS card — desktop only (mobile has SOS in bottom nav) */}
+            <Link href="/sos" aria-label="SOS Emergency Roadside Help" className="hidden md:block">
+              <div className="relative overflow-hidden rounded-2xl p-5 flex items-center gap-4 shadow-[0_8px_32px_rgba(186,26,26,0.22)] transition-[transform,box-shadow] duration-200 hover:shadow-[0_12px_40px_rgba(186,26,26,0.28)] active:scale-[0.99]"
+                style={{ background: "linear-gradient(135deg, #ba1a1a 0%, #c62828 100%)" }}>
+                <div className="pointer-events-none absolute -right-4 -top-4 h-24 w-24 rounded-full" style={{ background: "rgba(255,255,255,0.06)" }} />
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl" style={{ backgroundColor: "rgba(255,255,255,0.18)" }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" fill="white"/>
+                    <line x1="12" y1="9" x2="12" y2="13" stroke="#ba1a1a" strokeWidth="2.5"/>
+                    <circle cx="12" cy="17" r="1" fill="#ba1a1a" stroke="none"/>
+                  </svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]">Book Again</p>
-                  <p className="text-sm font-bold text-[#1a1c1f] truncate mt-0.5">
-                    {lastBooking.service_name} at {lastBooking.garage_name}
-                  </p>
-                  {serviceDue && (
-                    <p className="text-xs text-[#ba1a1a] mt-0.5 font-semibold">Service overdue — {daysAgo} days ago</p>
-                  )}
+                  <p className="text-base font-black text-white leading-tight">Roadside Emergency?</p>
+                  <p className="text-xs text-white/70 mt-0.5">24/7 instant assistance, one tap away</p>
                 </div>
-                <ChevronRightIcon size={16} style={{ color: "#424656", flexShrink: 0 }} />
+                <ChevronRightIcon size={18} style={{ color: "rgba(255,255,255,0.7)", flexShrink: 0 }} />
               </div>
             </Link>
-          </section>
-        )}
+          </div>
+        </section>
 
         {/* ── HOW CAN WE HELP — service tiles ── */}
         <section className="mb-12">
@@ -480,54 +510,28 @@ export default function HomePage() {
               View all
             </Link>
           </div>
-          {/* Mobile: horizontal scroll */}
-          <div className="md:hidden overflow-x-auto -mx-4 px-4 scrollbar-hide">
-            <div className="flex gap-3" style={{ width: "max-content" }}>
-              {SERVICES.map(({ label, icon: Icon, href, animated, bg, iconColor }) => (
-                <Link key={label} href={href} aria-label={label}>
-                  <div
-                    className="shrink-0 rounded-2xl flex flex-col items-center justify-center gap-2.5 transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(0,86,183,0.10)] active:scale-95 cursor-pointer"
-                    style={{ width: 112, height: 120, backgroundColor: "#ffffff", border: "1px solid rgba(194,198,216,0.10)", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
-                  >
-                    <div className="flex items-center justify-center rounded-2xl shrink-0" style={{ width: 56, height: 56, backgroundColor: bg }}>
-                      {animated ? <Icon size={26} style={{ color: iconColor }} /> : <Icon style={{ width: 26, height: 26, color: iconColor }} />}
-                    </div>
-                    <p className="text-[12px] font-bold text-center leading-tight text-[#1a1c1f] px-2">{label}</p>
-                  </div>
-                </Link>
-              ))}
-              <Link href="/near-me" aria-label="See all services">
-                <div className="shrink-0 rounded-2xl flex flex-col items-center justify-center gap-2.5 transition-[filter] duration-200 hover:brightness-110 active:scale-95 cursor-pointer"
-                  style={{ width: 112, height: 120, backgroundColor: "#d8e2ff", border: "1px solid transparent" }}>
-                  <ChevronRightIcon size={26} style={{ color: "#0056b7" }} aria-hidden="true" />
-                  <p className="text-[12px] font-bold text-[#0056b7] text-center">See All</p>
+          {/* Mobile: 4-column grid */}
+          <div className="md:hidden grid grid-cols-4 gap-x-4 gap-y-6">
+            {SERVICES.map(({ label, icon: Icon, href, animated, gradient }) => (
+              <Link key={label} href={href} aria-label={label} className="flex flex-col items-center gap-2 active:scale-95 transition-transform duration-150">
+                <div className="flex items-center justify-center rounded-[18px] shadow-[0_4px_12px_rgba(0,0,0,0.18)]" style={{ width: 64, height: 64, background: gradient }}>
+                  {animated ? <Icon size={28} style={{ color: "#fff" }} /> : <Icon style={{ width: 28, height: 28, color: "#fff" }} />}
                 </div>
-              </Link>
-            </div>
-          </div>
-
-          {/* Desktop: full-width grid */}
-          <div className="hidden md:grid grid-cols-8 gap-3">
-            {SERVICES.map(({ label, icon: Icon, href, animated, bg, iconColor }) => (
-              <Link key={label} href={href} aria-label={label} className="flex">
-                <div
-                  className="flex-1 rounded-2xl flex flex-col items-center justify-center gap-3 py-5 transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,86,183,0.12)] active:scale-95 cursor-pointer"
-                  style={{ backgroundColor: "#ffffff", border: "1px solid rgba(194,198,216,0.10)", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
-                >
-                  <div className="flex items-center justify-center rounded-2xl shrink-0" style={{ width: 56, height: 56, backgroundColor: bg }}>
-                    {animated ? <Icon size={26} style={{ color: iconColor }} /> : <Icon style={{ width: 26, height: 26, color: iconColor }} />}
-                  </div>
-                  <p className="text-[13px] font-bold text-center leading-tight text-[#1a1c1f] px-2">{label}</p>
-                </div>
+                <p className="text-[11px] font-semibold text-center leading-tight text-[#1a1c1f]">{label}</p>
               </Link>
             ))}
-            <Link href="/near-me" aria-label="See all services" className="flex">
-              <div className="flex-1 rounded-2xl flex flex-col items-center justify-center gap-3 py-5 transition-[filter] duration-200 hover:brightness-105 active:scale-95 cursor-pointer"
-                style={{ backgroundColor: "#d8e2ff", border: "1px solid transparent" }}>
-                <ChevronRightIcon size={26} style={{ color: "#0056b7" }} aria-hidden="true" />
-                <p className="text-[13px] font-bold text-[#0056b7] text-center">See All</p>
-              </div>
-            </Link>
+          </div>
+
+          {/* Desktop: 8-column grid */}
+          <div className="hidden md:grid grid-cols-8 gap-x-6 gap-y-6">
+            {SERVICES.map(({ label, icon: Icon, href, animated, gradient }) => (
+              <Link key={label} href={href} aria-label={label} className="flex flex-col items-center gap-3 group">
+                <div className="flex items-center justify-center rounded-[22px] shadow-[0_6px_20px_rgba(0,0,0,0.15)] transition-[transform,box-shadow] duration-200 group-hover:-translate-y-1 group-hover:shadow-[0_10px_28px_rgba(0,0,0,0.22)] active:scale-95" style={{ width: 72, height: 72, background: gradient }}>
+                  {animated ? <Icon size={32} style={{ color: "#fff" }} /> : <Icon style={{ width: 32, height: 32, color: "#fff" }} />}
+                </div>
+                <p className="text-[13px] font-semibold text-center leading-tight text-[#1a1c1f]">{label}</p>
+              </Link>
+            ))}
           </div>
         </section>
 
@@ -645,32 +649,6 @@ export default function HomePage() {
           )}
         </section>
 
-        {/* ── SOS EMERGENCY ENTRY ── */}
-        <section className="mb-12">
-          <Link href="/sos" aria-label="SOS Emergency Roadside Help">
-            <div className="relative overflow-hidden rounded-3xl p-5 flex items-center gap-4 shadow-[0_8px_32px_rgba(186,26,26,0.22)] active:scale-[0.99] transition-[transform,box-shadow] duration-200 hover:shadow-[0_12px_40px_rgba(186,26,26,0.28)]"
-              style={{ background: "linear-gradient(135deg, #ba1a1a 0%, #c62828 100%)" }}
-            >
-              <div className="pointer-events-none absolute -right-4 -top-4 h-24 w-24 rounded-full" style={{ background: "rgba(255,255,255,0.06)" }} />
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl" style={{ backgroundColor: "rgba(255,255,255,0.18)" }}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" fill="white"/>
-                  <line x1="12" y1="9" x2="12" y2="13" stroke="#ba1a1a" strokeWidth="2.5"/>
-                  <circle cx="12" cy="17" r="1" fill="#ba1a1a" stroke="none"/>
-                </svg>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/70 mb-0.5">24/7 Roadside Help</p>
-                <p className="text-base font-black text-white leading-tight">Vehicle breakdown? Tap SOS</p>
-                <p className="text-xs text-white/70 mt-0.5">Mechanic reaches you in ~15 min</p>
-              </div>
-              <div className="flex items-center gap-1 shrink-0 rounded-full px-3 py-1.5 text-xs font-bold" style={{ backgroundColor: "rgba(255,255,255,0.18)", color: "#fff" }}>
-                SOS
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </div>
-            </div>
-          </Link>
-        </section>
 
         {/* ── FIRST SERVICE FREE PROMO ── */}
         <section className="mb-12">
