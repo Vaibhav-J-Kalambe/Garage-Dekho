@@ -338,7 +338,7 @@ function NearMeContent() {
           className={`
             absolute bottom-0 left-0 right-0 z-[500] flex flex-col overflow-hidden rounded-t-3xl bg-white shadow-[0_-4px_24px_rgba(0,0,0,0.10)] transition-[height] duration-300
             md:relative md:bottom-auto md:left-auto md:right-auto md:z-auto md:w-[22rem] md:shrink-0 md:rounded-none md:border-l md:border-[#f3f3f8] md:shadow-[-4px_0_20px_rgba(0,0,0,0.05)]
-            ${listExpanded ? "h-[72vh]" : "h-[38vh]"}
+            ${listExpanded ? "h-[65vh]" : "h-[36vh]"}
             md:h-full
           `}
         >
@@ -359,7 +359,7 @@ function NearMeContent() {
             </div>
           </button>
 
-          <div className="overflow-y-auto flex-1 p-3 md:p-4" style={{ paddingBottom: "max(6rem, calc(env(safe-area-inset-bottom) + 1.5rem))" }}>
+          <div className="overflow-y-auto flex-1 p-3 md:p-4" style={{ paddingBottom: "max(90px, calc(env(safe-area-inset-bottom) + 90px))" }}>
             {/* Count header + sort */}
             <div className="mb-3 flex items-center justify-between">
               <div>

@@ -263,7 +263,7 @@ export default function LocationPopup({ onClose }) {
             {suggestions.length === 0 && (
               <div style={{ marginTop: 12 }}>
                 <p style={{ fontSize: 11, color: "#9ca3af", fontWeight: 500, marginBottom: 8 }}>Popular cities</p>
-                <div className="chips-scroll" style={{ display: "flex", flexWrap: "nowrap", gap: 8, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2, paddingRight: 16 }}>
+                <div className="chips-scroll" style={{ display: "flex", flexWrap: "nowrap", gap: 8, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2, marginLeft: -24, marginRight: -24, paddingLeft: 24, paddingRight: 24 }}>
                   {POPULAR_CITIES.map((city) => (
                     <button
                       key={city}
