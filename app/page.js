@@ -497,7 +497,7 @@ export default function HomePage() {
           <div className="flex items-end justify-between mb-3 md:mb-5">
             <div>
               <h2 id="garages-heading" className="text-xl md:text-3xl font-bold tracking-[-0.02em] text-[#1a1c1f]">
-                {isPersonalized ? "Recommended for You" : userCoords ? "Garages near you" : "Top Rated"}
+                {isPersonalized ? "Recommended for You" : "Top Rated Garages Near You"}
               </h2>
               {userArea && (
                 <p className="text-sm text-[#727687] mt-1.5">In {userArea}</p>
