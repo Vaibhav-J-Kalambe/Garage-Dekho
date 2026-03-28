@@ -76,7 +76,7 @@ function validatePlate(raw) {
 }
 
 export default function ProfilePage() {
-  const { user, signOut } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
   const router  = useRouter();
   const fileRef = useRef(null);
 
@@ -98,6 +98,11 @@ export default function ProfilePage() {
   const [bookingCount, setBookingCount] = useState(null);
 
   const { showToast } = useToast();
+
+  /* Redirect to auth if not logged in */
+  useEffect(() => {
+    if (!authLoading && !user) router.push("/auth?redirect=/profile");
+  }, [user, authLoading, router]);
 
   /* Load vehicles + booking count in parallel */
   useEffect(() => {
