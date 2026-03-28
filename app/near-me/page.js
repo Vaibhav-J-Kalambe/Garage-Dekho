@@ -323,8 +323,7 @@ function NearMeContent() {
             aria-label="Center on my location"
             onClick={handleLocateMe}
             disabled={locating}
-            className="absolute left-3 z-[1000] flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition hover:bg-[#f3f3f8] active:scale-95 disabled:opacity-60"
-            style={{ bottom: "max(90px, calc(env(safe-area-inset-bottom) + 90px))" }}
+            className="absolute top-3 right-3 z-[1000] flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition hover:bg-[#f3f3f8] active:scale-95 disabled:opacity-60"
           >
             {locating
               ? <Loader2  className="h-4 w-4 animate-spin text-[#0056b7]" />
