@@ -7,7 +7,7 @@ import { Mail, Lock, User, Wrench, ArrowLeft, Eye, EyeOff, ShieldCheck, BadgeChe
 import Link from "next/link";
 
 const inputCls =
-  "w-full bg-white border border-[#c2c6d8]/20 rounded-2xl px-4 py-3 text-[#1a1c1f] placeholder:text-[#c2c6d8] focus:border-[#0056b7] focus:outline-none focus:ring-2 focus:ring-[#0056b7]/20 min-h-[44px] transition-[border-color,box-shadow] duration-150";
+  "w-full bg-white border border-[#c2c6d8]/20 rounded-2xl px-4 py-2.5 text-[#1a1c1f] placeholder:text-[#c2c6d8] focus:border-[#0056b7] focus:outline-none focus:ring-2 focus:ring-[#0056b7]/20 min-h-[44px] transition-[border-color,box-shadow] duration-150";
 
 function AuthForm() {
   const [tab, setTab]           = useState("login");   // "login" | "signup"
@@ -171,34 +171,23 @@ function AuthForm() {
         {/* ── RIGHT: auth card ── */}
         <div className="w-full md:w-[420px] flex-shrink-0">
 
-          {/* Mobile back link */}
-          <Link
-            href="/"
-            className="md:hidden mb-6 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] transition hover:bg-[#e8e8f0] active:scale-95"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-
-          {/* Mobile heading */}
-          <div className="md:hidden mb-6">
-            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]">GarageDekho</p>
-            <h2 className="mt-2 text-2xl font-bold text-[#1a1c1f]">
-              {tab === "login" ? "Welcome back." : <>Join <span style={{ color: "#0056b7" }}>GarageDekho</span></>}
-            </h2>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <span className="flex items-center gap-1 rounded-full bg-[#d8e2ff]/40 px-3 py-1.5 text-xs font-semibold text-[#0056b7]">
-                <BadgeCheck className="h-3.5 w-3.5" /> Verified
-              </span>
-              <span className="flex items-center gap-1 rounded-full bg-[#d8e2ff]/40 px-3 py-1.5 text-xs font-semibold text-[#0056b7]">
-                <ShieldCheck className="h-3.5 w-3.5" /> Fixed Prices
-              </span>
-              <span className="flex items-center gap-1 rounded-full bg-[#d8e2ff]/40 px-3 py-1.5 text-xs font-semibold text-[#0056b7]">
-                <Clock className="h-3.5 w-3.5" /> 24/7
-              </span>
+          {/* Mobile back link + heading row */}
+          <div className="md:hidden flex items-center gap-3 mb-4">
+            <Link
+              href="/"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] transition hover:bg-[#e8e8f0] active:scale-95"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]">GarageDekho</p>
+              <h2 className="text-lg font-bold text-[#1a1c1f] leading-tight">
+                {tab === "login" ? "Welcome back." : <>Join <span style={{ color: "#0056b7" }}>GarageDekho</span></>}
+              </h2>
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl p-8 shadow-[0_8px_64px_rgba(0,86,183,0.08)] space-y-5">
+          <div className="bg-white rounded-3xl p-5 md:p-8 shadow-[0_8px_64px_rgba(0,86,183,0.08)] space-y-3 md:space-y-5">
 
             {/* Login / Sign Up tabs */}
             <div role="tablist" aria-label="Authentication mode" className="flex gap-1.5 rounded-xl bg-[#f3f3f8] p-1.5">
@@ -209,7 +198,7 @@ function AuthForm() {
                   role="tab"
                   aria-selected={tab === key}
                   onClick={() => { setTab(key); resetState(); }}
-                  className={`flex-1 rounded-lg py-2.5 text-sm font-semibold transition-[background-color,color,box-shadow] duration-150 ${
+                  className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-[background-color,color,box-shadow] duration-150 ${
                     tab === key
                       ? "bg-white text-[#0056b7] shadow-sm"
                       : "text-[#424656] hover:text-[#1a1c1f]"
@@ -239,7 +228,7 @@ function AuthForm() {
               type="button"
               onClick={handleGoogle}
               disabled={loading}
-              className="flex w-full items-center justify-center gap-3 rounded-2xl border border-[#c2c6d8]/30 bg-white py-3 text-sm font-semibold text-[#1a1c1f] shadow-sm transition hover:shadow-md hover:border-[#c2c6d8]/60 active:scale-[0.98] disabled:opacity-60 min-h-[52px]"
+              className="flex w-full items-center justify-center gap-3 rounded-2xl border border-[#c2c6d8]/30 bg-white py-2.5 text-sm font-semibold text-[#1a1c1f] shadow-sm transition hover:shadow-md hover:border-[#c2c6d8]/60 active:scale-[0.98] disabled:opacity-60 min-h-[44px]"
               style={{ fontSize: 16 }}
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -322,7 +311,7 @@ function AuthForm() {
                   type="submit"
                   disabled={loading}
                   aria-busy={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0056b7] py-4 px-6 text-base font-bold text-white transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60 min-h-[52px]"
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0056b7] py-3 px-6 text-base font-bold text-white transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60 min-h-[44px]"
                 >
                   {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
                   {loading ? "Please wait…" : tab === "login" ? "Log In" : "Create Account"}
@@ -361,7 +350,7 @@ function AuthForm() {
                   </button>
                 </div>
                 <button type="submit" disabled={loading} aria-busy={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0056b7] py-4 px-6 text-base font-bold text-white transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60 min-h-[52px]"
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0056b7] py-3 px-6 text-base font-bold text-white transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60 min-h-[44px]"
                 >
                   {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
                   {loading ? "Please wait…" : "Log In"}
@@ -394,7 +383,7 @@ function AuthForm() {
                   />
                 </div>
                 <button type="submit" disabled={loading} aria-busy={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0056b7] py-4 px-6 text-base font-bold text-white transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60 min-h-[52px]"
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0056b7] py-3 px-6 text-base font-bold text-white transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60 min-h-[44px]"
                 >
                   {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
                   {loading ? "Sending OTP…" : "Send OTP"}
@@ -429,7 +418,7 @@ function AuthForm() {
                   type="submit"
                   disabled={loading}
                   aria-busy={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0056b7] py-4 px-6 text-base font-bold text-white transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60 min-h-[52px]"
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0056b7] py-3 px-6 text-base font-bold text-white transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60 min-h-[44px]"
                 >
                   {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
                   {loading ? "Verifying…" : "Verify OTP"}
