@@ -323,7 +323,7 @@ export default function GarageDetailPage({ params }) {
                   <span className="text-base font-black text-[#1a1c1f]">{distance || "—"}</span>
                   <p className="text-[10px] font-semibold text-[#424656]">Distance</p>
                 </div>
-                {garage.experience && (
+                {Number(garage.experience) > 0 && (
                   <>
                     <div className="h-8 w-px bg-[#f3f3f8]" />
                     <div className="flex flex-col items-center gap-0.5">
