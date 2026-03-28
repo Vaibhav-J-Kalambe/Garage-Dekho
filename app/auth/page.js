@@ -127,7 +127,7 @@ function AuthForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f9f9fe] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#f9f9fe] flex items-center justify-center px-4 pt-6 pb-32 md:py-12">
 
       <div className="w-full max-w-4xl flex flex-col md:flex-row gap-12 md:gap-16 items-center">
 
