@@ -124,14 +124,14 @@ export default function LocationPopup({ onClose }) {
         }
       `}</style>
 
-      <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center sm:p-4">
+      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
         {/* Backdrop */}
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
         <SwipeableSheet
           onClose={onClose}
-          className="loc-popup-sheet animate-slide-up relative flex w-full flex-col overflow-hidden rounded-t-[24px] shadow-2xl sm:max-w-[440px] sm:rounded-[24px]"
-          hideHandle={false}
+          className="loc-popup-sheet animate-slide-up relative flex w-full flex-col overflow-hidden rounded-[24px] shadow-2xl max-w-[440px]"
+          hideHandle={true}
         >
           {/* ── Blue top section ── */}
           <div
