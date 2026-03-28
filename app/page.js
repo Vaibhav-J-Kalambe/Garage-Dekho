@@ -478,13 +478,14 @@ export default function HomePage() {
           </div>
 
           {/* Desktop: 8-column grid */}
-          <div className="hidden md:grid grid-cols-8 gap-x-6 gap-y-6">
+          <div className="hidden md:grid grid-cols-8 gap-x-3 gap-y-6 lg:gap-x-6">
             {SERVICES.map(({ label, icon: Icon, href, animated, gradient }) => (
               <Link key={label} href={href} aria-label={label} className="flex flex-col items-center gap-3 group">
-                <div className="flex items-center justify-center rounded-[22px] shadow-[0_6px_20px_rgba(0,0,0,0.15)] transition-[transform,box-shadow] duration-200 group-hover:-translate-y-1 group-hover:shadow-[0_10px_28px_rgba(0,0,0,0.22)] active:scale-95" style={{ width: 72, height: 72, background: gradient }}>
-                  {animated ? <Icon size={32} style={{ color: "#fff" }} /> : <Icon style={{ width: 32, height: 32, color: "#fff" }} />}
+                <div className="flex items-center justify-center rounded-[18px] md:rounded-[20px] lg:rounded-[22px] shadow-[0_6px_20px_rgba(0,0,0,0.15)] transition-[transform,box-shadow] duration-200 group-hover:-translate-y-1 group-hover:shadow-[0_10px_28px_rgba(0,0,0,0.22)] active:scale-95 w-14 h-14 lg:w-[72px] lg:h-[72px]" style={{ background: gradient }}>
+                  {animated ? <Icon size={26} className="lg:hidden" style={{ color: "#fff" }} /> : <Icon className="lg:hidden" style={{ width: 26, height: 26, color: "#fff" }} />}
+                  {animated ? <Icon size={32} className="hidden lg:block" style={{ color: "#fff" }} /> : <Icon className="hidden lg:block" style={{ width: 32, height: 32, color: "#fff" }} />}
                 </div>
-                <p className="text-[13px] font-semibold text-center leading-tight text-[#1a1c1f]">{label}</p>
+                <p className="text-[11px] lg:text-[13px] font-semibold text-center leading-tight text-[#1a1c1f]">{label}</p>
               </Link>
             ))}
           </div>
@@ -492,8 +493,8 @@ export default function HomePage() {
 
 
         {/* ── GARAGES NEAR YOU ── */}
-        <section className="mb-12" aria-labelledby="garages-heading">
-          <div className="flex items-end justify-between mb-5">
+        <section className="mb-6 md:mb-12" aria-labelledby="garages-heading">
+          <div className="flex items-end justify-between mb-3 md:mb-5">
             <div>
               <h2 id="garages-heading" className="text-xl md:text-3xl font-bold tracking-[-0.02em] text-[#1a1c1f]">
                 {isPersonalized ? "Recommended for You" : userCoords ? "Garages near you" : "Top Rated"}
@@ -512,7 +513,7 @@ export default function HomePage() {
           ) : personalizedGarages.length === 0 ? (
             <EmptyState preset="near-me" />
           ) : (
-            <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {personalizedGarages.map((garage, i) => (
                 <Link key={garage.id} href={`/garage/${garage.id}`} aria-label={`Book ${garage.name}`}>
                   <div
