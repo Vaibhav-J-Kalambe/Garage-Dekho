@@ -333,7 +333,7 @@ export default function HomePage() {
               </h1>
 
               {/* Trust badges */}
-              <div className="flex flex-wrap gap-2">
+              <div className="hidden md:flex flex-wrap gap-2">
                 {[
                   { icon: <ShieldCheckIcon size={13} />, label: "Verified Experts" },
                   { icon: <CircleCheckIcon size={13} />, label: "Fixed Pricing" },
