@@ -154,10 +154,6 @@ export default function HomePage() {
     location?.lat && location?.lng ? [location.lat, location.lng] : null
   );
   const [userArea, setUserArea] = useState(location?.area || null);
-  const [showPromoBanner, setShowPromoBanner] = useState(false);
-  useEffect(() => {
-    if (!sessionStorage.getItem("gd_promo_dismissed")) setShowPromoBanner(true);
-  }, []);
 
   // Sync location context changes (e.g. user picks city from popup)
   useEffect(() => {
@@ -302,43 +298,11 @@ export default function HomePage() {
     <div className="min-h-screen" style={{ backgroundColor: "#f9f9fe" }}>
       <Header />
 
-      {/* ── PROMO BANNER ── */}
-      {showPromoBanner && (
-        <div
-          className="fixed top-[60px] inset-x-0 z-40 flex items-center justify-between gap-3 px-4 py-2.5"
-          style={{ background: "linear-gradient(90deg, #0056b7 0%, #006de6 100%)" }}
-          role="banner"
-          aria-label="Promotion: Free first service inspection"
-        >
-          <p className="text-xs font-semibold text-white truncate">
-            🎉 <strong>First service inspection free</strong> — Book now & save ₹499
-          </p>
-          <div className="flex items-center gap-2 shrink-0">
-            <Link
-              href="/near-me"
-              className="rounded-full bg-white px-3 py-1 text-[11px] font-black text-[#0056b7] transition-opacity hover:opacity-90 active:scale-95"
-            >
-              Book
-            </Link>
-            <button
-              type="button"
-              aria-label="Dismiss promotion"
-              onClick={() => {
-                sessionStorage.setItem("gd_promo_dismissed", "1");
-                setShowPromoBanner(false);
-              }}
-              className="flex h-6 w-6 items-center justify-center rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
-            </button>
-          </div>
-        </div>
-      )}
 
       {showLocationPopup && <LocationPopup onClose={() => setShowLocationPopup(false)} />}
 
       <main
-        style={{ paddingTop: showPromoBanner ? 104 : 64, transition: "padding-top 0.2s ease" }}
+        style={{ paddingTop: 64 }}
         className="mx-auto max-w-screen-xl px-4 md:px-6 pb-32 md:pb-8"
       >
 
