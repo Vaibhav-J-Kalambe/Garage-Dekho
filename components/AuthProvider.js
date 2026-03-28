@@ -10,7 +10,10 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error?.message?.includes("Refresh Token")) {
+        supabase.auth.signOut();
+      }
       setUser(session?.user ?? null);
       setLoading(false);
     });
