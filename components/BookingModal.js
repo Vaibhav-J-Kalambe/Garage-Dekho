@@ -369,7 +369,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
         scrollRef={scrollRef}
         className="relative w-full max-w-lg rounded-t-3xl bg-white shadow-2xl md:rounded-3xl"
       >
-      <div ref={(el) => { scrollRef.current = el; trapRef.current = el; }} className="overflow-y-auto" style={{ maxHeight: "92vh" }}>
+      <div ref={(el) => { scrollRef.current = el; trapRef.current = el; }} className="overflow-y-auto scrollbar-hide" style={{ maxHeight: "92vh", scrollbarWidth: "none", msOverflowStyle: "none" }}>
 
         {/* Header */}
         <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-3xl border-b border-[#f3f3f8] bg-white px-5 py-4">
