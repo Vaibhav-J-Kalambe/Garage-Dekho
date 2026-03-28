@@ -380,17 +380,8 @@ export default function HomePage() {
               </form>
 
               {/* Location */}
-              <div className="mt-3">
-                {!userArea ? (
-                  <button
-                    type="button"
-                    onClick={() => setShowLocationPopup(true)}
-                    className="flex items-center gap-2 text-sm font-semibold text-[#0056b7] hover:opacity-80 transition-opacity active:scale-95"
-                  >
-                    <MapPinIcon size={14} />
-                    Detect my location
-                  </button>
-                ) : (
+              {userArea && (
+                <div className="mt-3">
                   <button
                     type="button"
                     onClick={() => setShowLocationPopup(true)}
@@ -399,8 +390,8 @@ export default function HomePage() {
                     <MapPinIcon size={14} style={{ color: "#0056b7" }} />
                     <span>{userArea}</span>
                   </button>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         </section>
