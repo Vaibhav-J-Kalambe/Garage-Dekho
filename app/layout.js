@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import BottomNav from "../components/BottomNav";
+import Footer from "../components/Footer";
 import { AuthProvider } from "../components/AuthProvider";
 import { LocationProvider } from "../context/LocationContext";
 import { ToastProvider } from "../context/ToastContext";
@@ -19,14 +20,14 @@ export const metadata = {
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: "GarageDekho",
   },
   formatDetection: { telephone: false },
 };
 
 export const viewport = {
-  themeColor: "#0056D2",
+  themeColor: "#0056b7",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -36,7 +37,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.variable}>
       <body
-        className="bg-white text-slate-900 font-sans antialiased"
+        className="bg-[#f9f9fe] text-[#1a1c1f] font-sans antialiased"
         suppressHydrationWarning
       >
         <NavigationProgress />
@@ -45,6 +46,7 @@ export default function RootLayout({ children }) {
           <LocationProvider>
             <ToastProvider>
               {children}
+              <Footer />
               <BottomNav />
             </ToastProvider>
           </LocationProvider>

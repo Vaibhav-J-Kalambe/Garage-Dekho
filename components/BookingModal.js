@@ -313,7 +313,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
   if (done) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0056D2]/95 to-[#3730A3]/95 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-[#0056b7]/95 backdrop-blur-sm" />
         <div className="relative w-full max-w-sm mx-4 animate-pop">
           {/* Confetti dots */}
           {["top-4 left-8","top-8 right-12","top-16 left-1/2","bottom-24 left-6","bottom-16 right-8"].map((pos, i) => (
@@ -327,15 +327,15 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
               <CheckCircle2 className="h-10 w-10 text-white" />
             </div>
 
-            <h2 className="text-2xl font-black text-slate-900">You're booked!</h2>
-            <p className="mt-1 text-sm font-semibold text-primary">{garage.name}</p>
-            <p className="mt-3 text-sm text-slate-500">
+            <h2 className="text-2xl font-black text-[#1a1c1f]">You're booked!</h2>
+            <p className="mt-1 text-sm font-semibold text-[#0056b7]">{garage.name}</p>
+            <p className="mt-3 text-sm text-[#424656]">
               {service?.name || "Service"} · {date} at {time}
             </p>
 
             {paymentId && (
-              <div className="mt-3 rounded-xl bg-slate-50 px-4 py-2">
-                <p className="text-[11px] text-slate-400">Payment ID: <span className="font-mono font-semibold text-slate-600">{paymentId}</span></p>
+              <div className="mt-3 rounded-xl bg-[#f3f3f8] px-4 py-2">
+                <p className="text-[11px] text-[#727687]">Payment ID: <span className="font-mono font-semibold text-[#424656]">{paymentId}</span></p>
               </div>
             )}
 
@@ -348,7 +348,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
             </button>
             <button
               onClick={onClose}
-              className="mt-2 w-full py-2 text-xs font-semibold text-slate-400 transition hover:text-slate-600"
+              className="mt-2 w-full py-2 text-xs font-semibold text-[#727687] transition hover:text-[#424656]"
             >
               Stay on this page
             </button>
@@ -372,15 +372,15 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
       <div ref={(el) => { scrollRef.current = el; trapRef.current = el; }} className="overflow-y-auto" style={{ maxHeight: "92vh" }}>
 
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-3xl border-b border-slate-100 bg-white px-5 py-4">
+        <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-3xl border-b border-[#f3f3f8] bg-white px-5 py-4">
           <div>
-            <p className="text-xs text-slate-400">Booking at</p>
-            <p className="text-base font-black text-slate-900">{garage.name}</p>
+            <p className="text-xs text-[#727687]">Booking at</p>
+            <p className="text-base font-black text-[#1a1c1f]">{garage.name}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] hover:bg-[#ededf2] transition"
           >
             <X className="h-4 w-4" />
           </button>
@@ -394,7 +394,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
 
           {/* ── Service selection ── */}
           <div>
-            <p className="mb-2 text-xs font-black uppercase tracking-widest text-slate-500">Select Service</p>
+            <p className="mb-2 text-xs font-black uppercase tracking-widest text-[#727687]">Select Service</p>
             <div className="flex flex-col gap-2">
               {(garage.services ?? []).map((svc, idx) => {
                 const isUsual = lastServiceName &&
@@ -407,13 +407,13 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                     onClick={() => setService(svc)}
                     className={`flex items-center justify-between rounded-xl border px-3 py-2.5 text-left transition active:scale-[0.98] ${
                       service?.name === svc.name
-                        ? "border-primary bg-primary/5"
-                        : "border-slate-100 hover:border-primary/30"
+                        ? "border-[#0056b7] bg-[#d8e2ff]/20"
+                        : "border-[#f3f3f8] hover:border-[#0056b7]/30"
                     }`}
                   >
                     <div>
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-bold text-slate-800">{svc.name}</p>
+                        <p className="text-sm font-bold text-[#1a1c1f]">{svc.name}</p>
                         {isUsual && (
                           <span className="flex items-center gap-0.5 rounded-full bg-amber-50 px-1.5 py-0.5 text-[10px] font-black text-amber-600">
                             <Star className="h-2.5 w-2.5 fill-amber-500 text-amber-500" /> Your usual
@@ -425,7 +425,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                           </span>
                         )}
                       </div>
-                      <p className="text-[10px] text-slate-400">{svc.duration}</p>
+                      <p className="text-[10px] text-[#727687]">{svc.duration}</p>
                     </div>
                     <span className="text-sm font-black text-primary">{svc.price}</span>
                   </button>
@@ -436,7 +436,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
 
           {/* ── Date ── */}
           <div>
-            <p className="mb-2 text-xs font-black uppercase tracking-widest text-slate-500">Date</p>
+            <p className="mb-2 text-xs font-black uppercase tracking-widest text-[#727687]">Date</p>
             <DatePicker value={date} min={today} onChange={setDate} />
             {date && (
               <p className="mt-1.5 text-xs font-semibold text-primary">
@@ -447,7 +447,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
 
           {/* ── Time slots ── */}
           <div>
-            <p className="mb-2 text-xs font-black uppercase tracking-widest text-slate-500">Time Slot</p>
+            <p className="mb-2 text-xs font-black uppercase tracking-widest text-[#727687]">Time Slot</p>
             <div className="grid grid-cols-3 gap-2">
               {TIME_SLOTS.map((t) => (
                 <button
@@ -456,8 +456,8 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                   onClick={() => setTime(t)}
                   className={`rounded-xl py-2 text-xs font-bold transition active:scale-95 ${
                     time === t
-                      ? "bg-primary text-white"
-                      : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+                      ? "bg-[#0056b7] text-white"
+                      : "bg-[#f3f3f8] text-[#424656] hover:bg-[#ededf2]"
                   }`}
                 >
                   {t}
@@ -468,7 +468,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
 
           {/* ── Vehicle type ── */}
           <div>
-            <p className="mb-2 text-xs font-black uppercase tracking-widest text-slate-500">Vehicle Type</p>
+            <p className="mb-2 text-xs font-black uppercase tracking-widest text-[#727687]">Vehicle Type</p>
             <div className="grid grid-cols-4 gap-2">
               {VEHICLE_TYPES.filter(({ requires }) => isVehicleSupported(requires)).map(({ label, icon: Icon }) => (
                 <button
@@ -477,8 +477,8 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                   onClick={() => setVehicleType(label)}
                   className={`flex flex-col items-center gap-1 rounded-xl py-2.5 text-xs font-bold transition active:scale-95 ${
                     vehicleType === label
-                      ? "bg-primary text-white"
-                      : "bg-slate-50 text-slate-500 hover:bg-slate-100"
+                      ? "bg-[#0056b7] text-white"
+                      : "bg-[#f3f3f8] text-[#424656] hover:bg-[#ededf2]"
                   }`}
                 >
                   <Icon className="h-4 w-4" />
@@ -490,7 +490,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
 
           {/* ── Pickup & drop ── */}
           <div>
-            <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-100 px-3 py-3 transition hover:border-primary/30">
+            <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-[#f3f3f8] px-3 py-3 transition hover:border-[#0056b7]/30">
               <input
                 type="checkbox"
                 checked={pickupDrop}
@@ -500,15 +500,15 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
               <div className="flex flex-1 items-center gap-2">
                 <Truck className="h-4 w-4 text-primary" />
                 <div>
-                  <p className="text-sm font-bold text-slate-800">Pickup & Drop Service</p>
-                  <p className="text-[10px] text-slate-400">We'll collect and return your vehicle</p>
+                  <p className="text-sm font-bold text-[#1a1c1f]">Pickup & Drop Service</p>
+                  <p className="text-[10px] text-[#727687]">We'll collect and return your vehicle</p>
                 </div>
               </div>
             </label>
 
             {pickupDrop && (
               <div className="mt-2 rounded-xl border border-primary/20 bg-primary/5 p-3 space-y-2.5">
-                <p className="text-xs font-black uppercase tracking-widest text-slate-500">Pickup Address</p>
+                <p className="text-xs font-black uppercase tracking-widest text-[#727687]">Pickup Address</p>
 
                 {/* Auto-detect */}
                 <button
@@ -530,7 +530,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                   value={flatNo}
                   onChange={(e) => setFlatNo(e.target.value)}
                   placeholder="Flat / House No. (e.g. B-204)"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 text-base"
+                  className="w-full rounded-xl border border-[#c2c6d8] bg-white px-3 py-2.5 text-sm placeholder:text-[#c2c6d8] focus:border-[#0056b7] focus:outline-none focus:ring-1 focus:ring-[#0056b7]/10 text-base"
                 />
 
                 {/* Building / Society / Chawl */}
@@ -539,7 +539,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                   value={building}
                   onChange={(e) => setBuilding(e.target.value)}
                   placeholder="Building / Society / Chawl name"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 text-base"
+                  className="w-full rounded-xl border border-[#c2c6d8] bg-white px-3 py-2.5 text-sm placeholder:text-[#c2c6d8] focus:border-[#0056b7] focus:outline-none focus:ring-1 focus:ring-[#0056b7]/10 text-base"
                 />
 
                 {/* Locality — auto-filled or typed */}
@@ -550,7 +550,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                     value={locality}
                     onChange={(e) => setLocality(e.target.value)}
                     placeholder="Area / Locality, City, Pincode *"
-                    className="w-full rounded-xl border border-slate-200 bg-white pl-8 pr-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 text-base"
+                    className="w-full rounded-xl border border-[#c2c6d8] bg-white pl-8 pr-3 py-2.5 text-sm placeholder:text-[#c2c6d8] focus:border-[#0056b7] focus:outline-none focus:ring-1 focus:ring-[#0056b7]/10 text-base"
                   />
                 </div>
 
@@ -560,7 +560,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                   value={landmark}
                   onChange={(e) => setLandmark(e.target.value)}
                   placeholder="Nearby landmark (optional)"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 text-base"
+                  className="w-full rounded-xl border border-[#c2c6d8] bg-white px-3 py-2.5 text-sm placeholder:text-[#c2c6d8] focus:border-[#0056b7] focus:outline-none focus:ring-1 focus:ring-[#0056b7]/10 text-base"
                 />
               </div>
             )}
@@ -568,19 +568,19 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
 
           {/* ── Notes ── */}
           <div>
-            <p className="mb-2 text-xs font-black uppercase tracking-widest text-slate-500">Notes (optional)</p>
+            <p className="mb-2 text-xs font-black uppercase tracking-widest text-[#727687]">Notes (optional)</p>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Describe the issue or any special instructions…"
               rows={2}
-              className="w-full resize-none rounded-xl border border-slate-200 px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 text-base"
+              className="w-full resize-none rounded-xl border border-[#c2c6d8] px-3 py-2.5 text-sm placeholder:text-[#c2c6d8] focus:border-[#0056b7] focus:outline-none focus:ring-1 focus:ring-[#0056b7]/10 text-base"
             />
           </div>
 
           {/* ── Promo Code ── */}
           <div>
-            <p className="mb-2 text-xs font-black uppercase tracking-widest text-slate-500">Promo Code (optional)</p>
+            <p className="mb-2 text-xs font-black uppercase tracking-widest text-[#727687]">Promo Code (optional)</p>
             {promoConfetti && (
             <div className="pointer-events-none fixed inset-x-0 z-[60]" style={{ top: "35%" }}>
               {[
@@ -601,21 +601,21 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                 <div className="flex-1">
                   <p className="text-xs font-bold text-green-700">{promoApplied.code} applied — {promoApplied.label}</p>
                 </div>
-                <button type="button" onClick={() => { setPromoApplied(null); setPromoInput(""); }} className="text-slate-400 hover:text-slate-600">
+                <button type="button" onClick={() => { setPromoApplied(null); setPromoInput(""); }} className="text-[#727687] hover:text-[#424656]">
                   <X className="h-4 w-4" />
                 </button>
               </div>
             ) : (
               <div className="flex gap-2">
-                <div className="flex flex-1 items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5">
-                  <Tag className="h-4 w-4 shrink-0 text-slate-400" />
+                <div className="flex flex-1 items-center gap-2 rounded-xl border border-[#c2c6d8] px-3 py-2.5">
+                  <Tag className="h-4 w-4 shrink-0 text-[#727687]" />
                   <input
                     type="text"
                     value={promoInput}
                     onChange={(e) => { setPromoInput(e.target.value); setPromoError(null); }}
                     onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); applyPromo(); } }}
                     placeholder="Enter code…"
-                    className="flex-1 bg-transparent text-base uppercase placeholder:normal-case placeholder:text-slate-400 focus:outline-none"
+                    className="flex-1 bg-transparent text-base uppercase placeholder:normal-case placeholder:text-[#c2c6d8] focus:outline-none"
                   />
                 </div>
                 <button
@@ -634,7 +634,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
 
           {/* ── Payment Method ── */}
           <div>
-            <p className="mb-2 text-xs font-black uppercase tracking-widest text-slate-500">Payment Method</p>
+            <p className="mb-2 text-xs font-black uppercase tracking-widest text-[#727687]">Payment Method</p>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
@@ -642,12 +642,12 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                 className={`flex min-h-[72px] flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-3 text-xs font-bold transition active:scale-95 ${
                   payMethod === "online"
                     ? "border-primary bg-primary/5 text-primary"
-                    : "border-slate-100 text-slate-500 hover:border-primary/30"
+                    : "border-[#f3f3f8] text-[#424656] hover:border-[#0056b7]/30"
                 }`}
               >
                 <CreditCard className="h-5 w-5" />
                 <span>Pay Now</span>
-                <span className="text-center text-[10px] font-normal leading-tight text-slate-400">UPI / Card / Netbanking</span>
+                <span className="text-center text-[10px] font-normal leading-tight text-[#727687]">UPI / Card / Netbanking</span>
               </button>
               <button
                 type="button"
@@ -655,12 +655,12 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                 className={`flex min-h-[72px] flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-3 text-xs font-bold transition active:scale-95 ${
                   payMethod === "later"
                     ? "border-primary bg-primary/5 text-primary"
-                    : "border-slate-100 text-slate-500 hover:border-primary/30"
+                    : "border-[#f3f3f8] text-[#424656] hover:border-[#0056b7]/30"
                 }`}
               >
                 <Store className="h-5 w-5" />
                 <span>Pay at Garage</span>
-                <span className="text-center text-[10px] font-normal leading-tight text-slate-400">Cash / UPI after service</span>
+                <span className="text-center text-[10px] font-normal leading-tight text-[#727687]">Cash / UPI after service</span>
               </button>
             </div>
           </div>
@@ -672,10 +672,10 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
             const final = getFinalAmount();
             const discount = raw - final;
             return (
-              <div className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 space-y-1.5">
+              <div className="rounded-xl border border-[#f3f3f8] bg-[#f3f3f8] px-4 py-3 space-y-1.5">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-500">Service charge</span>
-                  <span className="font-semibold text-slate-800">₹{raw}</span>
+                  <span className="text-[#424656]">Service charge</span>
+                  <span className="font-semibold text-[#1a1c1f]">₹{raw}</span>
                 </div>
                 {promoApplied && discount > 0 && (
                   <div className="flex items-center justify-between text-sm">
@@ -683,8 +683,8 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                     <span className="font-semibold text-green-600">−₹{discount}</span>
                   </div>
                 )}
-                <div className="border-t border-slate-200 pt-1.5 flex items-center justify-between">
-                  <span className="text-sm font-black text-slate-900">Total</span>
+                <div className="border-t border-[#c2c6d8]/30 pt-1.5 flex items-center justify-between">
+                  <span className="text-sm font-black text-[#1a1c1f]">Total</span>
                   <span className="text-base font-black text-primary">₹{final}</span>
                 </div>
               </div>

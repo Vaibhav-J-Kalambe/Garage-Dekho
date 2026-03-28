@@ -1,7 +1,7 @@
 "use client";
 
 const VARIANTS = {
-  default:  "bg-slate-100 text-slate-600",
+  default:  "bg-[#f3f3f8] text-[#424656]",
   primary:  "bg-primary/10 text-primary",
   success:  "bg-green-50 text-green-600",
   warning:  "bg-amber-50 text-amber-600",

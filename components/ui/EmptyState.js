@@ -134,9 +134,9 @@ export default function EmptyState({
   return (
     <div className={["flex flex-col items-center justify-center rounded-2xl bg-white py-14 px-6 shadow-card text-center animate-slide-up", className].join(" ")}>
       <Illo />
-      <p className="mt-4 text-base font-black text-slate-800">{ttl}</p>
+      <p className="mt-4 text-base font-black text-[#1a1c1f]">{ttl}</p>
       {desc && (
-        <p className="mt-1.5 max-w-[240px] text-sm text-slate-500 leading-relaxed">{desc}</p>
+        <p className="mt-1.5 max-w-[240px] text-sm text-[#424656] leading-relaxed">{desc}</p>
       )}
       {action && (
         <Link

@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import Header from "../../components/Header";
 import { getOffers } from "../../lib/offers";
-import Chip, { ChipRow } from "../../components/ui/Chip";
 import EmptyState from "../../components/ui/EmptyState";
 
 const FILTERS = [
@@ -34,17 +33,17 @@ function formatDate(dateStr) {
 
 function OfferSkeleton() {
   return (
-    <div className="rounded-2xl p-5 animate-shimmer" style={{ background: "linear-gradient(135deg, #e2e8f0, #cbd5e1)" }}>
-      <div className="h-4 w-16 rounded-full bg-white/40 mb-3" />
-      <div className="h-8 w-24 rounded-lg bg-white/40 mb-2" />
-      <div className="h-4 w-40 rounded-lg bg-white/40 mb-1" />
-      <div className="h-3 w-56 rounded-lg bg-white/30 mb-4" />
-      <div className="border-t border-white/20 pt-3 flex items-end justify-between">
-        <div className="space-y-1.5">
-          <div className="h-3 w-28 rounded bg-white/30" />
-          <div className="h-3 w-20 rounded bg-white/30" />
+    <div className="bg-white rounded-3xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10 animate-pulse">
+      <div className="h-3 w-16 rounded-full bg-[#f3f3f8] mb-4" />
+      <div className="h-8 w-24 rounded-xl bg-[#f3f3f8] mb-3" />
+      <div className="h-4 w-40 rounded-lg bg-[#f3f3f8] mb-2" />
+      <div className="h-3 w-56 rounded-lg bg-[#f3f3f8] mb-6" />
+      <div className="flex items-end justify-between">
+        <div className="space-y-2">
+          <div className="h-3 w-28 rounded bg-[#f3f3f8]" />
+          <div className="h-3 w-20 rounded bg-[#f3f3f8]" />
         </div>
-        <div className="h-8 w-20 rounded-xl bg-white/40" />
+        <div className="h-9 w-24 rounded-xl bg-[#f3f3f8]" />
       </div>
     </div>
   );
@@ -57,7 +56,7 @@ function getDaysUntilExpiry(dateStr) {
   return Math.round((exp - today) / 86400000);
 }
 
-function CopyButton({ code }) {
+function CopyButton({ code, featured = false }) {
   const [copied,   setCopied]   = useState(false);
   const [revealed, setRevealed] = useState(false);
 
@@ -67,93 +66,156 @@ function CopyButton({ code }) {
     setTimeout(() => setCopied(false), 2000);
   }
 
-  if (!revealed) {
+  if (featured) {
+    // Featured card: white-on-blue style
+    if (!revealed) {
+      return (
+        <button
+          type="button"
+          onClick={() => setRevealed(true)}
+          className="flex shrink-0 items-center gap-2 rounded-xl border border-dashed border-white/40 bg-white/15 px-4 py-2 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/25 active:scale-95"
+        >
+          <span className="select-none blur-sm pointer-events-none">{code}</span>
+          <span className="text-[10px] font-black uppercase tracking-wide opacity-90">Reveal</span>
+        </button>
+      );
+    }
     return (
       <button
         type="button"
-        onClick={() => setRevealed(true)}
-        className="flex shrink-0 items-center gap-1.5 rounded-xl border border-dashed border-white/50 bg-white/15 px-3 py-1.5 text-xs font-bold text-white backdrop-blur-sm transition hover:bg-white/25 active:scale-95"
+        onClick={handleCopy}
+        className="flex shrink-0 items-center gap-2 rounded-xl border border-dashed border-white/40 bg-white/15 px-4 py-2 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/25 active:scale-95"
       >
-        <span className="select-none blur-sm pointer-events-none">{code}</span>
-        <span className="ml-0.5 text-[10px] font-black uppercase tracking-wide opacity-90">Reveal</span>
+        {copied ? (
+          <><Check className="h-4 w-4" />Copied!</>
+        ) : (
+          <><Copy className="h-4 w-4" />{code}</>
+        )}
       </button>
     );
   }
 
+  // Regular card: stitch style coupon row
+  if (!revealed) {
+    return (
+      <div className="flex items-center gap-2 mt-4">
+        <div className="flex-1 bg-[#f3f3f8] rounded-xl px-3 py-2 font-mono text-sm text-[#424656] select-none blur-sm pointer-events-none">{code}</div>
+        <button
+          type="button"
+          onClick={() => setRevealed(true)}
+          className="rounded-xl bg-[#0056b7] text-white px-4 py-2 text-sm font-bold transition hover:brightness-110 active:scale-95"
+        >
+          Reveal
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <button
-      type="button"
-      onClick={handleCopy}
-      className="flex shrink-0 items-center gap-1.5 rounded-xl border border-dashed border-white/50 bg-white/15 px-3 py-1.5 text-xs font-bold text-white backdrop-blur-sm transition hover:bg-white/25 active:scale-95 animate-pop"
-    >
-      {copied ? (
-        <><Check className="h-3 w-3" />Copied!</>
-      ) : (
-        <><Copy className="h-3 w-3" />{code}</>
-      )}
-    </button>
+    <div className="flex items-center gap-2 mt-4">
+      <div className="flex-1 bg-[#f3f3f8] rounded-xl px-3 py-2 font-mono text-sm font-bold text-[#1a1c1f] border border-dashed border-[#c2c6d8]">{code}</div>
+      <button
+        type="button"
+        onClick={handleCopy}
+        className="rounded-xl bg-[#0056b7] text-white px-4 py-2 text-sm font-bold transition hover:brightness-110 active:scale-95 flex items-center gap-1.5"
+      >
+        {copied ? <><Check className="h-3.5 w-3.5" />Copied</> : <><Copy className="h-3.5 w-3.5" />Copy</>}
+      </button>
+    </div>
   );
 }
 
-function OfferCard({ offer, featured = false }) {
-  const [from, to] = offer.gradient;
+function FeaturedOfferCard({ offer }) {
+  const days = getDaysUntilExpiry(offer.validTill);
 
   return (
-    <div
-      className={`relative overflow-hidden rounded-2xl p-5 text-white shadow-card transition-shadow duration-150 hover:shadow-card-hover hover:-translate-y-0.5 active:scale-[0.98] ${
-        featured ? "md:col-span-2" : ""
-      }`}
-      style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}
-    >
+    <div className="relative overflow-hidden rounded-3xl p-8 bg-[#0056b7] text-white shadow-[0_8px_32px_rgba(0,86,183,0.25)]">
       {/* Decorative circles */}
-      <div className="pointer-events-none absolute -right-6 -top-6 h-28 w-28 rounded-full bg-white/10" />
-      <div className="pointer-events-none absolute -bottom-8 -right-2 h-20 w-20 rounded-full bg-white/10" />
+      <div className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full bg-white/10" />
+      <div className="pointer-events-none absolute -bottom-10 right-8 h-28 w-28 rounded-full bg-white/10" />
 
+      <div className="relative flex flex-col gap-4">
+        {/* Tag + urgency */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="inline-block rounded-full bg-white/20 px-3 py-1 text-[10px] font-black uppercase tracking-wider">
+            {offer.tag}
+          </span>
+          {days !== null && days <= 7 && days >= 0 && (
+            <span className="flex items-center gap-1 rounded-full bg-red-500/80 px-2.5 py-1 text-[10px] font-black text-white">
+              <Flame className="h-2.5 w-2.5" />
+              {days === 0 ? "Expires today!" : `${days}d left`}
+            </span>
+          )}
+        </div>
+
+        {/* Discount + title */}
+        <div>
+          <p className="text-[3rem] font-black leading-none tracking-tight">{offer.discount}</p>
+          <p className="mt-2 text-base font-bold leading-snug">{offer.title}</p>
+          <p className="mt-1 text-sm text-white/75 leading-relaxed">{offer.description}</p>
+        </div>
+
+        {/* Footer */}
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 pt-2 border-t border-white/20">
+          <div className="space-y-1">
+            <div className="flex items-center gap-1.5 text-xs text-white/70">
+              <Clock className="h-3.5 w-3.5 shrink-0" />
+              <span>Valid till {formatDate(offer.validTill)}</span>
+            </div>
+            {offer.minOrder && (
+              <p className="text-xs text-white/70">Min order: {offer.minOrder}</p>
+            )}
+            <p className="text-xs text-white/70">{offer.usageLimit}</p>
+          </div>
+          <CopyButton code={offer.code} featured />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function OfferCard({ offer }) {
+  const days = getDaysUntilExpiry(offer.validTill);
+  const [from] = offer.gradient;
+
+  return (
+    <div className="bg-white rounded-3xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10 flex flex-col transition hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] active:scale-[0.98]">
       {/* Tag + urgency */}
-      <div className="flex items-center gap-2">
-        <span className="inline-block rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider">
+      <div className="flex items-center gap-2 flex-wrap mb-3">
+        <span
+          className="inline-block rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-wider text-white"
+          style={{ backgroundColor: from }}
+        >
           {offer.tag}
         </span>
-        {(() => {
-          const days = getDaysUntilExpiry(offer.validTill);
-          if (days !== null && days <= 7 && days >= 0) {
-            return (
-              <span className="flex items-center gap-1 rounded-full bg-red-500/80 px-2 py-0.5 text-[10px] font-black text-white">
-                <Flame className="h-2.5 w-2.5" />
-                {days === 0 ? "Expires today!" : `${days}d left`}
-              </span>
-            );
-          }
-          return null;
-        })()}
+        {days !== null && days <= 7 && days >= 0 && (
+          <span className="flex items-center gap-1 rounded-full bg-[#ffdad6] px-2.5 py-1 text-[10px] font-black text-[#ba1a1a]">
+            <Flame className="h-2.5 w-2.5" />
+            {days === 0 ? "Expires today!" : `${days}d left`}
+          </span>
+        )}
       </div>
 
       {/* Discount */}
-      <div className="mt-3">
-        <span className="text-3xl font-black leading-none">{offer.discount}</span>
-      </div>
+      <p className="text-3xl font-black leading-none text-[#1a1c1f]">{offer.discount}</p>
 
       {/* Title + description */}
-      <p className="mt-1 text-sm font-bold leading-snug">{offer.title}</p>
-      <p className="mt-1 text-xs leading-relaxed text-white/75">{offer.description}</p>
+      <p className="mt-2 text-lg font-bold text-[#1a1c1f] leading-snug">{offer.title}</p>
+      <p className="mt-1 text-sm text-[#424656] leading-relaxed flex-1">{offer.description}</p>
 
-      {/* Divider */}
-      <div className="my-3 border-t border-white/20" />
-
-      {/* Footer */}
-      <div className="flex items-end justify-between gap-3">
-        <div className="space-y-1 min-w-0">
-          <div className="flex items-center gap-1 text-[10px] text-white/70">
-            <Clock className="h-3 w-3 shrink-0" />
-            <span>Valid till {formatDate(offer.validTill)}</span>
-          </div>
-          {offer.minOrder && (
-            <p className="text-[10px] text-white/70">Min order: {offer.minOrder}</p>
-          )}
-          <p className="text-[10px] text-white/70">{offer.usageLimit}</p>
-        </div>
-        <CopyButton code={offer.code} />
+      {/* Validity */}
+      <div className="mt-3 flex items-center gap-1.5 text-xs text-[#424656]">
+        <Clock className="h-3.5 w-3.5 shrink-0 text-[#c2c6d8]" />
+        <span>Valid till {formatDate(offer.validTill)}</span>
+        {offer.minOrder && <span className="ml-2 text-[#c2c6d8]">·</span>}
+        {offer.minOrder && <span>Min {offer.minOrder}</span>}
       </div>
+      {offer.usageLimit && (
+        <p className="mt-1 text-xs text-[#c2c6d8]">{offer.usageLimit}</p>
+      )}
+
+      {/* Coupon copy */}
+      <CopyButton code={offer.code} />
     </div>
   );
 }
@@ -175,68 +237,54 @@ export default function OffersPage() {
   const showFeatured = active === "all" && !!featured;
 
   return (
-    <div className="min-h-screen bg-[#001f5b]">
+    <div className="min-h-screen bg-[#f9f9fe]">
       <Header />
 
-      {/* ── Hero band ── */}
-      <div data-hero className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] px-4 pb-24 pt-[77px] md:px-8">
-        {/* Dot-grid texture */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{
-            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)",
-            backgroundSize: "28px 28px",
-          }}
-        />
-        {/* Ambient glow blobs */}
-        <div className="pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-16 left-1/4 h-56 w-56 rounded-full bg-amber-400/10 blur-3xl" />
-        <div className="pointer-events-none absolute left-0 top-1/2 h-40 w-40 rounded-full bg-indigo-400/15 blur-2xl" />
-
-        <div className="mx-auto max-w-5xl relative z-10 flex items-center gap-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20">
-            <Tag className="h-7 w-7 text-white" />
-          </div>
-          <div>
-            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-300">Savings</p>
-            <h1 className="mt-1 text-2xl font-black text-white md:text-3xl">Offers & Deals</h1>
-            <p className="mt-1 text-sm text-blue-100/70">Exclusive discounts · Save up to 30%</p>
-          </div>
+      <div style={{ paddingTop: 64 }}>
+        <div className="mx-auto max-w-5xl px-4 md:px-8 pt-8 pb-2">
+          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]">Savings</p>
+          <h1 className="mt-2 text-[3rem] md:text-[3.5rem] font-bold tracking-tight text-[#1a1c1f] leading-[1.1]">
+            Offers &amp; <span style={{ color: "#0056b7" }}>Deals</span>
+          </h1>
+          <p className="mt-2 text-sm text-[#424656]">Exclusive discounts · Save up to 30%</p>
         </div>
       </div>
 
-      <div className="relative -mt-12 rounded-t-[2.5rem] bg-white">
-      <main aria-label="Offers and deals" className="mx-auto flex max-w-5xl flex-col gap-5 px-4 md:px-8
-                        pb-28 md:pb-10 pt-5 md:pt-8">
+      <main aria-label="Offers and deals" className="mx-auto flex max-w-5xl flex-col gap-6 px-4 md:px-8 pb-28 md:pb-10 pt-6 md:pt-8">
 
         {/* Filter chips — horizontal scroll on mobile */}
-        <ChipRow className="animate-slide-up delay-75">
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none -mx-1 px-1">
           {FILTERS.map(({ label, value, icon: Icon }) => (
-            <Chip
+            <button
               key={value}
-              active={active === value}
+              type="button"
               onClick={() => setActive(value)}
-              icon={Icon}
+              className={`flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition active:scale-95 ${
+                active === value
+                  ? "bg-[#0056b7] text-white shadow-sm"
+                  : "bg-[#f3f3f8] text-[#424656] hover:bg-[#e8e8f0]"
+              }`}
             >
+              <Icon className="h-3.5 w-3.5" />
               {label}
-            </Chip>
+            </button>
           ))}
-        </ChipRow>
+        </div>
 
         {/* Skeleton loading */}
         {loading && (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 animate-slide-up">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             {[1, 2, 3, 4].map((n) => <OfferSkeleton key={n} />)}
           </div>
         )}
 
         {/* Featured offer */}
         {!loading && showFeatured && (
-          <div className="animate-slide-up delay-100">
-            <p className="mb-2 text-xs font-bold uppercase tracking-widest text-slate-400">
+          <div>
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]">
               Featured
             </p>
-            <OfferCard offer={featured} />
+            <FeaturedOfferCard offer={featured} />
           </div>
         )}
 
@@ -244,17 +292,16 @@ export default function OffersPage() {
         {!loading && filtered.length === 0 ? (
           <EmptyState preset="offers" />
         ) : !loading && (
-          <div className="animate-slide-up delay-150">
+          <div>
             {rest.length > 0 && showFeatured && (
-              <p className="mb-3 text-xs font-bold uppercase tracking-widest text-slate-400">
+              <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]">
                 All Offers
               </p>
             )}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {(showFeatured ? rest : filtered).map((offer, i) => (
                 <div
                   key={offer.id}
-                  className="animate-slide-up"
                   style={{ animationDelay: `${i * 60}ms` }}
                 >
                   <OfferCard offer={offer} />
@@ -265,7 +312,6 @@ export default function OffersPage() {
         )}
 
       </main>
-      </div>
     </div>
   );
 }

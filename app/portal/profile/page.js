@@ -107,63 +107,49 @@ export default function PortalProfilePage() {
 
   if (!garage) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
-        <div className="h-8 w-8 rounded-full border-4 border-white border-t-transparent animate-spin" />
+      <div className="flex min-h-screen items-center justify-center bg-[#f9f9fe]">
+        <div className="h-8 w-8 rounded-full border-4 border-[#0056b7] border-t-transparent animate-spin" />
       </div>
     );
   }
 
-  const inputCls = "w-full rounded-xl border border-slate-200 bg-slate-50 py-3 px-4 text-slate-900 outline-none transition-[border-color,box-shadow] duration-150 focus:border-[#0056D2] focus:bg-white focus:ring-2 focus:ring-[#0056D2]/15 min-h-[44px]";
+  const inputCls = "w-full rounded-xl border border-[#c2c6d8] bg-[#f3f3f8] py-3 px-4 text-[#1a1c1f] outline-none transition-[border-color,box-shadow] duration-150 focus:border-[#0056b7] focus:bg-white focus:ring-2 focus:ring-[#0056b7]/10 min-h-[44px]";
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
+    <div className="flex min-h-screen flex-col bg-[#f9f9fe]">
 
-      {/* ── Hero ── */}
-      <div
-        data-hero
-        className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-28 pt-14 text-center"
-      >
-        {/* Dot-grid */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "28px 28px" }}
-        />
-        {/* Glow blobs */}
-        <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute -bottom-10 -left-10 h-56 w-56 rounded-full bg-sky-300/20 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute left-1/4 top-1/2 h-40 w-40 rounded-full bg-indigo-400/15 blur-2xl" />
-
-        {/* Sign out */}
-        <button
-          onClick={signOut}
-          className="absolute right-4 top-4 flex h-11 items-center gap-1.5 rounded-full bg-white/15 px-4 text-xs font-semibold text-white transition-colors duration-150 hover:bg-white/25 active:scale-95"
-        >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-          </svg>
-          Sign Out
-        </button>
-
-        <div className="relative z-10 mx-auto max-w-sm px-4">
-          {/* Avatar */}
-          <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-2xl bg-white shadow-lg text-3xl font-black text-[#0056D2]">
-            {garage.garage_name?.charAt(0).toUpperCase()}
+      <div style={{ paddingTop: 64 }}>
+        <div className="mx-auto max-w-sm px-4 pt-6 pb-2">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-2xl font-black text-[#0056b7]">
+                {garage.garage_name?.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#727687]">Partner Profile</p>
+                <h1 className="mt-0.5 text-xl font-bold text-[#1a1c1f]">{garage.garage_name}</h1>
+                <p className="text-sm text-[#727687]">{garage.address}{garage.city ? `, ${garage.city}` : ""}</p>
+                <div className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-700">
+                  <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                  Active Partner
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={signOut}
+              className="flex h-10 items-center gap-1.5 rounded-full bg-[#f3f3f8] px-3 text-xs font-semibold text-[#424656] transition-colors duration-150 hover:bg-[#ededf2] active:scale-95"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              Sign Out
+            </button>
           </div>
-          <h1 className="text-2xl font-black text-white">{garage.garage_name}</h1>
-          <p className="mt-1 text-sm text-blue-200">{garage.address}{garage.city ? `, ${garage.city}` : ""}</p>
-          {/* Active partner chip */}
-          <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-green-300">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
-            Active Partner
-          </div>
-          <p className="mt-1 text-[11px] text-blue-200/60">{portalUser?.email}</p>
         </div>
       </div>
 
-      {/* ── Pull-up ── */}
       <div
-        className="relative -mt-12 flex-1 rounded-t-[3rem] bg-white overflow-y-auto"
+        className="flex-1 overflow-y-auto"
         style={{ paddingBottom: "max(96px, calc(env(safe-area-inset-bottom) + 96px))" }}
       >
         <div className="mx-auto max-w-sm px-4 pt-6 space-y-4">
@@ -182,7 +168,7 @@ export default function PortalProfilePage() {
               <>
                 <button
                   onClick={() => setEditing(false)}
-                  className="min-h-[40px] rounded-xl border border-slate-300 px-4 text-sm font-semibold text-slate-600 transition-colors duration-150 hover:bg-slate-100 active:scale-95"
+                  className="min-h-[40px] rounded-xl border border-[#c2c6d8]/30 px-4 text-sm font-semibold text-[#424656] transition-colors duration-150 hover:bg-[#f3f3f8] active:scale-95"
                 >
                   Cancel
                 </button>
@@ -190,7 +176,7 @@ export default function PortalProfilePage() {
                   onClick={handleSave}
                   disabled={saving}
                   aria-busy={saving}
-                  className="flex min-h-[40px] items-center gap-2 rounded-xl bg-[#0056D2] px-4 text-sm font-bold text-white transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
+                  className="flex min-h-[40px] items-center gap-2 rounded-xl bg-[#0056b7] px-4 text-sm font-bold text-white transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
                 >
                   {saving ? (
                     <svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round"/></svg>
@@ -203,7 +189,7 @@ export default function PortalProfilePage() {
             ) : (
               <button
                 onClick={() => setEditing(true)}
-                className="flex min-h-[40px] items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition-colors duration-150 hover:bg-slate-50 active:scale-95"
+                className="flex min-h-[40px] items-center gap-2 rounded-xl border border-[#c2c6d8]/30 bg-white px-4 text-sm font-semibold text-[#424656] transition-colors duration-150 hover:bg-[#f3f3f8] active:scale-95"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                 Edit Profile
@@ -217,28 +203,28 @@ export default function PortalProfilePage() {
               {editing ? (
                 <input value={garageName} onChange={(e) => setGarageName(e.target.value)} style={{ fontSize: 16 }} className={inputCls} />
               ) : (
-                <span className="text-sm font-semibold text-slate-900">{garageName || "—"}</span>
+                <span className="text-sm font-semibold text-[#1a1c1f]">{garageName || "—"}</span>
               )}
             </InfoRow>
             <InfoRow icon={<IcPhone />} label="Phone">
               {editing ? (
                 <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+91 98765 43210" autoComplete="tel" style={{ fontSize: 16 }} className={inputCls} />
               ) : (
-                <a href={`tel:${phone}`} className="text-sm font-semibold text-[#0056D2]">{phone || "—"}</a>
+                <a href={`tel:${phone}`} className="text-sm font-semibold text-[#0056b7]">{phone || "—"}</a>
               )}
             </InfoRow>
             <InfoRow icon={<IcPin />} label="Address">
               {editing ? (
                 <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Street / Area" style={{ fontSize: 16 }} className={inputCls} />
               ) : (
-                <span className="text-sm text-slate-700">{address || "—"}</span>
+                <span className="text-sm text-[#424656]">{address || "—"}</span>
               )}
             </InfoRow>
             <InfoRow icon={<IcPin />} label="City">
               {editing ? (
                 <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" style={{ fontSize: 16 }} className={inputCls} />
               ) : (
-                <span className="text-sm text-slate-700">{city || "—"}</span>
+                <span className="text-sm text-[#424656]">{city || "—"}</span>
               )}
             </InfoRow>
             <InfoRow icon={<IcNav />} label="Garage Location">
@@ -249,16 +235,16 @@ export default function PortalProfilePage() {
                       {lat.toFixed(5)}, {lng.toFixed(5)}
                     </span>
                   ) : (
-                    <span className="text-xs text-slate-400">Not set — SOS distance won't work</span>
+                    <span className="text-xs text-[#727687]">Not set — SOS distance won't work</span>
                   )}
                   <button
                     type="button"
                     onClick={captureLocation}
                     disabled={locating}
-                    className="flex min-h-[36px] items-center gap-1.5 rounded-lg border border-[#0056D2] px-3 text-xs font-bold text-[#0056D2] transition-colors duration-150 hover:bg-blue-50 active:scale-95 disabled:opacity-60"
+                    className="flex min-h-[36px] items-center gap-1.5 rounded-lg border border-[#0056b7] px-3 text-xs font-bold text-[#0056b7] transition-colors duration-150 hover:bg-blue-50 active:scale-95 disabled:opacity-60"
                   >
                     {locating ? (
-                      <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0056D2" strokeWidth="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round"/></svg>
+                      <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0056b7" strokeWidth="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round"/></svg>
                     ) : (
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
                     )}
@@ -266,8 +252,8 @@ export default function PortalProfilePage() {
                   </button>
                 </div>
               ) : (
-                <span className="text-sm text-slate-700">
-                  {lat && lng ? `${lat.toFixed(4)}, ${lng.toFixed(4)}` : <span className="text-slate-400">Not set</span>}
+                <span className="text-sm text-[#424656]">
+                  {lat && lng ? `${lat.toFixed(4)}, ${lng.toFixed(4)}` : <span className="text-[#727687]">Not set</span>}
                 </span>
               )}
             </InfoRow>
@@ -277,25 +263,25 @@ export default function PortalProfilePage() {
           <Card title="Working Hours">
             <div className="flex gap-3">
               <div className="flex-1">
-                <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-slate-500">Opens at</p>
+                <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-[#727687]">Opens at</p>
                 {editing ? (
                   <input type="time" value={openTime} onChange={(e) => setOpenTime(e.target.value)} style={{ fontSize: 16 }} className={inputCls} />
                 ) : (
-                  <p className="text-sm font-bold text-slate-900">{openTime}</p>
+                  <p className="text-sm font-bold text-[#1a1c1f]">{openTime}</p>
                 )}
               </div>
               <div className="flex-1">
-                <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-slate-500">Closes at</p>
+                <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-[#727687]">Closes at</p>
                 {editing ? (
                   <input type="time" value={closeTime} onChange={(e) => setCloseTime(e.target.value)} style={{ fontSize: 16 }} className={inputCls} />
                 ) : (
-                  <p className="text-sm font-bold text-slate-900">{closeTime}</p>
+                  <p className="text-sm font-bold text-[#1a1c1f]">{closeTime}</p>
                 )}
               </div>
             </div>
 
             <div>
-              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-500">Closed on</p>
+              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-[#727687]">Closed on</p>
               <div className="flex flex-wrap gap-2">
                 {DAYS.map((day) => {
                   const closed = closedDays.includes(day);
@@ -305,7 +291,7 @@ export default function PortalProfilePage() {
                       type="button"
                       onClick={() => toggleDay(day)}
                       className={`min-h-[36px] rounded-full border px-3 py-1 text-xs font-semibold transition-colors duration-150 ${
-                        closed ? "border-red-200 bg-red-100 text-red-700" : "border-slate-200 bg-slate-100 text-slate-600 hover:border-slate-300"
+                        closed ? "border-red-200 bg-red-100 text-red-700" : "border-[#c2c6d8]/30 bg-[#f3f3f8] text-[#424656] hover:border-[#c2c6d8]"
                       }`}
                     >
                       {day.slice(0, 3)}
@@ -334,8 +320,8 @@ export default function PortalProfilePage() {
                     onClick={() => toggleService(s)}
                     className={`flex min-h-[44px] items-center gap-1.5 rounded-xl border px-3 py-2.5 text-xs font-semibold text-left transition-colors duration-150 ${
                       active
-                        ? "border-[#0056D2] bg-[#0056D2]/10 text-[#0056D2]"
-                        : "border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300"
+                        ? "border-[#0056b7] bg-[#0056b7]/10 text-[#0056b7]"
+                        : "border-[#c2c6d8]/30 bg-[#f3f3f8] text-[#424656] hover:border-[#c2c6d8]"
                     }`}
                   >
                     {active && (
@@ -344,7 +330,7 @@ export default function PortalProfilePage() {
                     {s}
                   </button>
                 ) : active ? (
-                  <div key={s} className="flex items-center gap-1.5 rounded-xl bg-blue-50 px-3 py-2.5 text-xs font-semibold text-[#0056D2]">
+                  <div key={s} className="flex items-center gap-1.5 rounded-xl bg-blue-50 px-3 py-2.5 text-xs font-semibold text-[#0056b7]">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="shrink-0" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
                     {s}
                   </div>
@@ -352,7 +338,7 @@ export default function PortalProfilePage() {
               })}
             </div>
             {!editing && services.length === 0 && (
-              <p className="py-4 text-center text-sm text-slate-400">No services added. Tap Edit Profile to add.</p>
+              <p className="py-4 text-center text-sm text-[#727687]">No services added. Tap Edit Profile to add.</p>
             )}
           </Card>
         </div>
@@ -364,8 +350,8 @@ export default function PortalProfilePage() {
 function Card({ title, children }) {
   return (
     <div className="overflow-hidden rounded-2xl bg-white shadow-card">
-      <div className="border-b border-slate-100 px-5 py-3.5">
-        <p className="text-sm font-black text-slate-900">{title}</p>
+      <div className="border-b border-[#c2c6d8]/30 px-5 py-3.5">
+        <p className="text-sm font-black text-[#1a1c1f]">{title}</p>
       </div>
       <div className="space-y-4 p-5">{children}</div>
     </div>
@@ -377,7 +363,7 @@ function InfoRow({ icon, label, children }) {
     <div className="flex items-start gap-3">
       <span className="mt-0.5 shrink-0">{icon}</span>
       <div className="flex-1 min-w-0">
-        <p className="mb-0.5 text-xs text-slate-400">{label}</p>
+        <p className="mb-0.5 text-xs text-[#727687]">{label}</p>
         {children}
       </div>
     </div>

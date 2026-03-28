@@ -7,7 +7,7 @@ import { usePortalAuth } from "../../../context/PortalAuthContext";
 
 const SosMap = dynamic(() => import("../../../components/SosMap"), {
   ssr: false,
-  loading: () => <div className="h-full w-full bg-slate-100 animate-pulse rounded-2xl" />,
+  loading: () => <div className="h-full w-full bg-[#f3f3f8] animate-pulse rounded-2xl" />,
 });
 
 const ISSUE_ICONS = {
@@ -218,14 +218,14 @@ export default function PortalSosPage() {
     const userCoords = [tracking.user_lat, tracking.user_lng];
     const isArrived  = tracking.status === "arrived";
     return (
-      <div className="flex h-dvh flex-col bg-slate-100" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+      <div className="flex h-dvh flex-col bg-[#e8e8f0]" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
         {/* Map */}
         <div className="flex-1 relative">
           <SosMap userCoords={userCoords} mechanicCoords={mechCoords} className="h-full w-full" />
           <button
             onClick={() => { setTracking(null); trackRef.current?.unsubscribe(); }}
             aria-label="Close tracking"
-            className="absolute left-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-md text-slate-700 transition-colors duration-150 hover:bg-slate-50 active:scale-95"
+            className="absolute left-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-md text-[#424656] transition-colors duration-150 hover:bg-[#f3f3f8] active:scale-95"
           >
             <IconClose />
           </button>
@@ -240,12 +240,12 @@ export default function PortalSosPage() {
         {/* Bottom sheet */}
         <div className="rounded-t-3xl bg-white p-5 shadow-2xl space-y-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0056D2] text-xl font-black text-white shrink-0">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0056b7] text-xl font-black text-white shrink-0">
               {(tracking.assignment?.mechanic_name || "M").charAt(0)}
             </div>
             <div>
-              <p className="font-black text-slate-900">{tracking.assignment?.mechanic_name}</p>
-              <p className="text-xs text-slate-500">{tracking.issue_type} · {tracking.user_address || "User location"}</p>
+              <p className="font-black text-[#1a1c1f]">{tracking.assignment?.mechanic_name}</p>
+              <p className="text-xs text-[#727687]">{tracking.issue_type} · {tracking.user_address || "User location"}</p>
             </div>
           </div>
 
@@ -260,7 +260,7 @@ export default function PortalSosPage() {
                 Mechanic has arrived at customer location!
               </div>
               <div>
-                <p className="mb-2 text-xs font-black uppercase tracking-wide text-slate-500">Enter OTP from Customer</p>
+                <p className="mb-2 text-xs font-black uppercase tracking-wide text-[#727687]">Enter OTP from Customer</p>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -271,19 +271,19 @@ export default function PortalSosPage() {
                     onChange={(e) => { setOtpInput(e.target.value.replace(/\D/g, "").slice(0, 4)); setOtpError(null); }}
                     placeholder="_ _ _ _"
                     style={{ fontSize: 16 }}
-                    className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-2xl font-black tracking-[0.5em] text-slate-900 outline-none transition-[border-color,box-shadow] duration-150 focus:border-[#0056D2] focus:ring-2 focus:ring-[#0056D2]/15 min-h-[44px]"
+                    className="flex-1 rounded-xl border border-[#c2c6d8] bg-[#f3f3f8] px-4 py-3 text-center text-2xl font-black tracking-[0.5em] text-[#1a1c1f] outline-none transition-[border-color,box-shadow] duration-150 focus:border-[#0056b7] focus:ring-2 focus:ring-[#0056b7]/10 min-h-[44px]"
                   />
                   <button
                     onClick={handleVerifyOtp}
                     disabled={verifying}
-                    className="flex min-h-[44px] items-center gap-1.5 rounded-xl bg-[#0056D2] px-5 text-sm font-bold text-white transition-[filter,transform] duration-150 hover:brightness-110 active:scale-95 disabled:opacity-60"
+                    className="flex min-h-[44px] items-center gap-1.5 rounded-xl bg-[#0056b7] px-5 text-sm font-bold text-white transition-[filter,transform] duration-150 hover:brightness-110 active:scale-95 disabled:opacity-60"
                   >
                     {verifying ? <IconSpinner stroke="white" /> : <IconCheck size={16} stroke="white" />}
                     Verify
                   </button>
                 </div>
                 {otpError && <p className="mt-2 text-xs text-red-500">{otpError}</p>}
-                <p className="mt-2 flex items-center gap-1 text-xs text-slate-400">
+                <p className="mt-2 flex items-center gap-1 text-xs text-[#727687]">
                   <IconShield className="shrink-0" /> OTP is shown on the customer's screen
                 </p>
               </div>
@@ -297,54 +297,39 @@ export default function PortalSosPage() {
   // ── Dispatch modal ────────────────────────────────────────────────────────
   if (dispatching) {
     return (
-      <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
+      <div className="flex min-h-screen flex-col bg-[#f9f9fe]">
 
-        {/* Hero */}
-        <div
-          data-hero
-          className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-28 pt-14 text-center"
-        >
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-40"
-            style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
-          <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
-          <div aria-hidden="true" className="pointer-events-none absolute -bottom-10 -left-10 h-56 w-56 rounded-full bg-sky-300/20 blur-3xl" />
-
-          <button
-            onClick={() => setDispatching(null)}
-            aria-label="Cancel"
-            className="absolute left-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white transition-colors duration-150 hover:bg-white/25 active:scale-95"
-          >
-            <IconBack />
-          </button>
-
-          <div className="relative z-10 mx-auto max-w-sm px-4">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-lg">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <polygon points="3 11 22 2 13 21 11 13 3 11"/>
-              </svg>
-            </div>
-            <h1 className="text-2xl font-black text-white">Dispatch Mechanic</h1>
-            <p className="mt-1 text-sm text-blue-200">
+        <div style={{ paddingTop: 64 }}>
+          <div className="mx-auto max-w-sm px-4 pt-6 pb-2">
+            <button
+              onClick={() => setDispatching(null)}
+              aria-label="Cancel"
+              className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] transition-colors duration-150 hover:bg-[#ededf2] active:scale-95"
+            >
+              <IconBack />
+            </button>
+            <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#727687]">SOS</p>
+            <h1 className="mt-1 text-[2rem] font-bold tracking-tight text-[#1a1c1f]">Dispatch Mechanic</h1>
+            <p className="mt-1 text-sm text-[#727687]">
               {ISSUE_ICONS[dispatching.issue_type] || "⚠️"} {dispatching.issue_type} · {dispatching.user_address || "Customer location"}
             </p>
           </div>
         </div>
 
-        {/* Pull-up */}
-        <div className="relative -mt-12 flex-1 rounded-t-[3rem] bg-white overflow-y-auto">
+        <div className="flex-1 overflow-y-auto">
           <div
             className="mx-auto w-full max-w-sm px-4 py-8 space-y-4"
             style={{ paddingBottom: "max(40px, calc(env(safe-area-inset-bottom) + 40px))" }}
           >
-            <p className="text-xs font-black uppercase tracking-widest text-slate-500">Select Mechanic</p>
+            <p className="text-xs font-black uppercase tracking-widest text-[#727687]">Select Mechanic</p>
 
             {mechanics.length === 0 ? (
               <div className="rounded-2xl bg-white p-6 text-center shadow-card">
-                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
-                  <IconUsers size={28} className="text-slate-300" />
+                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-[#f3f3f8]">
+                  <IconUsers size={28} className="text-[#c2c6d8]" />
                 </div>
-                <p className="text-sm font-semibold text-slate-600">No mechanics added yet.</p>
-                <p className="mt-1 text-xs text-slate-400">Add your team in the Team tab first.</p>
+                <p className="text-sm font-semibold text-[#424656]">No mechanics added yet.</p>
+                <p className="mt-1 text-xs text-[#727687]">Add your team in the Team tab first.</p>
               </div>
             ) : (
               mechanics.map((m) => (
@@ -354,30 +339,30 @@ export default function PortalSosPage() {
                   disabled={m.status !== "available"}
                   className={`w-full flex items-center gap-4 rounded-2xl bg-white p-4 shadow-card text-left transition-[box-shadow,transform] duration-150 min-h-[72px] ${
                     m.status !== "available" ? "opacity-50 cursor-not-allowed" :
-                    selMechanic?.id === m.id ? "ring-2 ring-[#0056D2] shadow-[0_0_0_2px_rgba(0,86,210,0.15)]" :
+                    selMechanic?.id === m.id ? "ring-2 ring-[#0056b7] shadow-[0_0_0_2px_rgba(0,86,183,0.15)]" :
                     "hover:shadow-md active:scale-[0.98]"
                   }`}
                 >
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#0056D2] text-lg font-black text-white">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#0056b7] text-lg font-black text-white">
                     {m.name.charAt(0)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-black text-slate-900 truncate">{m.name}</p>
-                    <p className="text-xs text-slate-500">{m.specialization}</p>
+                    <p className="font-black text-[#1a1c1f] truncate">{m.name}</p>
+                    <p className="text-xs text-[#727687]">{m.specialization}</p>
                   </div>
                   <div className={`shrink-0 flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
                     m.status === "available" ? "bg-green-100 text-green-700" :
                     m.status === "busy"      ? "bg-red-100 text-red-700" :
-                                               "bg-slate-100 text-slate-600"
+                                               "bg-[#f3f3f8] text-[#424656]"
                   }`}>
                     <span className={`h-1.5 w-1.5 rounded-full ${
                       m.status === "available" ? "bg-green-500" :
-                      m.status === "busy"      ? "bg-red-500" : "bg-slate-400"
+                      m.status === "busy"      ? "bg-red-500" : "bg-[#727687]"
                     }`} />
                     {m.status.charAt(0).toUpperCase() + m.status.slice(1)}
                   </div>
                   {selMechanic?.id === m.id && (
-                    <IconCheckCircle size={18} className="text-[#0056D2] shrink-0" />
+                    <IconCheckCircle size={18} className="text-[#0056b7] shrink-0" />
                   )}
                 </button>
               ))
@@ -394,7 +379,7 @@ export default function PortalSosPage() {
                 onClick={confirmDispatch}
                 disabled={dispatching2}
                 aria-busy={dispatching2}
-                className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-[#0056D2] text-base font-black text-white shadow-glow-primary transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
+                className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-[#0056b7] text-base font-black text-white shadow-glow-primary transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
               >
                 {dispatching2 ? <IconSpinner stroke="white" size={18} /> : <IconNav size={18} stroke="white" />}
                 {dispatching2 ? "Dispatching…" : `Dispatch ${selMechanic.name}`}
@@ -408,45 +393,30 @@ export default function PortalSosPage() {
 
   // ── Main SOS list ─────────────────────────────────────────────────────────
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
+    <div className="flex min-h-screen flex-col bg-[#f9f9fe]">
 
-      {/* Hero */}
-      <div
-        data-hero
-        className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-28 pt-14 text-center"
-      >
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-40"
-          style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
-        <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute -bottom-10 -left-10 h-56 w-56 rounded-full bg-red-500/15 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute left-1/4 top-1/2 h-40 w-40 rounded-full bg-indigo-400/15 blur-2xl" />
-
-        <div className="relative z-10 mx-auto max-w-sm px-4">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-lg">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-            </svg>
-          </div>
-          <h1 className="text-2xl font-black text-white">SOS Alerts</h1>
-          <p className="mt-1 text-sm text-blue-200">Real-time emergency requests near you</p>
+      <div style={{ paddingTop: 64 }}>
+        <div className="mx-auto max-w-sm px-4 pt-6 pb-2">
+          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#727687]">Portal</p>
+          <h1 className="mt-1 text-[2rem] font-bold tracking-tight text-[#1a1c1f]">SOS Alerts</h1>
+          <p className="mt-1 text-sm text-[#727687]">Real-time emergency requests near you</p>
 
           {/* Live indicator chips */}
-          <div className="mt-4 flex items-center justify-center gap-3 text-[11px] font-semibold text-blue-200">
+          <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-semibold">
             {pendingSos.length > 0 ? (
-              <span className="flex items-center gap-1 whitespace-nowrap">
+              <span className="flex items-center gap-1 whitespace-nowrap rounded-full bg-red-50 px-2.5 py-1 text-red-700">
                 <span className="h-2 w-2 rounded-full bg-red-400 animate-ping" />
                 {pendingSos.length} incoming
               </span>
             ) : (
-              <span className="flex items-center gap-1 whitespace-nowrap">
-                <span className="h-2 w-2 rounded-full bg-green-400" />
+              <span className="flex items-center gap-1 whitespace-nowrap rounded-full bg-[#f3f3f8] px-2.5 py-1 text-[#424656]">
+                <span className="h-2 w-2 rounded-full bg-green-500" />
                 No pending alerts
               </span>
             )}
             {activeSos.length > 0 && (
               <>
-                <span className="h-3 w-px bg-blue-300/40 shrink-0" />
-                <span className="flex items-center gap-1 whitespace-nowrap">
+                <span className="flex items-center gap-1 whitespace-nowrap rounded-full bg-blue-50 px-2.5 py-1 text-blue-700">
                   <span className="h-2 w-2 rounded-full bg-blue-400" />
                   {activeSos.length} active
                 </span>
@@ -456,23 +426,22 @@ export default function PortalSosPage() {
         </div>
       </div>
 
-      {/* Pull-up */}
       <div
-        className="relative -mt-12 flex-1 rounded-t-[3rem] bg-white overflow-y-auto"
+        className="flex-1 overflow-y-auto"
         style={{ paddingBottom: "max(96px, calc(env(safe-area-inset-bottom) + 96px))" }}
       >
-        <div className="mx-auto max-w-sm px-4 pt-6 space-y-5">
+        <div className="mx-auto max-w-sm px-4 pt-4 space-y-5">
 
           {loading ? (
             <div className="flex items-center justify-center py-16">
-              <div className="h-8 w-8 rounded-full border-4 border-[#0056D2] border-t-transparent animate-spin" />
+              <div className="h-8 w-8 rounded-full border-4 border-[#0056b7] border-t-transparent animate-spin" />
             </div>
           ) : (
             <>
               {/* Incoming */}
               {pendingSos.length > 0 && (
                 <section>
-                  <p className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">
+                  <p className="mb-3 text-xs font-black uppercase tracking-widest text-[#727687]">
                     Incoming ({pendingSos.length})
                   </p>
                   <div className="space-y-3">
@@ -486,7 +455,7 @@ export default function PortalSosPage() {
               {/* Active */}
               {activeSos.length > 0 && (
                 <section>
-                  <p className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">
+                  <p className="mb-3 text-xs font-black uppercase tracking-widest text-[#727687]">
                     Active Jobs ({activeSos.length})
                   </p>
                   <div className="space-y-3">
@@ -500,7 +469,7 @@ export default function PortalSosPage() {
               {/* Completed today */}
               {completedSos.length > 0 && (
                 <section>
-                  <p className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">
+                  <p className="mb-3 text-xs font-black uppercase tracking-widest text-[#727687]">
                     Completed Today ({completedSos.length})
                   </p>
                   <div className="space-y-2">
@@ -508,8 +477,8 @@ export default function PortalSosPage() {
                       <div key={req.id} className="flex items-center gap-3 rounded-2xl bg-white px-4 py-3 shadow-card">
                         <IconCheckCircle size={18} className="text-green-500 shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-bold text-slate-900 truncate">{req.issue_type}</p>
-                          <p className="text-xs text-slate-400">{req.assignment?.mechanic_name} · Verified</p>
+                          <p className="text-sm font-bold text-[#1a1c1f] truncate">{req.issue_type}</p>
+                          <p className="text-xs text-[#727687]">{req.assignment?.mechanic_name} · Verified</p>
                         </div>
                       </div>
                     ))}
@@ -519,11 +488,11 @@ export default function PortalSosPage() {
 
               {pendingSos.length === 0 && activeSos.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
-                    <IconSiren size={30} className="text-slate-400" />
+                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#f3f3f8]">
+                    <IconSiren size={30} className="text-[#727687]" />
                   </div>
-                  <p className="font-bold text-slate-700">No active SOS alerts</p>
-                  <p className="mt-1 text-sm text-slate-400">New alerts will appear here in real-time</p>
+                  <p className="font-bold text-[#424656]">No active SOS alerts</p>
+                  <p className="mt-1 text-sm text-[#727687]">New alerts will appear here in real-time</p>
                 </div>
               )}
             </>
@@ -543,8 +512,8 @@ function IncomingSosCard({ req, onAccept }) {
           <div className="flex items-center gap-2">
             <span className="text-xl" aria-hidden="true">{ISSUE_ICONS[req.issue_type] || "⚠️"}</span>
             <div>
-              <p className="font-black text-slate-900">{req.issue_type}</p>
-              <p className="mt-0.5 flex items-center gap-1 text-xs text-slate-500">
+              <p className="font-black text-[#1a1c1f]">{req.issue_type}</p>
+              <p className="mt-0.5 flex items-center gap-1 text-xs text-[#727687]">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 {timeAgo(req.created_at)}
               </p>
@@ -555,11 +524,11 @@ function IncomingSosCard({ req, onAccept }) {
           </span>
         </div>
 
-        <div className="mb-3 flex items-center gap-1.5 text-sm text-slate-600">
+        <div className="mb-3 flex items-center gap-1.5 text-sm text-[#424656]">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           <span className="truncate">{req.user_address || "Location shared"}</span>
           {req.distance !== null && (
-            <span className="shrink-0 text-xs font-bold text-[#0056D2]">
+            <span className="shrink-0 text-xs font-bold text-[#0056b7]">
               · {req.distance < 1 ? `${(req.distance * 1000).toFixed(0)}m` : `${req.distance.toFixed(1)}km`}
             </span>
           )}
@@ -567,7 +536,7 @@ function IncomingSosCard({ req, onAccept }) {
 
         <button
           onClick={onAccept}
-          className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-[#0056D2] text-sm font-bold text-white transition-[filter,transform] duration-150 hover:brightness-110 active:scale-95"
+          className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-[#0056b7] text-sm font-bold text-white transition-[filter,transform] duration-150 hover:brightness-110 active:scale-95"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
           Accept &amp; Dispatch
@@ -584,8 +553,8 @@ function ActiveSosCard({ req, onTrack }) {
       <div className="p-4">
         <div className="mb-3 flex items-start justify-between">
           <div>
-            <p className="font-black text-slate-900">{req.issue_type}</p>
-            <p className="text-xs text-slate-500">{req.assignment?.mechanic_name} dispatched</p>
+            <p className="font-black text-[#1a1c1f]">{req.issue_type}</p>
+            <p className="text-xs text-[#727687]">{req.assignment?.mechanic_name} dispatched</p>
           </div>
           <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${isArrived ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"}`}>
             {isArrived ? "Arrived" : "En Route"}
@@ -593,7 +562,7 @@ function ActiveSosCard({ req, onTrack }) {
         </div>
         <button
           onClick={onTrack}
-          className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 text-sm font-bold text-slate-700 transition-colors duration-150 hover:bg-slate-100 active:scale-95"
+          className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-[#c2c6d8]/30 bg-[#f3f3f8] text-sm font-bold text-[#424656] transition-colors duration-150 hover:bg-[#ededf2] active:scale-95"
         >
           {isArrived ? (
             <>

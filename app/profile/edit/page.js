@@ -30,41 +30,28 @@ export default function EditProfilePage() {
   }
 
   /* text-[16px] prevents iOS Safari auto-zoom on focus */
-  const inputCls = "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-[16px] leading-snug text-slate-800 placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 transition-colors duration-150";
+  const inputCls = "w-full rounded-xl border border-[#c2c6d8] bg-white px-4 py-3 text-[16px] leading-snug text-[#424656] placeholder:text-[#727687] focus:border-[#0056b7] focus:outline-none focus:ring-1 focus:ring-[#0056b7]/10 transition-colors duration-150";
 
   return (
-    <div className="min-h-screen bg-[#001f5b]">
+    <div className="min-h-screen bg-[#f9f9fe]">
 
-      {/* ── Hero ── */}
-      <div
-        data-hero
-        className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] px-4 pb-16 pt-[77px] sm:pb-20"
-      >
-        <div
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "28px 28px" }}
-          aria-hidden
-        />
-        <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-blue-400/30 blur-3xl" aria-hidden />
-        <div className="pointer-events-none absolute -bottom-8 -left-8 h-40 w-40 rounded-full bg-sky-300/20 blur-2xl" aria-hidden />
-
-        <div className="relative mx-auto max-w-lg">
+      <div style={{ paddingTop: 64 }}>
+        <div className="mx-auto max-w-lg px-4 pt-6 pb-2">
           <button
             onClick={() => router.back()}
             aria-label="Go back"
-            className="mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition-colors duration-150 hover:bg-white/25 active:scale-95"
+            className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] transition-colors duration-150 hover:bg-[#ededf2] active:scale-95"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <p className="text-xs font-semibold uppercase tracking-widest text-blue-200/70">Profile</p>
-          <h1 className="mt-1 text-[28px] font-black leading-tight text-white">Edit Profile</h1>
-          <p className="mt-1 text-sm text-blue-100/70">Update your personal details</p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#727687]">Profile</p>
+          <h1 className="mt-1 text-[2rem] md:text-[2.5rem] font-bold tracking-tight text-[#1a1c1f]">Edit Profile</h1>
+          <p className="mt-1 text-sm text-[#727687]">Update your personal details</p>
         </div>
       </div>
 
-      {/* ── Pull-up card ── */}
       <div
-        className="-mt-12 min-h-screen rounded-t-[2.5rem] bg-white px-4 pt-6"
+        className="px-4 pt-4"
         style={{ paddingBottom: "max(7rem, calc(env(safe-area-inset-bottom) + 5rem))" }}
       >
         <div className="mx-auto max-w-lg">
@@ -73,8 +60,8 @@ export default function EditProfilePage() {
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-50">
                 <CheckCircle2 className="h-8 w-8 text-green-500" />
               </div>
-              <p className="text-lg font-black text-slate-900">Profile Updated!</p>
-              <p className="text-sm text-slate-400">Redirecting back…</p>
+              <p className="text-lg font-black text-[#1a1c1f]">Profile Updated!</p>
+              <p className="text-sm text-[#727687]">Redirecting back…</p>
             </div>
           ) : (
             <form onSubmit={handleSave} className="space-y-4 animate-slide-up">
@@ -84,9 +71,9 @@ export default function EditProfilePage() {
 
               {/* Full name */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-black uppercase tracking-widest text-slate-400">Full Name</label>
+                <label className="block text-xs font-black uppercase tracking-widest text-[#727687]">Full Name</label>
                 <div className="relative">
-                  <User className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <User className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#727687]" />
                   <input
                     type="text"
                     value={name}
@@ -101,9 +88,9 @@ export default function EditProfilePage() {
 
               {/* Phone */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-black uppercase tracking-widest text-slate-400">Phone Number</label>
+                <label className="block text-xs font-black uppercase tracking-widest text-[#727687]">Phone Number</label>
                 <div className="relative">
-                  <Phone className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <Phone className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#727687]" />
                   <input
                     type="tel"
                     value={phone}
@@ -118,17 +105,17 @@ export default function EditProfilePage() {
 
               {/* Email (read-only) */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-black uppercase tracking-widest text-slate-400">Email Address</label>
+                <label className="block text-xs font-black uppercase tracking-widest text-[#727687]">Email Address</label>
                 <div className="relative">
-                  <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#727687]" />
                   <input
                     type="email"
                     value={email}
                     readOnly
-                    className={inputCls + " pl-10 cursor-not-allowed bg-slate-50 text-slate-400"}
+                    className={inputCls + " pl-10 cursor-not-allowed bg-[#f3f3f8] text-[#727687]"}
                   />
                 </div>
-                <p className="pl-1 text-[11px] text-slate-400">Email cannot be changed here.</p>
+                <p className="pl-1 text-[11px] text-[#727687]">Email cannot be changed here.</p>
               </div>
 
               {/* Save */}

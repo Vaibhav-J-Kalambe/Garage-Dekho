@@ -40,11 +40,11 @@ export default function ReviewModal({ booking, onClose, onSuccess }) {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-50">
             <CheckCircle2 className="h-8 w-8 text-green-500" />
           </div>
-          <h2 className="text-xl font-black text-slate-900">Review Submitted!</h2>
-          <p className="mt-2 text-sm text-slate-400">Thank you for rating {booking.garageName}.</p>
+          <h2 className="text-xl font-black text-[#1a1c1f]">Review Submitted!</h2>
+          <p className="mt-2 text-sm text-[#424656]">Thank you for rating {booking.garageName}.</p>
           <button
             onClick={() => { onSuccess(); onClose(); }}
-            className="mt-6 w-full rounded-2xl bg-primary py-3 text-sm font-bold text-white transition hover:brightness-110 active:scale-[0.98]"
+            className="mt-6 w-full rounded-2xl bg-[#0056b7] py-3 text-sm font-bold text-white transition hover:brightness-110 active:scale-[0.98]"
           >
             Done
           </button>
@@ -60,13 +60,13 @@ export default function ReviewModal({ booking, onClose, onSuccess }) {
         <div ref={trapRef}>
 
         {/* Header */}
-        <div className="flex items-center justify-between rounded-t-3xl border-b border-slate-100 px-5 py-4">
+        <div className="flex items-center justify-between rounded-t-3xl border-b border-[#f3f3f8] px-5 py-4">
           <div>
-            <p className="text-xs text-slate-400">Rate your experience</p>
-            <p className="text-base font-black text-slate-900">{booking.garageName}</p>
+            <p className="text-xs text-[#727687]">Rate your experience</p>
+            <p className="text-base font-black text-[#1a1c1f]">{booking.garageName}</p>
           </div>
           <button type="button" onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition">
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] hover:bg-[#ededf2] transition">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -74,12 +74,12 @@ export default function ReviewModal({ booking, onClose, onSuccess }) {
         <form onSubmit={handleSubmit} className="space-y-5 p-5">
 
           {error && (
-            <p className="rounded-xl bg-red-50 px-3 py-2 text-xs font-semibold text-red-500">{error}</p>
+            <p className="rounded-xl bg-[#ffdad6] px-3 py-2 text-xs font-semibold text-[#ba1a1a]">{error}</p>
           )}
 
           {/* Star rating */}
           <div>
-            <p className="mb-3 text-xs font-black uppercase tracking-widest text-slate-400">Your Rating</p>
+            <p className="mb-3 text-xs font-black uppercase tracking-widest text-[#727687]">Your Rating</p>
             <div className="flex items-center justify-center gap-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
@@ -96,14 +96,14 @@ export default function ReviewModal({ booking, onClose, onSuccess }) {
                     className={`h-10 w-10 transition-colors ${
                       star <= (hovered || rating)
                         ? "fill-amber-400 text-amber-400"
-                        : "text-slate-200"
+                        : "text-[#c2c6d8]"
                     }`}
                   />
                 </button>
               ))}
             </div>
             {rating > 0 && (
-              <p className="mt-2 text-center text-xs font-semibold text-slate-500">
+              <p className="mt-2 text-center text-xs font-semibold text-[#424656]">
                 {["", "Poor", "Fair", "Good", "Very Good", "Excellent"][rating]}
               </p>
             )}
@@ -112,8 +112,8 @@ export default function ReviewModal({ booking, onClose, onSuccess }) {
           {/* Comment */}
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <p className="text-xs font-black uppercase tracking-widest text-slate-500">Comment (optional)</p>
-              <span className={`text-[11px] font-semibold ${comment.length > 450 ? "text-red-500" : "text-slate-400"}`}>
+              <p className="text-xs font-black uppercase tracking-widest text-[#727687]">Comment (optional)</p>
+              <span className={`text-[11px] font-semibold ${comment.length > 450 ? "text-[#ba1a1a]" : "text-[#727687]"}`}>
                 {comment.length}/500
               </span>
             </div>
@@ -122,12 +122,13 @@ export default function ReviewModal({ booking, onClose, onSuccess }) {
               onChange={(e) => { if (e.target.value.length <= 500) setComment(e.target.value); }}
               placeholder="Share your experience with this garage…"
               rows={3}
-              className="w-full resize-none rounded-xl border border-slate-200 px-3 py-2.5 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
+              style={{ fontSize: 16 }}
+              className="w-full resize-none rounded-xl border border-[#c2c6d8] px-3 py-2.5 text-sm placeholder:text-[#c2c6d8] focus:border-[#0056b7] focus:outline-none focus:ring-1 focus:ring-[#0056b7]/10"
             />
           </div>
 
           <button type="submit" disabled={loading || rating === 0}
-            className="w-full rounded-2xl bg-primary py-3.5 text-sm font-bold text-white shadow-card-hover transition hover:brightness-110 active:scale-[0.98] disabled:opacity-50">
+            className="w-full rounded-2xl bg-[#0056b7] py-3.5 text-sm font-bold text-white shadow-[0_4px_16px_rgba(0,86,183,0.25)] transition hover:brightness-110 active:scale-[0.98] disabled:opacity-50">
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" /> Submitting…

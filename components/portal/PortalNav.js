@@ -56,11 +56,11 @@ export default function PortalNav() {
             key={href}
             href={href}
             className={`relative flex flex-1 flex-col items-center justify-center gap-1 py-3 text-xs font-semibold transition-colors ${
-              active ? "text-[#0056D2]" : "text-slate-500 hover:text-slate-300"
+              active ? "text-[#60a5fa]" : "text-white/40 hover:text-white/70"
             }`}
           >
             <div className="relative">
-              <Icon className={`h-5 w-5 ${active ? "text-[#0056D2]" : ""}`} />
+              <Icon className={`h-5 w-5 ${active ? "text-[#60a5fa]" : ""}`} />
               {label === "SOS" && pendingCount > 0 && (
                 <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-black text-white leading-none">
                   {pendingCount > 9 ? "9+" : pendingCount}

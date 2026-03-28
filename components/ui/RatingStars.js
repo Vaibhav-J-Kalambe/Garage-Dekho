@@ -22,22 +22,22 @@ export default function RatingStars({
         ))}
         {hasHalf && (
           <div className="relative">
-            <Star className={`${sz} text-slate-200 fill-slate-200`} />
+            <Star className={`${sz} text-[#c2c6d8] fill-[#c2c6d8]`} />
             <div className="absolute inset-0 overflow-hidden w-1/2">
               <Star className={`${sz} fill-amber-400 text-amber-400`} />
             </div>
           </div>
         )}
         {Array.from({ length: empty }).map((_, i) => (
-          <Star key={`e${i}`} className={`${sz} fill-slate-200 text-slate-200`} />
+          <Star key={`e${i}`} className={`${sz} fill-[#c2c6d8] text-[#c2c6d8]`} />
         ))}
       </div>
 
-      <span className={`font-semibold text-slate-700 ${size === "sm" ? "text-xs" : "text-sm"}`}>
+      <span className={`font-semibold text-[#1a1c1f] ${size === "sm" ? "text-xs" : "text-sm"}`}>
         {rating.toFixed(1)}
       </span>
       {reviews !== undefined && (
-        <span className={`text-slate-400 ${size === "sm" ? "text-[11px]" : "text-xs"}`}>
+        <span className={`text-[#727687] ${size === "sm" ? "text-[11px]" : "text-xs"}`}>
           ({reviews})
         </span>
       )}

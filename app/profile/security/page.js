@@ -18,7 +18,7 @@ export default function SecurityPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   /* text-[16px] prevents iOS Safari auto-zoom on focus */
-  const inputCls = "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-[16px] leading-snug text-slate-800 placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 transition-colors duration-150";
+  const inputCls = "w-full rounded-xl border border-[#c2c6d8] bg-white px-4 py-3 text-[16px] leading-snug text-[#424656] placeholder:text-[#727687] focus:border-[#0056b7] focus:outline-none focus:ring-1 focus:ring-[#0056b7]/10 transition-colors duration-150";
 
   async function handleChangePassword(e) {
     e.preventDefault();
@@ -34,38 +34,25 @@ export default function SecurityPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#001f5b]">
+    <div className="min-h-screen bg-[#f9f9fe]">
 
-      {/* ── Hero ── */}
-      <div
-        data-hero
-        className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] px-4 pb-16 pt-[77px] sm:pb-20"
-      >
-        <div
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "28px 28px" }}
-          aria-hidden
-        />
-        <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-blue-400/30 blur-3xl" aria-hidden />
-        <div className="pointer-events-none absolute -bottom-8 -left-8 h-40 w-40 rounded-full bg-sky-300/20 blur-2xl" aria-hidden />
-
-        <div className="relative mx-auto max-w-lg">
+      <div style={{ paddingTop: 64 }}>
+        <div className="mx-auto max-w-lg px-4 pt-6 pb-2">
           <button
             onClick={() => router.back()}
             aria-label="Go back"
-            className="mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition-colors duration-150 hover:bg-white/25 active:scale-95"
+            className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] transition-colors duration-150 hover:bg-[#ededf2] active:scale-95"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <p className="text-xs font-semibold uppercase tracking-widest text-blue-200/70">Preferences</p>
-          <h1 className="mt-1 text-[28px] font-black leading-tight text-white">Privacy & Security</h1>
-          <p className="mt-1 text-sm text-blue-100/70">Manage your account security</p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#727687]">Preferences</p>
+          <h1 className="mt-1 text-[2rem] md:text-[2.5rem] font-bold tracking-tight text-[#1a1c1f]">Privacy & Security</h1>
+          <p className="mt-1 text-sm text-[#727687]">Manage your account security</p>
         </div>
       </div>
 
-      {/* ── Pull-up card ── */}
       <div
-        className="-mt-12 min-h-screen rounded-t-[2.5rem] bg-white px-4 pt-6"
+        className="px-4 pt-4"
         style={{ paddingBottom: "max(7rem, calc(env(safe-area-inset-bottom) + 5rem))" }}
       >
         <div className="mx-auto max-w-lg space-y-5">
@@ -74,19 +61,19 @@ export default function SecurityPage() {
           <div className="rounded-2xl bg-white p-4 shadow-card animate-slide-up">
             <div className="mb-3 flex items-center gap-2">
               <Shield className="h-4 w-4 text-primary" />
-              <p className="text-sm font-black text-slate-900">Account Info</p>
+              <p className="text-sm font-black text-[#1a1c1f]">Account Info</p>
             </div>
             <div className="space-y-3 text-sm">
               <div className="flex items-center justify-between gap-4">
-                <span className="text-slate-500">Email</span>
-                <span className="truncate font-semibold text-slate-700">{user?.email}</span>
+                <span className="text-[#727687]">Email</span>
+                <span className="truncate font-semibold text-[#424656]">{user?.email}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-500">Provider</span>
-                <span className="font-semibold text-slate-700 capitalize">{user?.app_metadata?.provider || "email"}</span>
+                <span className="text-[#727687]">Provider</span>
+                <span className="font-semibold text-[#424656] capitalize">{user?.app_metadata?.provider || "email"}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-500">Account status</span>
+                <span className="text-[#727687]">Account status</span>
                 <span className="font-semibold text-green-600">Active</span>
               </div>
             </div>
@@ -96,7 +83,7 @@ export default function SecurityPage() {
           <div className="rounded-2xl bg-white p-4 shadow-card animate-slide-up delay-75">
             <div className="mb-3 flex items-center gap-2">
               <Lock className="h-4 w-4 text-primary" />
-              <p className="text-sm font-black text-slate-900">Change Password</p>
+              <p className="text-sm font-black text-[#1a1c1f]">Change Password</p>
             </div>
 
             {success && (
@@ -125,7 +112,7 @@ export default function SecurityPage() {
                   type="button"
                   onClick={() => setShowPw((s) => !s)}
                   aria-label={showPw ? "Hide password" : "Show password"}
-                  className="absolute right-0 top-0 flex h-full w-12 items-center justify-center text-slate-400 hover:text-slate-600"
+                  className="absolute right-0 top-0 flex h-full w-12 items-center justify-center text-[#727687] hover:text-[#424656]"
                 >
                   {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -155,7 +142,7 @@ export default function SecurityPage() {
               <AlertTriangle className="h-4 w-4 text-red-500" />
               <p className="text-sm font-black text-red-500">Danger Zone</p>
             </div>
-            <p className="mb-3 text-xs text-slate-400">Deleting your account is permanent and cannot be undone.</p>
+            <p className="mb-3 text-xs text-[#727687]">Deleting your account is permanent and cannot be undone.</p>
             {showDeleteConfirm ? (
               <div className="space-y-2">
                 <p className="rounded-xl bg-red-50 px-3 py-2.5 text-xs font-semibold text-red-600">
@@ -164,7 +151,7 @@ export default function SecurityPage() {
                 <button
                   type="button"
                   onClick={() => setShowDeleteConfirm(false)}
-                  className="min-h-[44px] w-full rounded-xl border border-slate-200 py-2.5 text-sm font-bold text-slate-500 transition-colors duration-150 hover:bg-slate-50 active:scale-95"
+                  className="min-h-[44px] w-full rounded-xl border border-[#c2c6d8]/30 py-2.5 text-sm font-bold text-[#727687] transition-colors duration-150 hover:bg-[#f3f3f8] active:scale-95"
                 >
                   Cancel
                 </button>

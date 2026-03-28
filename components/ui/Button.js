@@ -6,9 +6,9 @@ const VARIANTS = {
   primary:
     "bg-primary text-white shadow-glow-primary hover:brightness-110 active:brightness-95",
   secondary:
-    "bg-white border border-slate-200 text-slate-700 hover:border-primary/40 hover:text-primary hover:bg-primary/5",
+    "bg-white border border-[#c2c6d8]/50 text-[#424656] hover:border-[#0056b7]/40 hover:text-[#0056b7] hover:bg-[#d8e2ff]/10",
   ghost:
-    "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+    "text-[#424656] hover:bg-[#f3f3f8] hover:text-[#1a1c1f]",
   danger:
     "bg-red-500 text-white shadow-[0_4px_16px_rgba(239,68,68,0.35)] hover:brightness-110 active:brightness-95",
   accent:

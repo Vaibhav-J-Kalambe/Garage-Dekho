@@ -49,22 +49,22 @@ function StepIndicator({ current }) {
         return (
           <div key={step} className="relative flex flex-1 flex-col items-center gap-1">
             {i > 0 && (
-              <div className={`absolute left-0 top-4 h-0.5 w-1/2 -translate-y-1/2 transition-all duration-500 ${done ? "bg-green-500" : active ? "bg-[#0056D2]" : "bg-slate-200"}`} />
+              <div className={`absolute left-0 top-4 h-0.5 w-1/2 -translate-y-1/2 transition-all duration-500 ${done ? "bg-green-500" : active ? "bg-[#0056b7]" : "bg-[#e8e8f0]"}`} />
             )}
             {i < labels.length - 1 && (
-              <div className={`absolute right-0 top-4 h-0.5 w-1/2 -translate-y-1/2 transition-all duration-500 ${done ? "bg-green-500" : "bg-slate-200"}`} />
+              <div className={`absolute right-0 top-4 h-0.5 w-1/2 -translate-y-1/2 transition-all duration-500 ${done ? "bg-green-500" : "bg-[#e8e8f0]"}`} />
             )}
             <div className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full text-xs font-black transition-all duration-300 ${
               done   ? "bg-green-500 text-white" :
-              active ? "bg-[#0056D2] text-white ring-4 ring-[#0056D2]/20" :
-                       "bg-slate-200 text-slate-500"
+              active ? "bg-[#0056b7] text-white ring-4 ring-[#0056b7]/20" :
+                       "bg-[#e8e8f0] text-[#727687]"
             }`}>
               {done ? (
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
               ) : step}
             </div>
             <span className={`mt-1 text-center text-[10px] font-bold leading-tight ${
-              active ? "text-[#0056D2]" : done ? "text-green-600" : "text-slate-400"
+              active ? "text-[#0056b7]" : done ? "text-green-600" : "text-[#727687]"
             } ${active ? "block" : "hidden sm:block"}`}>{label}</span>
           </div>
         );
@@ -76,7 +76,7 @@ function StepIndicator({ current }) {
 function InputField({ label, required, children }) {
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-black uppercase tracking-widest text-slate-400">
+      <label className="mb-1.5 block text-xs font-black uppercase tracking-widest text-[#727687]">
         {label}{required && <span className="ml-0.5 text-red-400">*</span>}
       </label>
       {children}
@@ -85,7 +85,7 @@ function InputField({ label, required, children }) {
 }
 
 /* text-[16px] prevents iOS Safari auto-zoom */
-const inputCls = "w-full min-h-[48px] rounded-xl border border-slate-200 px-3 py-3 text-[16px] leading-snug text-slate-800 placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 transition-colors duration-150";
+const inputCls = "w-full min-h-[48px] rounded-xl border border-[#c2c6d8] px-3 py-3 text-[16px] leading-snug text-[#424656] placeholder:text-[#727687] focus:border-[#0056b7] focus:outline-none focus:ring-1 focus:ring-[#0056b7]/10 transition-colors duration-150";
 
 export default function PartnerPage() {
   const [step,       setStep]       = useState(1);
@@ -249,7 +249,7 @@ export default function PartnerPage() {
   // ── Success Screen ────────────────────────────────────────────
   if (submitted) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0056b7]">
         {["top-8 left-12","top-16 right-16","top-4 left-1/2","bottom-32 left-8","bottom-20 right-10","top-32 right-8"].map((pos, i) => (
           <div key={i} className={`pointer-events-none absolute ${pos} h-3 w-3 rounded-full opacity-70 animate-ping`}
             style={{ backgroundColor: ["#F59E0B","#34D399","#F87171","#60A5FA","#A78BFA","#FBBF24"][i], animationDelay: `${i * 150}ms` }} />
@@ -259,15 +259,15 @@ export default function PartnerPage() {
             <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-green-400 to-emerald-500 shadow-[0_8px_32px_rgba(52,211,153,0.45)]">
               <CheckCircle2 className="h-10 w-10 text-white" />
             </div>
-            <h1 className="text-2xl font-black text-slate-900">Application Submitted!</h1>
+            <h1 className="text-2xl font-black text-[#1a1c1f]">Application Submitted!</h1>
             <p className="mt-2 text-sm font-semibold text-primary">{garageName}</p>
-            <p className="mt-2 text-sm leading-relaxed text-slate-500">
+            <p className="mt-2 text-sm leading-relaxed text-[#727687]">
               We've received your application, <strong>{ownerName}</strong>. Our team will contact you on <strong>{phone}</strong> within 24–48 hours.
             </p>
-            <div className="mt-5 space-y-2.5 rounded-2xl bg-slate-50 p-4 text-left">
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">What happens next</p>
+            <div className="mt-5 space-y-2.5 rounded-2xl bg-[#f3f3f8] p-4 text-left">
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#727687]">What happens next</p>
               {["Our team reviews your application","We verify your garage location","You get a call for final onboarding","Your garage goes live on GarageDekho"].map((s, i) => (
-                <div key={i} className="flex items-center gap-3 text-sm text-slate-600">
+                <div key={i} className="flex items-center gap-3 text-sm text-[#424656]">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-black text-primary">{i + 1}</span>
                   {s}
                 </div>
@@ -287,67 +287,41 @@ export default function PartnerPage() {
 
   // ── Main Form ─────────────────────────────────────────────────
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
+    <div className="flex min-h-screen flex-col bg-[#f9f9fe]">
 
-      {/* ── Hero ── */}
-      <div
-        data-hero
-        className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] pb-32 pt-[77px] text-center"
-      >
-        {/* Dot grid */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "28px 28px" }}
-          aria-hidden="true"
-        />
-        {/* Glow blobs */}
-        <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute -bottom-10 -left-10 h-56 w-56 rounded-full bg-sky-300/20 blur-3xl" />
-
-        {/* Back to home */}
-        <a
-          href="/"
-          aria-label="Back to GarageDekho"
-          className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white transition-colors duration-150 hover:bg-white/25 active:scale-95"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M19 12H5M12 5l-7 7 7 7"/>
-          </svg>
-        </a>
-
-        {/* Logo + heading */}
-        <div className="relative z-10 mx-auto max-w-sm px-4">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-lg">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0056D2" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+      <div style={{ paddingTop: 64 }}>
+        <div className="mx-auto max-w-lg px-4 md:px-8 pt-6 pb-2">
+          <a
+            href="/"
+            aria-label="Back to GarageDekho"
+            className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] transition-colors duration-150 hover:bg-[#ededf2] active:scale-95"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M19 12H5M12 5l-7 7 7 7"/>
             </svg>
-          </div>
-          <h1 className="text-2xl font-black text-white">GarageDekho</h1>
-          <p className="mt-1 text-sm text-blue-200">Partner Onboarding</p>
-
-          {/* Trust chips */}
-          <div className="mt-4 flex items-center justify-center gap-x-3 text-[11px] font-semibold text-blue-200">
-            <span className="flex items-center gap-1 whitespace-nowrap">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#86efac" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+          </a>
+          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#727687]">Partner Onboarding</p>
+          <h1 className="mt-1 text-[2rem] md:text-[2.5rem] font-bold tracking-tight text-[#1a1c1f]">GarageDekho</h1>
+          <p className="mt-1 text-sm text-[#727687]">List your garage · Reach more customers</p>
+          <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-semibold">
+            <span className="flex items-center gap-1 rounded-full bg-[#f3f3f8] px-2.5 py-1 text-[#424656]">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
               Free Listing
             </span>
-            <span className="h-3 w-px bg-blue-300/40 shrink-0" />
-            <span className="flex items-center gap-1 whitespace-nowrap">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span className="flex items-center gap-1 rounded-full bg-[#f3f3f8] px-2.5 py-1 text-[#424656]">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               5 min setup
             </span>
-            <span className="h-3 w-px bg-blue-300/40 shrink-0" />
-            <span className="flex items-center gap-1 whitespace-nowrap">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span className="flex items-center gap-1 rounded-full bg-[#f3f3f8] px-2.5 py-1 text-[#424656]">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
               1000+ Partners
             </span>
           </div>
         </div>
       </div>
 
-      {/* ── Pull-up card ── */}
       <div
-        className="relative -mt-12 flex-1 rounded-t-[3rem] bg-white overflow-y-auto px-4 pt-8 md:px-8"
+        className="flex-1 overflow-y-auto px-4 pt-4 md:px-8"
         style={{ paddingBottom: "max(2.5rem, calc(env(safe-area-inset-bottom) + 1.5rem))" }}
       >
         <div className="mx-auto max-w-lg">
@@ -372,7 +346,7 @@ export default function PartnerPage() {
               <>
                 <div className="mb-2 flex items-center gap-2">
                   <User className="h-5 w-5 text-primary" />
-                  <h2 className="text-base font-black text-slate-900">Basic Information</h2>
+                  <h2 className="text-base font-black text-[#1a1c1f]">Basic Information</h2>
                 </div>
 
                 <InputField label="Your Name" required>
@@ -433,7 +407,7 @@ export default function PartnerPage() {
                         className={`flex min-h-[52px] items-center gap-2 rounded-xl border px-3 py-3 text-sm font-bold transition-colors duration-150 active:scale-95 ${
                           vehicleTypes.includes(value)
                             ? "border-primary bg-primary/5 text-primary"
-                            : "border-slate-100 text-slate-500 hover:border-primary/30"
+                            : "border-[#c2c6d8]/30 text-[#727687] hover:border-primary/30"
                         }`}
                       >
                         <VIcon className="h-4 w-4 shrink-0" />
@@ -450,7 +424,7 @@ export default function PartnerPage() {
               <>
                 <div className="mb-2 flex items-center gap-2">
                   <MapPin className="h-5 w-5 text-primary" />
-                  <h2 className="text-base font-black text-slate-900">Garage Location</h2>
+                  <h2 className="text-base font-black text-[#1a1c1f]">Garage Location</h2>
                 </div>
 
                 <button
@@ -507,7 +481,7 @@ export default function PartnerPage() {
                   </div>
                 )}
 
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] text-[#727687]">
                   GPS coordinates help customers find your garage on the map. Use auto-detect or we'll geocode your address.
                 </p>
               </>
@@ -518,18 +492,18 @@ export default function PartnerPage() {
               <>
                 <div className="mb-2 flex items-center gap-2">
                   <Wrench className="h-5 w-5 text-primary" />
-                  <h2 className="text-base font-black text-slate-900">Services & Pricing</h2>
+                  <h2 className="text-base font-black text-[#1a1c1f]">Services & Pricing</h2>
                 </div>
 
                 <div>
-                  <p className="mb-2 text-xs font-black uppercase tracking-widest text-slate-400">Quick Add</p>
+                  <p className="mb-2 text-xs font-black uppercase tracking-widest text-[#727687]">Quick Add</p>
                   <div className="flex flex-wrap gap-2">
                     {SERVICE_TEMPLATES.map((tpl) => (
                       <button
                         key={tpl.name}
                         type="button"
                         onClick={() => addTemplate(tpl)}
-                        className="min-h-[44px] rounded-full border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 transition-colors duration-150 hover:border-primary hover:text-primary active:scale-95"
+                        className="min-h-[44px] rounded-full border border-[#c2c6d8]/30 px-3 py-2 text-xs font-bold text-[#424656] transition-colors duration-150 hover:border-primary hover:text-primary active:scale-95"
                       >
                         + {tpl.name}
                       </button>
@@ -539,9 +513,9 @@ export default function PartnerPage() {
 
                 <div className="space-y-3">
                   {services.map((svc, i) => (
-                    <div key={i} className="rounded-xl border border-slate-100 p-3 space-y-2">
+                    <div key={i} className="rounded-xl border border-[#c2c6d8]/30 p-3 space-y-2">
                       <div className="flex items-center justify-between">
-                        <p className="text-xs font-bold text-slate-500">Service {i + 1}</p>
+                        <p className="text-xs font-bold text-[#727687]">Service {i + 1}</p>
                         {services.length > 1 && (
                           <button
                             type="button"
@@ -592,7 +566,7 @@ export default function PartnerPage() {
               <>
                 <div className="mb-2 flex items-center gap-2">
                   <Clock className="h-5 w-5 text-primary" />
-                  <h2 className="text-base font-black text-slate-900">Hours & Contact</h2>
+                  <h2 className="text-base font-black text-[#1a1c1f]">Hours & Contact</h2>
                 </div>
 
                 <InputField label="Operating Hours" required>
@@ -605,7 +579,7 @@ export default function PartnerPage() {
                         className={`min-h-[48px] rounded-xl border px-3 py-3 text-left text-sm font-bold transition-colors duration-150 active:scale-[0.98] ${
                           openHours === h
                             ? "border-primary bg-primary/5 text-primary"
-                            : "border-slate-100 text-slate-600 hover:border-primary/30"
+                            : "border-[#c2c6d8]/30 text-[#424656] hover:border-primary/30"
                         }`}
                       >
                         {h}
@@ -627,7 +601,7 @@ export default function PartnerPage() {
 
                 <div className="flex items-center gap-2 pt-2">
                   <Phone className="h-5 w-5 text-primary" />
-                  <h2 className="text-base font-black text-slate-900">Contact Details</h2>
+                  <h2 className="text-base font-black text-[#1a1c1f]">Contact Details</h2>
                 </div>
 
                 <InputField label="Mobile Number" required>
@@ -672,7 +646,7 @@ export default function PartnerPage() {
               <>
                 <div className="mb-2 flex items-center gap-2">
                   <Building2 className="h-5 w-5 text-primary" />
-                  <h2 className="text-base font-black text-slate-900">Review & Submit</h2>
+                  <h2 className="text-base font-black text-[#1a1c1f]">Review & Submit</h2>
                 </div>
 
                 <div className="space-y-3">
@@ -690,19 +664,19 @@ export default function PartnerPage() {
                     ["Email",         email || "—"],
                   ].map(([label, value]) => (
                     <div key={label} className="flex gap-3 text-sm">
-                      <span className="w-28 shrink-0 font-bold text-slate-400">{label}</span>
-                      <span className="break-all text-slate-800">{value || "—"}</span>
+                      <span className="w-28 shrink-0 font-bold text-[#727687]">{label}</span>
+                      <span className="break-all text-[#424656]">{value || "—"}</span>
                     </div>
                   ))}
 
                   <div>
-                    <p className="mb-2 text-sm font-bold text-slate-400">
+                    <p className="mb-2 text-sm font-bold text-[#727687]">
                       Services ({services.filter((s) => s.name).length})
                     </p>
                     <div className="space-y-1">
                       {services.filter((s) => s.name.trim()).map((s, i) => (
-                        <div key={i} className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2.5 text-sm">
-                          <span className="font-semibold text-slate-700">{s.name}</span>
+                        <div key={i} className="flex items-center justify-between rounded-xl bg-[#f3f3f8] px-3 py-2.5 text-sm">
+                          <span className="font-semibold text-[#424656]">{s.name}</span>
                           <span className="font-black text-primary">{s.price}</span>
                         </div>
                       ))}
@@ -724,7 +698,7 @@ export default function PartnerPage() {
                 <button
                   type="button"
                   onClick={back}
-                  className="flex min-h-[48px] items-center gap-1 rounded-2xl border border-slate-200 px-5 text-sm font-bold text-slate-600 transition-colors duration-150 hover:bg-slate-50 active:scale-95"
+                  className="flex min-h-[48px] items-center gap-1 rounded-2xl border border-[#c2c6d8]/30 px-5 text-sm font-bold text-[#424656] transition-colors duration-150 hover:bg-[#f3f3f8] active:scale-95"
                 >
                   <ChevronLeft className="h-4 w-4" /> Back
                 </button>
@@ -757,13 +731,13 @@ export default function PartnerPage() {
           {/* Trust badges */}
           <div className="mt-6 grid grid-cols-3 gap-3 text-center">
             {[
-              { Icon: Lock,        text: "Secure & Private", color: "text-slate-600" },
+              { Icon: Lock,        text: "Secure & Private", color: "text-[#424656]" },
               { Icon: Sparkles,    text: "Go live in 48hrs", color: "text-primary"   },
               { Icon: IndianRupee, text: "Zero listing fee",  color: "text-green-600" },
             ].map(({ Icon, text, color }) => (
               <div key={text} className="rounded-2xl bg-white p-3 shadow-card">
                 <Icon className={`mx-auto h-5 w-5 ${color}`} />
-                <p className="mt-1 text-[11px] font-bold text-slate-500">{text}</p>
+                <p className="mt-1 text-[11px] font-bold text-[#727687]">{text}</p>
               </div>
             ))}
           </div>

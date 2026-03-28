@@ -16,8 +16,8 @@ export default function Chip({
       className={[
         "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors duration-150 active:scale-95",
         active
-          ? "bg-primary text-white shadow-glow-primary"
-          : "bg-transparent text-slate-600 border border-slate-200 hover:border-primary/40 hover:text-primary hover:bg-primary/5",
+          ? "bg-[#0056b7] text-white shadow-glow-primary"
+          : "bg-[#f3f3f8] text-[#424656] hover:bg-[#ededf2]",
         className,
       ].join(" ")}
     >
@@ -26,7 +26,7 @@ export default function Chip({
       {count !== undefined && (
         <span
           className={`h-4 min-w-4 rounded-full px-1 text-[10px] font-black leading-4 ${
-            active ? "bg-white/25 text-white" : "bg-slate-100 text-slate-500"
+            active ? "bg-white/25 text-white" : "bg-[#e8e8f0] text-[#424656]"
           }`}
         >
           {count}

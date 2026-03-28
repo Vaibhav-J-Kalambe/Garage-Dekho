@@ -22,7 +22,7 @@ function Toggle({ on, onChange }) {
       onClick={() => onChange(!on)}
       className="flex h-11 w-11 shrink-0 items-center justify-center focus:outline-none"
     >
-      <span className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${on ? "bg-primary" : "bg-slate-200"}`}>
+      <span className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${on ? "bg-primary" : "bg-[#e8e8f0]"}`}>
         <span className={`inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${on ? "translate-x-6" : "translate-x-1"}`} />
       </span>
     </button>
@@ -81,38 +81,25 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#001f5b]">
+    <div className="min-h-screen bg-[#f9f9fe]">
 
-      {/* ── Hero ── */}
-      <div
-        data-hero
-        className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] px-4 pb-16 pt-[77px] sm:pb-20"
-      >
-        <div
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "28px 28px" }}
-          aria-hidden
-        />
-        <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-blue-400/30 blur-3xl" aria-hidden />
-        <div className="pointer-events-none absolute -bottom-8 -left-8 h-40 w-40 rounded-full bg-sky-300/20 blur-2xl" aria-hidden />
-
-        <div className="relative mx-auto max-w-lg">
+      <div style={{ paddingTop: 64 }}>
+        <div className="mx-auto max-w-lg px-4 pt-6 pb-2">
           <button
             onClick={() => router.back()}
             aria-label="Go back"
-            className="mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition-colors duration-150 hover:bg-white/25 active:scale-95"
+            className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] transition-colors duration-150 hover:bg-[#ededf2] active:scale-95"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <p className="text-xs font-semibold uppercase tracking-widest text-blue-200/70">Preferences</p>
-          <h1 className="mt-1 text-[28px] font-black leading-tight text-white">Notifications</h1>
-          <p className="mt-1 text-sm text-blue-100/70">Manage your alert preferences</p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#727687]">Preferences</p>
+          <h1 className="mt-1 text-[2rem] md:text-[2.5rem] font-bold tracking-tight text-[#1a1c1f]">Notifications</h1>
+          <p className="mt-1 text-sm text-[#727687]">Manage your alert preferences</p>
         </div>
       </div>
 
-      {/* ── Pull-up card ── */}
       <div
-        className="-mt-12 min-h-screen rounded-t-[2.5rem] bg-white px-4 pt-6"
+        className="px-4 pt-4"
         style={{ paddingBottom: "max(7rem, calc(env(safe-area-inset-bottom) + 5rem))" }}
       >
         <div className="mx-auto max-w-lg space-y-4">
@@ -134,16 +121,16 @@ export default function NotificationsPage() {
           ) : (
             <>
               <div className="rounded-2xl bg-white shadow-card overflow-hidden animate-slide-up">
-                <p className="px-4 pb-1 pt-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Notification Preferences</p>
-                <div className="divide-y divide-slate-50">
+                <p className="px-4 pb-1 pt-4 text-[10px] font-black uppercase tracking-widest text-[#727687]">Notification Preferences</p>
+                <div className="divide-y divide-[#f3f3f8]">
                   {NOTIF_ITEMS.map(({ key, label, desc, icon: Icon, defaultOn }) => (
                     <div key={key} className="flex items-center gap-3 px-4 py-3">
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
                         <Icon className="h-4 w-4" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold text-slate-800">{label}</p>
-                        <p className="text-[11px] text-slate-400">{desc}</p>
+                        <p className="text-sm font-semibold text-[#424656]">{label}</p>
+                        <p className="text-[11px] text-[#727687]">{desc}</p>
                       </div>
                       <Toggle on={getVal(key, defaultOn)} onChange={(v) => toggle(key, v)} />
                     </div>

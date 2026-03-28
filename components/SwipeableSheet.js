@@ -68,7 +68,7 @@ export default function SwipeableSheet({ onClose, className = "", style: stylePr
     >
       {!hideHandle && (
         <div className="flex justify-center pt-3 pb-1 md:hidden" aria-hidden>
-          <div className="h-1 w-10 rounded-full bg-slate-200" />
+          <div className="h-1 w-10 rounded-full bg-[#c2c6d8]/40" />
         </div>
       )}
       {children}

@@ -45,51 +45,38 @@ export default function MyReviewsPage() {
   }, [user, authLoading, router]);
 
   return (
-    <div className="min-h-screen bg-[#001f5b]">
+    <div className="min-h-screen bg-[#f9f9fe]">
 
-      {/* ── Hero ── */}
-      <div
-        data-hero
-        className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] px-4 pb-16 pt-[77px] sm:pb-20"
-      >
-        <div
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "28px 28px" }}
-          aria-hidden
-        />
-        <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-blue-400/30 blur-3xl" aria-hidden />
-        <div className="pointer-events-none absolute -bottom-8 -left-8 h-40 w-40 rounded-full bg-indigo-400/15 blur-2xl" aria-hidden />
-
-        <div className="relative mx-auto max-w-lg">
+      <div style={{ paddingTop: 64 }}>
+        <div className="mx-auto max-w-lg px-4 pt-6 pb-2">
           <button
             onClick={() => router.back()}
             aria-label="Go back"
-            className="mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition-colors duration-150 hover:bg-white/25 active:scale-95"
+            className="mb-4 flex h-9 w-9 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] transition-colors duration-150 hover:bg-[#ededf2] active:scale-95"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
 
-          <p className="text-xs font-semibold uppercase tracking-widest text-blue-200/70">Profile</p>
-          <h1 className="mt-1 text-[28px] font-black leading-tight text-white">My Reviews</h1>
+          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#727687]">Profile</p>
+          <h1 className="mt-1 text-[2rem] md:text-[2.5rem] font-bold tracking-tight text-[#1a1c1f]">My Reviews</h1>
 
           {!loading && reviews.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 backdrop-blur-sm">
-                <MessageSquare className="h-3.5 w-3.5 text-blue-200" />
-                <span className="text-xs font-bold text-white">{reviews.length} {reviews.length === 1 ? "review" : "reviews"}</span>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-[#f3f3f8] px-3 py-1">
+                <MessageSquare className="h-3.5 w-3.5 text-[#727687]" />
+                <span className="text-xs font-bold text-[#424656]">{reviews.length} {reviews.length === 1 ? "review" : "reviews"}</span>
               </div>
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 backdrop-blur-sm">
-                <Star className="h-3.5 w-3.5 fill-amber-300 text-amber-300" />
-                <span className="text-xs font-bold text-white">{avgRating(reviews)} avg rating</span>
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1">
+                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                <span className="text-xs font-bold text-amber-700">{avgRating(reviews)} avg rating</span>
               </div>
             </div>
           )}
         </div>
       </div>
 
-      {/* ── Pull-up card ── */}
       <div
-        className="-mt-12 min-h-screen rounded-t-[2.5rem] bg-white px-4 pt-6"
+        className="px-4 pt-4"
         style={{ paddingBottom: "max(7rem, calc(env(safe-area-inset-bottom) + 5rem))" }}
       >
         <div className="mx-auto max-w-lg">
@@ -103,8 +90,8 @@ export default function MyReviewsPage() {
                 <Star className="h-8 w-8 text-amber-300" />
               </div>
               <div>
-                <p className="text-base font-black text-slate-900">No reviews yet</p>
-                <p className="mt-1 text-sm text-slate-400">After a completed service, you can rate and review the garage.</p>
+                <p className="text-base font-black text-[#1a1c1f]">No reviews yet</p>
+                <p className="mt-1 text-sm text-[#727687]">After a completed service, you can rate and review the garage.</p>
               </div>
               <Link
                 href="/bookings"
@@ -123,7 +110,7 @@ export default function MyReviewsPage() {
                 >
                   <div className="flex items-center justify-between">
                     <StarRow rating={r.rating} />
-                    <span className="text-[11px] text-slate-400">{formatDate(r.created_at)}</span>
+                    <span className="text-[11px] text-[#727687]">{formatDate(r.created_at)}</span>
                   </div>
                   {r.garage_name && (
                     <Link
@@ -134,7 +121,7 @@ export default function MyReviewsPage() {
                     </Link>
                   )}
                   {r.comment && (
-                    <p className="mt-2 text-sm leading-relaxed text-slate-600">{r.comment}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-[#424656]">{r.comment}</p>
                   )}
                 </div>
               ))}

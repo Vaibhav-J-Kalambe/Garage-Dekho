@@ -108,12 +108,12 @@ export default function LocationPopup({ onClose }) {
           flex-shrink: 0;
         }
         .loc-chip:active { transform: scale(0.96); }
-        .loc-chip.selected { background:#eff6ff; border-color:#0056D2; color:#0056D2; font-weight:600; }
+        .loc-chip.selected { background:#eff6ff; border-color:#0056b7; color:#0056b7; font-weight:600; }
         .chips-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; -ms-overflow-style:none; }
         .chips-scroll::-webkit-scrollbar { display:none; }
         .loc-search-input { transition: border-color 150ms, box-shadow 150ms; }
         .loc-search-input:focus {
-          border-color: #0056D2 !important;
+          border-color: #0056b7 !important;
           box-shadow: 0 0 0 3px rgba(0,86,210,0.12) !important;
           outline: none !important;
         }
@@ -135,7 +135,7 @@ export default function LocationPopup({ onClose }) {
         >
           {/* ── Blue top section ── */}
           <div
-            className="loc-header relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]"
+            className="loc-header relative overflow-hidden bg-gradient-to-br from-[#0056b7] via-[#0060cc] to-[#0056b7]"
             style={{ padding: "24px 24px 28px 24px", flexShrink: 0 }}
           >
             {/* Dot-grid texture */}
@@ -153,7 +153,7 @@ export default function LocationPopup({ onClose }) {
             {/* Logo row + close button */}
             <div className="relative z-10 mb-5 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-white text-[#0056D2] text-lg font-black shadow-sm">
+                <div className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-white text-[#0056b7] text-lg font-black shadow-sm">
                   G
                 </div>
                 <span className="text-[15px] font-bold text-white">GarageDekho</span>
@@ -280,7 +280,7 @@ export default function LocationPopup({ onClose }) {
 
             {/* Autocomplete suggestions */}
             {suggestions.length > 0 && (
-              <div className="mt-2 overflow-hidden rounded-xl border border-slate-100 bg-white shadow-lg">
+              <div className="mt-2 overflow-hidden rounded-xl border border-[#f3f3f8] bg-white shadow-lg">
                 {suggestions.map((place) => {
                   const parts = place.display_name.split(", ");
                   const name  = parts[0];
@@ -290,16 +290,16 @@ export default function LocationPopup({ onClose }) {
                       key={place.place_id}
                       type="button"
                       onClick={() => selectSuggestion(place)}
-                      className="flex w-full items-center gap-3 border-b border-slate-50 px-4 text-left transition-colors duration-150 last:border-0 hover:bg-slate-50 active:bg-slate-100"
+                      className="flex w-full items-center gap-3 border-b border-[#f3f3f8] px-4 text-left transition-colors duration-150 last:border-0 hover:bg-[#f3f3f8] active:bg-[#ededf2]"
                       style={{ minHeight: 48 }}
                     >
-                      <svg className="shrink-0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0056D2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" aria-hidden="true">
+                      <svg className="shrink-0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0056b7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" aria-hidden="true">
                         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
                         <circle cx="12" cy="9" r="2.5"/>
                       </svg>
                       <div className="min-w-0">
-                        <p className="text-sm font-bold text-slate-800">{name}</p>
-                        <p className="mt-0.5 truncate text-xs text-slate-400">{addr}</p>
+                        <p className="text-sm font-bold text-[#1a1c1f]">{name}</p>
+                        <p className="mt-0.5 truncate text-xs text-[#727687]">{addr}</p>
                       </div>
                     </button>
                   );
@@ -309,9 +309,9 @@ export default function LocationPopup({ onClose }) {
 
             {/* OR divider */}
             <div className="flex items-center gap-3" style={{ margin: "16px 0" }}>
-              <div className="h-px flex-1 bg-slate-100" />
-              <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">or</span>
-              <div className="h-px flex-1 bg-slate-100" />
+              <div className="h-px flex-1 bg-[#f3f3f8]" />
+              <span className="text-[11px] font-bold uppercase tracking-widest text-[#727687]">or</span>
+              <div className="h-px flex-1 bg-[#f3f3f8]" />
             </div>
 
             {/* Detect button */}
@@ -324,7 +324,7 @@ export default function LocationPopup({ onClose }) {
                 display: "flex", alignItems: "center", justifyContent: "center",
                 gap: 10, width: "100%", height: 52, border: "none",
                 borderRadius: 50, fontSize: 16, fontWeight: 700, color: "#fff",
-                background: locationState === "success" ? "#16a34a" : "#0056D2",
+                background: locationState === "success" ? "#16a34a" : "#0056b7",
                 boxShadow: "none",
                 transition: "background 300ms",
                 cursor: locationState === "loading" ? "not-allowed" : "pointer",
@@ -375,7 +375,7 @@ export default function LocationPopup({ onClose }) {
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
               </svg>
-              <p className="text-[11px] text-slate-400">Only used to show nearby garages · Never shared</p>
+              <p className="text-[11px] text-[#727687]">Only used to show nearby garages · Never shared</p>
             </div>
 
             {/* Bottom spacer — clears iOS home indicator only (nav is now below z-index) */}

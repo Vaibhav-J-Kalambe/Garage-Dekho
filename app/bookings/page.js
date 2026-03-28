@@ -78,7 +78,7 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
         {/* Image with SVG progress ring */}
         {(() => {
           const ringMap = {
-            confirmed: { pct: 0.5, color: "#2563eb" },
+            confirmed: { pct: 0.5, color: "#0056b7" },
             completed: { pct: 1,   color: "#22c55e" },
             cancelled: { pct: 0,   color: "#e2e8f0" },
           };
@@ -88,7 +88,7 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
           return (
             <div className="relative h-14 w-14 shrink-0">
               <svg className="absolute inset-0 -rotate-90" width="56" height="56" viewBox="0 0 56 56">
-                <circle cx="28" cy="28" r={r} fill="none" stroke="#f1f5f9" strokeWidth="3" />
+                <circle cx="28" cy="28" r={r} fill="none" stroke="#f3f3f8" strokeWidth="3" />
                 {ring.pct > 0 && (
                   <circle cx="28" cy="28" r={r} fill="none" stroke={ring.color} strokeWidth="3"
                     strokeDasharray={circ} strokeDashoffset={circ * (1 - ring.pct)}
@@ -109,8 +109,8 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
           );
         })()}
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-bold text-slate-900">{booking.garageName}</p>
-          <p className="mt-0.5 truncate text-xs text-slate-600">{booking.service || "General Service"} · {booking.vehicleType}</p>
+          <p className="truncate text-sm font-bold text-[#1a1c1f]">{booking.garageName}</p>
+          <p className="mt-0.5 truncate text-xs text-[#424656]">{booking.service || "General Service"} · {booking.vehicleType}</p>
         </div>
         <Badge variant={status.variant} icon={StatusIcon} size="sm">
           {status.label}
@@ -118,32 +118,37 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
       </div>
 
       {/* Divider */}
-      <div className="my-3 border-t border-slate-100" />
+      <div className="my-3 border-t border-[#c2c6d8]/20" />
 
       {/* Countdown badge for upcoming bookings */}
       {booking.status === "confirmed" && (() => {
         const until = getDaysUntil(booking.date);
         if (!until) return null;
         return (
-          <div className={`mb-2 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-black ${until.urgent ? "bg-amber-50 text-amber-600" : "bg-primary/10 text-primary"}`}>
-            <span className={`h-1.5 w-1.5 rounded-full ${until.urgent ? "bg-amber-500 animate-ping" : "bg-primary"}`} />
+          <div
+            className={`mb-2 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-black ${
+              until.urgent ? "bg-amber-50 text-amber-600" : "text-[#0056b7]"
+            }`}
+            style={until.urgent ? {} : { backgroundColor: "#d8e2ff" }}
+          >
+            <span className={`h-1.5 w-1.5 rounded-full ${until.urgent ? "bg-amber-500 animate-ping" : "bg-[#0056b7]"}`} />
             {until.label}
           </div>
         );
       })()}
 
       {/* Meta */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-500">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-[#424656]">
         <div className="flex items-center gap-1.5">
-          <CalendarCheck className="h-3.5 w-3.5 text-slate-400" />
+          <CalendarCheck className="h-3.5 w-3.5 text-[#c2c6d8]" />
           <span>{formatDate(booking.date)}</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <Clock className="h-3.5 w-3.5 text-slate-400" />
+          <Clock className="h-3.5 w-3.5 text-[#c2c6d8]" />
           <span>{booking.time}</span>
         </div>
         {booking.pickupDrop && (
-          <div className="flex items-center gap-1.5 text-primary font-semibold">
+          <div className="flex items-center gap-1.5 font-semibold" style={{ color: "#0056b7" }}>
             <Truck className="h-3.5 w-3.5" />
             <span>Pickup & Drop</span>
           </div>
@@ -152,7 +157,7 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
 
       {/* Price + actions */}
       <div className="mt-3 flex items-center justify-between">
-        <span className="text-base font-black text-slate-900">{booking.price}</span>
+        <span className="text-base font-black text-[#1a1c1f]">{booking.price}</span>
         <div className="flex items-center gap-2">
           {booking.status === "confirmed" && (
             <>
@@ -160,7 +165,8 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
                 href={buildCalendarUrl(booking)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-3 py-1.5 text-[11px] font-bold text-primary transition hover:bg-primary/10 active:scale-95"
+                className="flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-bold transition hover:opacity-80 active:scale-95"
+                style={{ border: "1px solid rgba(0,86,183,0.3)", backgroundColor: "rgba(0,86,183,0.05)", color: "#0056b7" }}
               >
                 <CalendarPlus className="h-3 w-3" />
                 Add to Calendar
@@ -190,7 +196,8 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
               <button
                 type="button"
                 onClick={() => router.push(`/garage/${booking.garageId}`)}
-                className="flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-[11px] font-bold text-white shadow-glow-primary transition hover:brightness-110 active:scale-95"
+                className="flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-bold text-white transition hover:brightness-110 active:scale-95"
+                style={{ backgroundColor: "#0056b7" }}
               >
                 <RotateCcw className="h-3 w-3" />
                 Book Again
@@ -199,7 +206,8 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
           )}
           <Link
             href={`/garage/${booking.garageId}`}
-            className="flex items-center gap-1 rounded-full border border-slate-200 px-3 py-1.5 text-[11px] font-bold text-slate-600 transition hover:border-primary/40 hover:text-primary active:scale-95"
+            className="flex items-center gap-1 rounded-full border px-3 py-1.5 text-[11px] font-bold transition active:scale-95"
+            style={{ borderColor: "rgba(194,198,216,0.5)", color: "#424656" }}
           >
             View Garage <ChevronRight className="h-3 w-3" />
           </Link>
@@ -218,13 +226,14 @@ function CancelConfirmModal({ onConfirm, onCancel }) {
         <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-50">
           <AlertTriangle className="h-6 w-6 text-red-500" />
         </div>
-        <h3 className="text-base font-black text-slate-900">Cancel Booking?</h3>
-        <p className="mt-1 text-sm text-slate-400">This action cannot be undone. The garage will be notified.</p>
+        <h3 className="text-base font-black text-[#1a1c1f]">Cancel Booking?</h3>
+        <p className="mt-1 text-sm text-[#424656]">This action cannot be undone. The garage will be notified.</p>
         <div className="mt-5 flex gap-3">
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 rounded-2xl border border-slate-200 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-[0.98]"
+            className="flex-1 rounded-2xl py-3 text-sm font-bold text-[#424656] transition hover:bg-[#f3f3f8] active:scale-[0.98]"
+            style={{ border: "1px solid rgba(194,198,216,0.4)" }}
           >
             Keep Booking
           </button>
@@ -289,55 +298,57 @@ export default function BookingsPage() {
 
   const upcoming = mapped.filter((b) => b.status === "confirmed");
   const past     = mapped.filter((b) => b.status !== "confirmed");
+  const completed = mapped.filter((b) => b.status === "completed");
   const shown    = tab === "upcoming" ? upcoming : past;
 
   return (
-    <div className="min-h-screen bg-[#001f5b]">
+    <div style={{ backgroundColor: "#f9f9fe", minHeight: "100vh" }}>
       <Header />
 
-      {/* ── Hero band ── */}
-      <div data-hero className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] px-4 pb-24 pt-[77px] md:px-8">
-        {/* Dot-grid texture */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{
-            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)",
-            backgroundSize: "28px 28px",
-          }}
-        />
-        {/* Ambient glow blobs */}
-        <div className="pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-16 left-1/4 h-56 w-56 rounded-full bg-sky-300/20 blur-3xl" />
-        <div className="pointer-events-none absolute left-0 top-1/2 h-40 w-40 rounded-full bg-indigo-400/15 blur-2xl" />
+      <main
+        style={{ paddingTop: 64 }}
+        aria-label="My bookings"
+        className="mx-auto max-w-screen-xl px-4 md:px-6 pb-32 pt-8"
+      >
 
-        <div className="mx-auto max-w-5xl relative z-10">
-          <p className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-300">Dashboard</p>
-          <h1 className="mt-1.5 text-2xl font-black text-white md:text-3xl">My Bookings</h1>
-          <p className="mt-1 text-sm text-blue-100/70">Track and manage your service appointments</p>
+        {/* ── EDITORIAL HEADER ── */}
+        <section className="mb-8">
+          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656] mb-2">Dashboard</p>
+          <h1 className="text-[3rem] md:text-[3.5rem] font-bold tracking-tight text-[#1a1c1f] leading-[1.1] mb-2">
+            My Bookings
+          </h1>
+          <p className="text-base text-[#424656] max-w-md">
+            Track your active services and review your vehicle's maintenance history.
+          </p>
 
-          {/* ── Stat chips ── */}
+          {/* Stat chips */}
           {!loading && (
             <div className="mt-5 flex flex-wrap gap-2">
               {[
-                { label: "Total",     value: mapped.length,                              color: "bg-white/15 text-white border-white/20" },
-                { label: "Upcoming",  value: upcoming.length,                            color: upcoming.length > 0 ? "bg-amber-400/20 text-amber-200 border-amber-300/30" : "bg-white/10 text-white/60 border-white/15" },
-                { label: "Completed", value: mapped.filter(b => b.status === "completed").length, color: "bg-emerald-400/20 text-emerald-200 border-emerald-300/30" },
-              ].map(({ label, value, color }) => (
-                <div key={label} className={`flex items-center gap-2 rounded-full border px-3.5 py-1.5 backdrop-blur-sm ${color}`}>
-                  <span className="text-[11px] font-semibold opacity-80">{label}</span>
-                  <span className="text-sm font-black">{value}</span>
+                { label: "Total",     value: mapped.length },
+                { label: "Upcoming",  value: upcoming.length },
+                { label: "Completed", value: completed.length },
+              ].map(({ label, value }) => (
+                <div
+                  key={label}
+                  className="flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold text-[#424656]"
+                  style={{ backgroundColor: "#f3f3f8" }}
+                >
+                  <span>{label}</span>
+                  <span className="font-black text-[#1a1c1f]">{value}</span>
                 </div>
               ))}
             </div>
           )}
-        </div>
-      </div>
+        </section>
 
-      <div className="relative -mt-12 rounded-t-[2.5rem] bg-white">
-      <main aria-label="My bookings" className="mx-auto flex max-w-5xl flex-col gap-5 px-4 md:px-8 pb-28 md:pb-10 pt-5 md:pt-8">
-
-        {/* Tab switcher */}
-        <div role="tablist" aria-label="Booking history" className="flex gap-1 rounded-2xl bg-white p-1 shadow-card animate-slide-up delay-75">
+        {/* ── TABS — segmented control ── */}
+        <div
+          role="tablist"
+          aria-label="Booking history"
+          className="flex p-1.5 rounded-xl mb-8 w-fit"
+          style={{ backgroundColor: "#f3f3f8" }}
+        >
           {[
             { key: "upcoming", label: "Upcoming", count: upcoming.length },
             { key: "past",     label: "Past",     count: past.length     },
@@ -348,18 +359,21 @@ export default function BookingsPage() {
               role="tab"
               aria-selected={tab === key}
               onClick={() => setTab(key)}
-              className={`relative flex-1 rounded-xl py-2.5 text-sm font-bold capitalize transition-colors duration-150 ${
+              className={`relative flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-bold capitalize transition-all duration-150 ${
                 tab === key
-                  ? "bg-primary text-white shadow-glow-primary"
-                  : "text-slate-400 hover:text-slate-700"
+                  ? "bg-white shadow-sm text-[#1a1c1f]"
+                  : "text-[#424656] hover:text-[#1a1c1f]"
               }`}
             >
               {label}
               {count > 0 && (
                 <span
-                  className={`ml-1.5 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-black ${
-                    tab === key ? "bg-white/25 text-white" : "bg-primary/10 text-primary"
-                  }`}
+                  className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-black"
+                  style={
+                    tab === key
+                      ? { backgroundColor: "#d8e2ff", color: "#0056b7" }
+                      : { backgroundColor: "rgba(194,198,216,0.3)", color: "#424656" }
+                  }
                 >
                   {count}
                 </span>
@@ -368,40 +382,138 @@ export default function BookingsPage() {
           ))}
         </div>
 
-        {/* Content */}
+        {/* ── BENTO GRID ── */}
         {authLoading || loading ? (
-          <div className="flex flex-col gap-3 md:grid md:grid-cols-2 md:gap-4">
-            {[1, 2, 3].map((n) => (
-              <Skeleton.BookingCard key={n} />
-            ))}
+          <div className="flex flex-col gap-4 md:grid md:grid-cols-12 md:gap-6">
+            <div className="md:col-span-8">
+              <Skeleton.BookingCard />
+            </div>
+            <div className="md:col-span-4">
+              <Skeleton.BookingCard />
+            </div>
+            <div className="md:col-span-12">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[1, 2, 3].map((n) => <Skeleton.BookingCard key={n} />)}
+              </div>
+            </div>
           </div>
         ) : shown.length === 0 ? (
           <EmptyState preset={tab === "upcoming" ? "bookings" : "bookings-past"} />
         ) : (
-          <div className="flex flex-col gap-3 md:grid md:grid-cols-2 md:gap-4">
-            {shown.map((booking, i) => (
-              <div key={booking.id} style={{ animationDelay: `${i * 60}ms` }}>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+
+            {/* Hero booking card — large */}
+            {shown[0] && (
+              <div className="md:col-span-8" style={{ animationDelay: "0ms" }}>
                 <BookingCard
-                  booking={booking}
+                  booking={shown[0]}
                   onCancel={setCancelTarget}
                   onReview={setReviewTarget}
-                  reviewed={reviewedIds.has(booking.id)}
+                  reviewed={reviewedIds.has(shown[0].id)}
                 />
               </div>
-            ))}
+            )}
+
+            {/* Side card — next booking or placeholder */}
+            <div className="md:col-span-4 flex flex-col gap-4">
+              {shown[1] ? (
+                <div style={{ animationDelay: "60ms" }}>
+                  <BookingCard
+                    booking={shown[1]}
+                    onCancel={setCancelTarget}
+                    onReview={setReviewTarget}
+                    reviewed={reviewedIds.has(shown[1].id)}
+                  />
+                </div>
+              ) : (
+                /* Next appointment placeholder */
+                <div
+                  className="rounded-3xl p-6 flex flex-col gap-3 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10"
+                  style={{ backgroundColor: "#ffffff" }}
+                >
+                  <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]">Next Appointment</p>
+                  <p className="text-sm text-[#424656]">No other appointments scheduled.</p>
+                  <Link
+                    href="/near-me"
+                    className="mt-2 flex items-center gap-2 rounded-2xl py-3 text-sm font-bold text-white justify-center transition-[filter] duration-150 hover:brightness-110 active:scale-95"
+                    style={{ backgroundColor: "#0056b7" }}
+                  >
+                    <CalendarCheck className="h-4 w-4" />
+                    Book a Service
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Remaining bookings (3+) or recently completed row */}
+            {(shown.length > 2 || (tab === "past" && completed.length > 0)) && (
+              <div className="md:col-span-12">
+                {shown.length > 2 && (
+                  <>
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-xl font-bold tracking-tight text-[#1a1c1f]">
+                        {tab === "upcoming" ? "More Upcoming" : "Recently Completed"}
+                      </h2>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {shown.slice(2).map((booking, i) => (
+                        <div key={booking.id} style={{ animationDelay: `${(i + 2) * 60}ms` }}>
+                          <BookingCard
+                            booking={booking}
+                            onCancel={setCancelTarget}
+                            onReview={setReviewTarget}
+                            reviewed={reviewedIds.has(booking.id)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {/* If on upcoming tab but there are completed bookings, show a summary row */}
+                {tab === "upcoming" && completed.length > 0 && (
+                  <div className="mt-8">
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-xl font-bold tracking-tight text-[#1a1c1f]">Recently Completed</h2>
+                      <button
+                        type="button"
+                        onClick={() => setTab("past")}
+                        className="text-sm font-bold transition-opacity hover:opacity-70"
+                        style={{ color: "#0056b7" }}
+                      >
+                        View all
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {completed.slice(0, 3).map((booking, i) => (
+                        <div key={booking.id} style={{ animationDelay: `${i * 60}ms` }}>
+                          <BookingCard
+                            booking={booking}
+                            onCancel={setCancelTarget}
+                            onReview={setReviewTarget}
+                            reviewed={reviewedIds.has(booking.id)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
           </div>
         )}
 
       </main>
-      </div>
 
       {/* ── Sticky bottom CTA (mobile, upcoming tab, no bookings) ── */}
       {!loading && tab === "upcoming" && upcoming.length === 0 && (
         <div className="fixed bottom-0 inset-x-0 z-10 md:hidden">
-          <div className="bg-white/90 backdrop-blur-md border-t border-slate-100 px-4 py-3 shadow-nav">
+          <div className="bg-white/90 backdrop-blur-md px-4 py-3" style={{ borderTop: "1px solid rgba(194,198,216,0.2)" }}>
             <Link
               href="/near-me"
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-black text-white shadow-glow-primary active:scale-[0.98] transition-colors duration-150"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-sm font-black text-white active:scale-[0.98] transition-[filter] duration-150 hover:brightness-110"
+              style={{ backgroundColor: "#0056b7" }}
             >
               <CalendarCheck className="h-4 w-4" aria-hidden="true" />
               Book a Service

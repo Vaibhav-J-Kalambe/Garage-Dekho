@@ -7,7 +7,7 @@ import { Mail, Lock, User, Wrench, ArrowLeft, Eye, EyeOff, ShieldCheck, BadgeChe
 import Link from "next/link";
 
 const inputCls =
-  "w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 min-h-[44px] transition-[border-color,box-shadow] duration-150";
+  "w-full bg-white border border-[#c2c6d8]/20 rounded-2xl px-4 py-3 text-[#1a1c1f] placeholder:text-[#c2c6d8] focus:border-[#0056b7] focus:outline-none focus:ring-2 focus:ring-[#0056b7]/20 min-h-[44px] transition-[border-color,box-shadow] duration-150";
 
 function AuthForm() {
   const [tab, setTab]           = useState("login");   // "login" | "signup"
@@ -127,80 +127,108 @@ function AuthForm() {
   }
 
   return (
-    <div className="min-h-[101vh] bg-white">
+    <div className="min-h-screen bg-[#f9f9fe] flex items-center justify-center px-4 py-12">
 
-      {/* ── Hero band ── */}
-      <div data-hero className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] px-4 pb-20 pt-[77px] text-center">
-        {/* Dot-grid texture — matches home page hero */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{
-            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)",
-            backgroundSize: "28px 28px",
-          }}
-        />
-        {/* Ambient glow blobs — matches home page hero */}
-        <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-blue-400/10 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute -bottom-16 left-0 h-56 w-56 rounded-full bg-indigo-500/15 blur-3xl" />
+      <div className="w-full max-w-4xl flex flex-col md:flex-row gap-12 md:gap-16 items-center">
 
-        <Link
-          href="/"
-          className="absolute left-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25 active:scale-95"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Link>
+        {/* ── LEFT: editorial panel (md+) ── */}
+        <div className="hidden md:flex flex-col flex-1 gap-8">
+          <Link
+            href="/"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] transition hover:bg-[#e8e8f0] active:scale-95"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
 
-        <div className="mx-auto max-w-sm">
-          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15">
-            <Wrench className="h-7 w-7 text-white" />
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656] mb-3">GarageDekho</p>
+            <h1 className="text-[3.5rem] font-bold tracking-tight text-[#1a1c1f] leading-[1.1]">
+              {tab === "login" ? (
+                <>Welcome<br />back.</>
+              ) : (
+                <>Join<br /><span style={{ color: "#0056b7" }}>GarageDekho</span></>
+              )}
+            </h1>
+            <p className="mt-4 text-base text-[#424656] leading-relaxed max-w-xs">
+              Trusted garages · Fixed prices · Instant booking
+            </p>
           </div>
-          <h1 className="text-2xl font-black text-white">GarageDekho</h1>
-          <p className="mt-1 text-sm text-blue-200">Trusted garages · Fixed prices · Instant booking</p>
 
-          <div className="mt-4 flex items-center justify-center gap-5 text-[11px] font-semibold text-blue-200">
-            <span className="flex items-center gap-1"><BadgeCheck className="h-3.5 w-3.5 text-green-300" /> Verified Garages</span>
-            <span className="h-3 w-px bg-blue-300/40" />
-            <span className="flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5 text-blue-300" /> Fixed Pricing</span>
-            <span className="h-3 w-px bg-blue-300/40" />
-            <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5 text-blue-300" /> 24/7 Support</span>
+          {/* Trust badges */}
+          <div className="flex flex-wrap gap-2">
+            <span className="flex items-center gap-1.5 rounded-full bg-[#d8e2ff]/40 px-4 py-2 text-sm font-semibold text-[#0056b7]">
+              <BadgeCheck className="h-4 w-4" /> Verified Garages
+            </span>
+            <span className="flex items-center gap-1.5 rounded-full bg-[#d8e2ff]/40 px-4 py-2 text-sm font-semibold text-[#0056b7]">
+              <ShieldCheck className="h-4 w-4" /> Fixed Pricing
+            </span>
+            <span className="flex items-center gap-1.5 rounded-full bg-[#d8e2ff]/40 px-4 py-2 text-sm font-semibold text-[#0056b7]">
+              <Clock className="h-4 w-4" /> 24/7 Support
+            </span>
           </div>
         </div>
-      </div>
 
-      {/* ── Form pulled up ── */}
-      <div className="relative -mt-12 rounded-t-[2.5rem] bg-white">
-        <div className="mx-auto max-w-sm px-4 pb-28 pt-6">
+        {/* ── RIGHT: auth card ── */}
+        <div className="w-full md:w-[420px] flex-shrink-0">
 
-          {/* Login / Sign Up tabs — always visible */}
-          <div role="tablist" aria-label="Authentication mode" className="flex gap-1 rounded-2xl bg-white p-1 shadow-card mb-4">
-            {[{ key: "login", label: "Log In" }, { key: "signup", label: "Sign Up" }].map(({ key, label }) => (
-              <button
-                key={key}
-                type="button"
-                role="tab"
-                aria-selected={tab === key}
-                onClick={() => { setTab(key); resetState(); }}
-                className={`flex-1 rounded-xl py-2.5 text-sm font-bold transition-[background-color,color] duration-150 ${
-                  tab === key ? "bg-primary text-white shadow-sm" : "text-slate-400 hover:text-slate-700"
-                }`}
-              >
-                {label}
-              </button>
-            ))}
+          {/* Mobile back link */}
+          <Link
+            href="/"
+            className="md:hidden mb-6 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] transition hover:bg-[#e8e8f0] active:scale-95"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+
+          {/* Mobile heading */}
+          <div className="md:hidden mb-6">
+            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]">GarageDekho</p>
+            <h2 className="mt-2 text-2xl font-bold text-[#1a1c1f]">
+              {tab === "login" ? "Welcome back." : <>Join <span style={{ color: "#0056b7" }}>GarageDekho</span></>}
+            </h2>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span className="flex items-center gap-1 rounded-full bg-[#d8e2ff]/40 px-3 py-1.5 text-xs font-semibold text-[#0056b7]">
+                <BadgeCheck className="h-3.5 w-3.5" /> Verified
+              </span>
+              <span className="flex items-center gap-1 rounded-full bg-[#d8e2ff]/40 px-3 py-1.5 text-xs font-semibold text-[#0056b7]">
+                <ShieldCheck className="h-3.5 w-3.5" /> Fixed Prices
+              </span>
+              <span className="flex items-center gap-1 rounded-full bg-[#d8e2ff]/40 px-3 py-1.5 text-xs font-semibold text-[#0056b7]">
+                <Clock className="h-3.5 w-3.5" /> 24/7
+              </span>
+            </div>
           </div>
 
-          {/* Form card */}
-          <div className="rounded-2xl bg-white p-5 shadow-card space-y-3 min-h-[320px]">
+          <div className="bg-white rounded-3xl p-8 shadow-[0_8px_64px_rgba(0,86,183,0.08)] space-y-5">
 
-            <div aria-live="polite" aria-atomic="true">
+            {/* Login / Sign Up tabs */}
+            <div role="tablist" aria-label="Authentication mode" className="flex gap-1.5 rounded-xl bg-[#f3f3f8] p-1.5">
+              {[{ key: "login", label: "Log In" }, { key: "signup", label: "Sign Up" }].map(({ key, label }) => (
+                <button
+                  key={key}
+                  type="button"
+                  role="tab"
+                  aria-selected={tab === key}
+                  onClick={() => { setTab(key); resetState(); }}
+                  className={`flex-1 rounded-lg py-2.5 text-sm font-semibold transition-[background-color,color,box-shadow] duration-150 ${
+                    tab === key
+                      ? "bg-white text-[#0056b7] shadow-sm"
+                      : "text-[#424656] hover:text-[#1a1c1f]"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {/* Alerts */}
+            <div aria-live="polite" aria-atomic="true" className="space-y-2">
               {error && (
-                <p role="alert" className="flex items-center gap-2 rounded-xl bg-red-50 px-3 py-2.5 text-xs font-semibold text-red-600">
+                <p role="alert" className="flex items-center gap-2 rounded-2xl bg-[#ffdad6] border border-[#ba1a1a]/20 px-4 py-3 text-sm font-semibold text-[#ba1a1a]">
                   <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />{error}
                 </p>
               )}
               {success && (
-                <p className="flex items-center gap-2 rounded-xl bg-green-50 px-3 py-2.5 text-xs font-semibold text-green-600">
+                <p className="flex items-center gap-2 rounded-2xl bg-[#d8e2ff]/40 border border-[#0056b7]/20 px-4 py-3 text-sm font-semibold text-[#0056b7]">
                   <ShieldCheck className="h-4 w-4 shrink-0" aria-hidden="true" />{success}
                 </p>
               )}
@@ -211,9 +239,10 @@ function AuthForm() {
               type="button"
               onClick={handleGoogle}
               disabled={loading}
-              className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-[border-color,box-shadow,background-color] duration-150 hover:shadow-card hover:border-slate-300 hover:bg-slate-50 active:scale-[0.98] disabled:opacity-60 min-h-[44px]"
+              className="flex w-full items-center justify-center gap-3 rounded-2xl border border-[#c2c6d8]/30 bg-white py-3 text-sm font-semibold text-[#1a1c1f] shadow-sm transition hover:shadow-md hover:border-[#c2c6d8]/60 active:scale-[0.98] disabled:opacity-60 min-h-[52px]"
+              style={{ fontSize: 16 }}
             >
-              <svg className="h-4 w-4" viewBox="0 0 24 24">
+              <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
@@ -224,23 +253,25 @@ function AuthForm() {
 
             {/* Divider */}
             <div className="flex items-center gap-3">
-              <div className="h-px flex-1 bg-slate-100" />
-              <span className="text-xs text-slate-400">or</span>
-              <div className="h-px flex-1 bg-slate-100" />
+              <div className="h-px flex-1 bg-[#f3f3f8]" />
+              <span className="text-xs text-[#c2c6d8] font-medium">or</span>
+              <div className="h-px flex-1 bg-[#f3f3f8]" />
             </div>
 
             {/* Email / Phone method toggle */}
-            <div className="flex gap-1 rounded-xl bg-slate-100 p-1">
+            <div className="flex gap-2">
               {[{ key: "email", label: "Email", Icon: Mail }, { key: "phone", label: "Phone", Icon: Phone }].map(({ key, label, Icon }) => (
                 <button
                   key={key}
                   type="button"
                   onClick={() => switchMethod(key)}
-                  className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-bold transition-[background-color,color,box-shadow] duration-150 ${
-                    method === key ? "bg-white text-slate-800 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-full border py-2.5 text-sm font-semibold transition-[background-color,color,border-color] duration-150 ${
+                    method === key
+                      ? "border-[#0056b7] bg-[#d8e2ff]/30 text-[#0056b7]"
+                      : "border-[#c2c6d8]/30 text-[#424656] hover:border-[#c2c6d8]/60"
                   }`}
                 >
-                  <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+                  <Icon className="h-4 w-4" aria-hidden="true" />
                   {label}
                 </button>
               ))}
@@ -251,35 +282,38 @@ function AuthForm() {
               <form onSubmit={tab === "login" ? handleLogin : handleSignup} className="space-y-3">
                 {tab === "signup" && (
                   <div className="relative">
-                    <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#c2c6d8]" />
                     <input
                       type="text" value={name} onChange={(e) => setName(e.target.value)}
                       placeholder="Full name" required
-                      className={inputCls + " pl-10"}
+                      className={inputCls + " pl-11"}
+                      style={{ fontSize: 16 }}
                     />
                   </div>
                 )}
                 <div className="relative">
-                  <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#c2c6d8]" />
                   <input
                     type="email" value={email} onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email address" required
-                    className={inputCls + " pl-10"}
+                    className={inputCls + " pl-11"}
+                    style={{ fontSize: 16 }}
                   />
                 </div>
                 <div className="relative">
-                  <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#c2c6d8]" />
                   <input
                     type={showPw ? "text" : "password"}
                     value={password} onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password (min 6 chars)" required minLength={6}
-                    className={inputCls + " pl-10 pr-10"}
+                    className={inputCls + " pl-11 pr-11"}
+                    style={{ fontSize: 16 }}
                   />
                   <button
                     type="button"
                     aria-label={showPw ? "Hide password" : "Show password"}
                     onClick={() => setShowPw((s) => !s)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 active:scale-90 transition"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#c2c6d8] hover:text-[#424656] active:scale-90 transition"
                   >
                     {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -288,7 +322,7 @@ function AuthForm() {
                   type="submit"
                   disabled={loading}
                   aria-busy={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-white transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-60 min-h-[44px]"
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0056b7] py-4 px-6 text-base font-bold text-white transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60 min-h-[52px]"
                 >
                   {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
                   {loading ? "Please wait…" : tab === "login" ? "Log In" : "Create Account"}
@@ -296,36 +330,38 @@ function AuthForm() {
               </form>
             )}
 
-            {/* ── PHONE LOGIN — phone + password (same as email flow) ── */}
+            {/* ── PHONE LOGIN — phone + password ── */}
             {method === "phone" && tab === "login" && !otpSent && (
               <form onSubmit={handlePhoneLogin} className="space-y-3">
                 <div className="relative">
-                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-500">+91</span>
+                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-[#424656]">+91</span>
                   <input
                     type="tel" value={phone}
                     onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
                     placeholder="10-digit mobile number"
                     maxLength={10} required
-                    className={inputCls + " pl-12"}
+                    className={inputCls + " pl-14"}
+                    style={{ fontSize: 16 }}
                   />
                 </div>
                 <div className="relative">
-                  <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#c2c6d8]" />
                   <input
                     type={showPhonePw ? "text" : "password"}
                     value={phonePw} onChange={(e) => setPhonePw(e.target.value)}
                     placeholder="Password" required minLength={6}
-                    className={inputCls + " pl-10 pr-10"}
+                    className={inputCls + " pl-11 pr-11"}
+                    style={{ fontSize: 16 }}
                   />
                   <button type="button" aria-label={showPhonePw ? "Hide password" : "Show password"}
                     onClick={() => setShowPhonePw((s) => !s)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#c2c6d8] hover:text-[#424656] transition"
                   >
                     {showPhonePw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
                 <button type="submit" disabled={loading} aria-busy={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-white transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-60 min-h-[44px]"
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0056b7] py-4 px-6 text-base font-bold text-white transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60 min-h-[52px]"
                 >
                   {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
                   {loading ? "Please wait…" : "Log In"}
@@ -333,30 +369,32 @@ function AuthForm() {
               </form>
             )}
 
-            {/* ── PHONE SIGN UP — OTP to create & verify account ── */}
+            {/* ── PHONE SIGN UP — OTP ── */}
             {method === "phone" && tab === "signup" && !otpSent && (
               <form onSubmit={handleSendOtp} className="space-y-3">
                 <div className="relative">
-                  <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#c2c6d8]" />
                   <input
                     type="text" value={phoneName}
                     onChange={(e) => setPhoneName(e.target.value)}
                     placeholder="Full name" required
-                    className={inputCls + " pl-10"}
+                    className={inputCls + " pl-11"}
+                    style={{ fontSize: 16 }}
                   />
                 </div>
                 <div className="relative">
-                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-500">+91</span>
+                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-[#424656]">+91</span>
                   <input
                     type="tel" value={phone}
                     onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
                     placeholder="10-digit mobile number"
                     maxLength={10} required
-                    className={inputCls + " pl-12"}
+                    className={inputCls + " pl-14"}
+                    style={{ fontSize: 16 }}
                   />
                 </div>
                 <button type="submit" disabled={loading} aria-busy={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-white transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-60 min-h-[44px]"
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0056b7] py-4 px-6 text-base font-bold text-white transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60 min-h-[52px]"
                 >
                   {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
                   {loading ? "Sending OTP…" : "Send OTP"}
@@ -364,14 +402,15 @@ function AuthForm() {
               </form>
             )}
 
+            {/* ── OTP VERIFY ── */}
             {method === "phone" && otpSent && (
               <form onSubmit={handleVerifyOtp} className="space-y-3">
-                <p className="text-xs text-slate-500 text-center">
-                  OTP sent to <span className="font-bold text-slate-700">+91 {phone}</span>
-                  <button type="button" onClick={() => { setOtpSent(false); resetState(); }} className="ml-2 font-bold text-primary">Change</button>
+                <p className="text-sm text-[#424656] text-center">
+                  OTP sent to <span className="font-bold text-[#1a1c1f]">+91 {phone}</span>
+                  <button type="button" onClick={() => { setOtpSent(false); resetState(); }} className="ml-2 font-bold text-[#0056b7]">Change</button>
                 </p>
                 <div className="relative">
-                  <KeyRound className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <KeyRound className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#c2c6d8]" />
                   <input
                     type="text"
                     inputMode="numeric"
@@ -382,43 +421,45 @@ function AuthForm() {
                     placeholder="Enter 6-digit OTP"
                     required
                     autoFocus
-                    className={inputCls + " pl-10 tracking-[0.3em] font-bold text-center"}
+                    className={inputCls + " pl-11 tracking-[0.3em] font-bold text-center"}
+                    style={{ fontSize: 16 }}
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={loading}
                   aria-busy={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-white transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-60 min-h-[44px]"
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0056b7] py-4 px-6 text-base font-bold text-white transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60 min-h-[52px]"
                 >
                   {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
                   {loading ? "Verifying…" : "Verify OTP"}
                 </button>
-                <p className="text-center text-xs text-slate-400">
+                <p className="text-center text-sm text-[#c2c6d8]">
                   {resendTimer > 0
-                    ? <>Resend OTP in <span className="font-bold text-slate-600">{resendTimer}s</span></>
-                    : <button type="button" onClick={handleSendOtp} className="font-bold text-primary">Resend OTP</button>
+                    ? <>Resend OTP in <span className="font-bold text-[#424656]">{resendTimer}s</span></>
+                    : <button type="button" onClick={handleSendOtp} className="font-bold text-[#0056b7]">Resend OTP</button>
                   }
                 </p>
               </form>
             )}
 
-          </div>
+            {/* Switch tab hint */}
+            {method === "email" && (
+              <p className="text-center text-sm text-[#c2c6d8]">
+                {tab === "login"
+                  ? <>No account? <button onClick={() => { setTab("signup"); resetState(); }} className="font-bold text-[#0056b7]">Sign up free</button></>
+                  : <>Have an account? <button onClick={() => { setTab("login"); resetState(); }} className="font-bold text-[#0056b7]">Log in</button></>
+                }
+              </p>
+            )}
 
-          {method === "email" && (
-            <p className="mt-4 text-center text-xs text-slate-400">
-              {tab === "login"
-                ? <>No account? <button onClick={() => { setTab("signup"); resetState(); }} className="font-bold text-primary">Sign up free</button></>
-                : <>Have an account? <button onClick={() => { setTab("login"); resetState(); }} className="font-bold text-primary">Log in</button></>
-              }
+            <p className="text-center text-[10px] text-[#c2c6d8]">
+              By continuing you agree to our Terms &amp; Privacy Policy
             </p>
-          )}
 
-          <p className="mt-3 text-center text-[10px] text-slate-300">
-            By continuing you agree to our Terms & Privacy Policy
-          </p>
-
+          </div>
         </div>
+
       </div>
     </div>
   );

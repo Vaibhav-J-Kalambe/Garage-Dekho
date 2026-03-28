@@ -22,24 +22,24 @@ const MENU = [
   {
     section: "Account",
     items: [
-      { label: "Edit Profile",       icon: Edit3,         href: "/profile/edit",           color: "text-primary",    comingSoon: true  },
-      { label: "Saved Garages",      icon: Heart,         href: "/profile/saved",          color: "text-red-500"                       },
-      { label: "My Bookings",        icon: CalendarCheck, href: "/bookings",               color: "text-blue-500"                      },
-      { label: "My Reviews",         icon: Star,          href: "/profile/reviews",        color: "text-amber-500"                     },
+      { label: "Edit Profile",       icon: Edit3,         href: "/profile/edit",           iconBg: "bg-[#d8e2ff]",     iconColor: "text-[#0056b7]",  comingSoon: true  },
+      { label: "Saved Garages",      icon: Heart,         href: "/profile/saved",          iconBg: "bg-[#ffdad6]",     iconColor: "text-[#ba1a1a]"                       },
+      { label: "My Bookings",        icon: CalendarCheck, href: "/bookings",               iconBg: "bg-[#d8e2ff]",     iconColor: "text-[#4c4aca]"                       },
+      { label: "My Reviews",         icon: Star,          href: "/profile/reviews",        iconBg: "bg-amber-50",      iconColor: "text-amber-500"                       },
     ],
   },
   {
     section: "Preferences",
     items: [
-      { label: "Notifications",      icon: Bell,          href: "/profile/notifications",  color: "text-orange-500", comingSoon: true  },
-      { label: "Saved Addresses",    icon: MapPin,        href: "/profile/addresses",      color: "text-green-600",  comingSoon: true  },
-      { label: "Privacy & Security", icon: ShieldCheck,   href: "/profile/security",       color: "text-slate-500",  comingSoon: true  },
+      { label: "Notifications",      icon: Bell,          href: "/profile/notifications",  iconBg: "bg-orange-50",     iconColor: "text-orange-500", comingSoon: true  },
+      { label: "Saved Addresses",    icon: MapPin,        href: "/profile/addresses",      iconBg: "bg-green-50",      iconColor: "text-green-600",  comingSoon: true  },
+      { label: "Privacy & Security", icon: ShieldCheck,   href: "/profile/security",       iconBg: "bg-[#f3f3f8]",     iconColor: "text-[#424656]",  comingSoon: true  },
     ],
   },
   {
     section: "Support",
     items: [
-      { label: "Help & FAQ",         icon: HelpCircle,    href: "/profile/help",           color: "text-slate-400",  comingSoon: true  },
+      { label: "Help & FAQ",         icon: HelpCircle,    href: "/profile/help",           iconBg: "bg-[#f3f3f8]",     iconColor: "text-[#c2c6d8]",  comingSoon: true  },
     ],
   },
 ];
@@ -181,6 +181,7 @@ export default function ProfilePage() {
 
   const name  = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Guest";
   const email = user?.email || "—";
+  const initial = name.charAt(0).toUpperCase();
 
   async function handleSignOut() {
     await signOut();
@@ -188,69 +189,11 @@ export default function ProfilePage() {
   }
 
   const inputCls =
-    "w-full rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:border-primary focus:outline-none transition";
+    "w-full bg-white border border-[#c2c6d8]/20 rounded-2xl px-4 py-3 text-sm text-[#1a1c1f] placeholder:text-[#c2c6d8] focus:border-[#0056b7] focus:outline-none focus:ring-2 focus:ring-[#0056b7]/20 transition min-h-[44px]";
 
   return (
-    <div className="min-h-screen bg-[#001f5b]">
+    <div className="min-h-screen bg-[#f9f9fe]">
       <Header />
-
-      {/* Profile hero band */}
-      <div data-hero className="relative overflow-hidden bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2] px-4 pb-24 pt-[77px] md:px-8">
-        {/* Dot-grid texture */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{
-            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)",
-            backgroundSize: "28px 28px",
-          }}
-        />
-        {/* Ambient glow blobs */}
-        <div className="pointer-events-none absolute -right-20 top-0 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-16 left-1/4 h-56 w-56 rounded-full bg-sky-300/20 blur-3xl" />
-        <div className="pointer-events-none absolute left-0 top-1/2 h-40 w-40 rounded-full bg-indigo-400/15 blur-2xl" />
-
-        <div className="mx-auto max-w-5xl relative z-10 flex items-center gap-4">
-          <div className="relative shrink-0">
-            <Avatar name={name} src={avatarUrl} size="lg" online={!!user} />
-            <button
-              type="button"
-              aria-label="Change profile photo"
-              onClick={() => fileRef.current?.click()}
-              disabled={uploadingAvatar}
-              className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white/30 bg-white/20 text-white backdrop-blur-sm transition-colors duration-150 hover:bg-white/30 active:scale-95 disabled:opacity-60"
-            >
-              {uploadingAvatar
-                ? <Loader2 className="h-3 w-3 animate-spin" />
-                : <Camera className="h-3 w-3" />
-              }
-            </button>
-          </div>
-          <div className="min-w-0">
-            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-300">Profile</p>
-            <h1 className="mt-0.5 text-xl font-black text-white capitalize truncate md:text-2xl">{name}</h1>
-            <p className="mt-0.5 flex items-center gap-1 text-sm text-blue-200/80 truncate">
-              <Mail className="h-3 w-3 shrink-0" />{email}
-            </p>
-            <div className="mt-3 flex flex-wrap items-center gap-2">
-              <span className="flex items-center gap-1.5 rounded-full border border-white/20 bg-white/15 px-2.5 py-1 text-xs font-bold text-white backdrop-blur-sm">
-                {bookingCount ?? "…"} Bookings
-              </span>
-              <span className="flex items-center gap-1.5 rounded-full border border-white/20 bg-white/15 px-2.5 py-1 text-xs font-bold text-white backdrop-blur-sm">
-                {vehicles.length} Vehicles
-              </span>
-              {bookingCount >= 10 ? (
-                <span className="flex items-center gap-1 rounded-full border border-amber-300/30 bg-amber-400/20 px-2.5 py-1 text-xs font-bold text-amber-300 backdrop-blur-sm">
-                  <Flame className="h-3 w-3" /> Loyal Member
-                </span>
-              ) : bookingCount >= 3 ? (
-                <span className="flex items-center gap-1 rounded-full border border-amber-300/30 bg-amber-400/20 px-2.5 py-1 text-xs font-bold text-amber-300 backdrop-blur-sm">
-                  <Flame className="h-3 w-3" /> {bookingCount}-booking streak
-                </span>
-              ) : null}
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Hidden file input */}
       <input
@@ -261,56 +204,93 @@ export default function ProfilePage() {
         onChange={handleAvatarChange}
       />
 
-      <div className="relative -mt-12 rounded-t-[2.5rem] bg-white">
-      <main aria-label="User profile" className="mx-auto flex max-w-5xl flex-col gap-5 px-4 md:px-8 pb-28 md:pb-10 pt-5 md:pt-6">
+      {/* ── Profile Header ── */}
+      <div style={{ paddingTop: 64 }}>
+        <div className="mx-auto max-w-5xl px-4 md:px-8 pt-8 pb-4">
+          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656] mb-4">Profile</p>
 
-        <div className="flex flex-col gap-5 md:flex-row md:items-start md:gap-8">
+          <div className="flex items-center gap-5">
+            {/* Avatar */}
+            <div className="relative shrink-0">
+              <div className="h-20 w-20 rounded-full bg-[#d8e2ff] flex items-center justify-center overflow-hidden">
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt={name} className="h-full w-full object-cover" />
+                ) : (
+                  <span className="text-3xl font-bold text-[#0056b7]">{initial}</span>
+                )}
+              </div>
+              <button
+                type="button"
+                aria-label="Change profile photo"
+                onClick={() => fileRef.current?.click()}
+                disabled={uploadingAvatar}
+                className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-[#0056b7] text-white shadow-sm transition hover:brightness-110 active:scale-95 disabled:opacity-60"
+              >
+                {uploadingAvatar
+                  ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  : <Camera className="h-3.5 w-3.5" />
+                }
+              </button>
+            </div>
+
+            {/* Name + email + stats */}
+            <div className="min-w-0 flex-1">
+              <h1 className="text-2xl font-bold text-[#1a1c1f] capitalize truncate">{name}</h1>
+              <p className="mt-0.5 text-sm text-[#424656] truncate">{email}</p>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-[#f3f3f8] px-4 py-2 text-sm font-bold text-[#424656]">
+                  {bookingCount ?? "…"} Bookings
+                </span>
+                <span className="rounded-full bg-[#f3f3f8] px-4 py-2 text-sm font-bold text-[#424656]">
+                  {vehicles.length} Vehicles
+                </span>
+                {bookingCount >= 10 ? (
+                  <span className="flex items-center gap-1 rounded-full bg-amber-50 px-4 py-2 text-sm font-bold text-amber-600">
+                    <Flame className="h-3.5 w-3.5" /> Loyal Member
+                  </span>
+                ) : bookingCount >= 3 ? (
+                  <span className="flex items-center gap-1 rounded-full bg-amber-50 px-4 py-2 text-sm font-bold text-amber-600">
+                    <Flame className="h-3.5 w-3.5" /> {bookingCount}-booking streak
+                  </span>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <main aria-label="User profile" className="mx-auto flex max-w-5xl flex-col gap-6 px-4 md:px-8 pb-28 md:pb-10 pt-4 md:pt-6">
+
+        <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
 
           {/* ── LEFT COL ── */}
           <div className="flex flex-col gap-4 md:w-72 md:shrink-0">
 
-            {/* Photo change card */}
-            <div className="rounded-2xl bg-white p-4 shadow-card animate-slide-up flex items-center gap-4">
-              <div className="relative shrink-0">
-                <Avatar name={name} src={avatarUrl} size="lg" online={!!user} />
-                <button
-                  type="button"
-                  aria-label="Change profile photo"
-                  onClick={() => fileRef.current?.click()}
-                  disabled={uploadingAvatar}
-                  className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-primary text-white shadow-sm transition hover:brightness-110 active:scale-95 disabled:opacity-60"
-                >
-                  {uploadingAvatar
-                    ? <Loader2 className="h-3 w-3 animate-spin" />
-                    : <Camera className="h-3 w-3" />
-                  }
-                </button>
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-black text-slate-900 capitalize truncate">{name}</p>
-                <p className="text-xs text-slate-500 truncate">{email}</p>
-              </div>
-              <Badge variant="success" dot>Verified</Badge>
-            </div>
-
-            {/* My Vehicles */}
-            <div className="rounded-2xl bg-white p-4 shadow-card animate-slide-up delay-75">
-              <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-sm font-black text-slate-900">My Vehicles</h3>
+            {/* My Vehicles card */}
+            <div className="bg-white rounded-3xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10">
+              <div className="mb-4 flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]">Garage</p>
+                  <h2 className="text-lg font-bold text-[#1a1c1f]">My Vehicles</h2>
+                </div>
                 <button
                   type="button"
                   onClick={() => { setAdding((v) => !v); resetVehicleForm(); }}
-                  className="flex items-center gap-1 text-xs font-semibold text-primary transition hover:opacity-80 active:scale-95"
+                  className={`flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold transition active:scale-95 ${
+                    adding
+                      ? "border border-[#c2c6d8]/30 text-[#424656] hover:bg-[#f3f3f8]"
+                      : "bg-[#d8e2ff]/40 text-[#0056b7] hover:bg-[#d8e2ff]/70"
+                  }`}
                 >
-                  {adding ? <X className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+                  {adding ? <X className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                   {adding ? "Cancel" : "Add"}
                 </button>
               </div>
 
               {/* Inline add form */}
               {adding && (
-                <form onSubmit={handleAddVehicle} className="mb-3 space-y-2.5 rounded-xl border border-primary/20 bg-primary/5 p-3 animate-slide-up">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-primary">New Vehicle</p>
+                <form onSubmit={handleAddVehicle} className="mb-4 space-y-3 rounded-2xl bg-[#f3f3f8] p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#0056b7]">New Vehicle</p>
 
                   {/* Vehicle type */}
                   <div className="grid grid-cols-4 gap-1.5">
@@ -318,13 +298,13 @@ export default function ProfilePage() {
                       <button
                         key={label} type="button"
                         onClick={() => { setVType(label); setVBrand(""); }}
-                        className={`flex flex-col items-center gap-1 rounded-lg py-2 text-[10px] font-bold transition active:scale-95 ${
+                        className={`flex flex-col items-center gap-1 rounded-xl py-2.5 text-[10px] font-bold transition active:scale-95 ${
                           vType === label
-                            ? "bg-primary text-white shadow-sm"
-                            : "border border-slate-100 bg-white text-slate-500 hover:bg-slate-100"
+                            ? "bg-[#0056b7] text-white shadow-sm"
+                            : "bg-white border border-[#c2c6d8]/20 text-[#424656] hover:bg-[#f3f3f8]"
                         }`}
                       >
-                        <Icon className="h-3.5 w-3.5" />
+                        <Icon className="h-4 w-4" />
                         {label}
                       </button>
                     ))}
@@ -336,6 +316,7 @@ export default function ProfilePage() {
                     onChange={(e) => setVBrand(e.target.value)}
                     required
                     className={inputCls}
+                    style={{ fontSize: 16 }}
                   >
                     <option value="">Select brand…</option>
                     {(BRANDS[vType] ?? BRANDS.Other).map((b) => (
@@ -350,6 +331,7 @@ export default function ProfilePage() {
                     placeholder="Model (e.g. City, Activa, Nexon)"
                     required
                     className={inputCls}
+                    style={{ fontSize: 16 }}
                   />
 
                   {/* Year */}
@@ -357,6 +339,7 @@ export default function ProfilePage() {
                     value={vYear}
                     onChange={(e) => setVYear(e.target.value)}
                     className={inputCls}
+                    style={{ fontSize: 16 }}
                   >
                     {YEARS.map((y) => <option key={y} value={y}>{y}</option>)}
                   </select>
@@ -373,14 +356,15 @@ export default function ProfilePage() {
                       placeholder="Number plate (e.g. MH03EY2122)"
                       maxLength={13}
                       required
-                      className={`${inputCls} ${vNumError ? "border-red-400" : ""} uppercase`}
+                      className={`${inputCls} ${vNumError ? "border-[#ba1a1a]" : ""} uppercase`}
+                      style={{ fontSize: 16 }}
                     />
-                    {vNumError && <p className="mt-1 text-[10px] text-red-500">{vNumError}</p>}
-                    <p className="mt-1 text-[10px] text-slate-400">Format: State (2) + District (2) + Letters + Digits · e.g. MH03AB1234</p>
+                    {vNumError && <p className="mt-1.5 text-xs text-[#ba1a1a]">{vNumError}</p>}
+                    <p className="mt-1.5 text-[10px] text-[#c2c6d8]">Format: State (2) + District (2) + Letters + Digits · e.g. MH03AB1234</p>
                   </div>
 
                   <button type="submit"
-                    className="w-full rounded-lg bg-primary py-2 text-xs font-bold text-white shadow-sm transition hover:brightness-110 active:scale-95">
+                    className="w-full rounded-2xl bg-[#0056b7] py-3 px-6 text-sm font-bold text-white shadow-sm transition hover:brightness-110 active:scale-95">
                     Add Vehicle
                   </button>
                 </form>
@@ -394,30 +378,41 @@ export default function ProfilePage() {
                   className="py-4 shadow-none bg-transparent"
                 />
               ) : (
-                <div className="space-y-2">
+                <div className="flex flex-col gap-2">
                   {vehicles.map((v) => {
                     const VIcon = ICON_MAP[v.type] ?? Wrench;
                     return (
-                      <div key={v.id} className="flex items-center gap-3 rounded-xl border border-slate-100 px-3 py-2.5">
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                          <VIcon className="h-4 w-4" />
+                      <div key={v.id} className="bg-white rounded-2xl p-4 flex items-center gap-3 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#d8e2ff] text-[#0056b7]">
+                          <VIcon className="h-5 w-5" />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-xs font-bold text-slate-800">{v.name}</p>
-                          <p className="text-xs text-slate-500">{v.number_plate} · {v.type}</p>
+                          <p className="truncate text-sm font-bold text-[#1a1c1f]">{v.name}</p>
+                          <p className="text-xs text-[#424656]">{v.number_plate} · {v.type}</p>
                         </div>
                         <button
                           type="button"
                           aria-label="Remove vehicle"
                           onClick={() => removeVehicle(v.id)}
-                          className="shrink-0 text-slate-300 transition hover:text-red-400 active:scale-95"
+                          className="shrink-0 text-[#c2c6d8] transition hover:text-[#ba1a1a] active:scale-95"
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
                     );
                   })}
                 </div>
+              )}
+
+              {/* Add vehicle dashed card — only when not in add mode */}
+              {!adding && (
+                <button
+                  type="button"
+                  onClick={() => { setAdding(true); resetVehicleForm(); }}
+                  className="mt-3 w-full rounded-2xl border-2 border-dashed border-[#c2c6d8]/40 bg-white py-4 text-sm font-semibold text-[#424656] transition hover:border-[#0056b7]/40 hover:text-[#0056b7] active:scale-[0.98] flex items-center justify-center gap-2"
+                >
+                  <Plus className="h-4 w-4" /> Add a vehicle
+                </button>
               )}
             </div>
 
@@ -430,38 +425,41 @@ export default function ProfilePage() {
               <section
                 key={section}
                 aria-labelledby={`menu-section-${section.toLowerCase()}`}
-                className="rounded-2xl bg-white shadow-card overflow-hidden animate-slide-up"
+                className="flex flex-col gap-2"
                 style={{ animationDelay: `${(si + 1) * 80}ms` }}
               >
-                <p id={`menu-section-${section.toLowerCase()}`} className="px-4 pb-1 pt-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                <p
+                  id={`menu-section-${section.toLowerCase()}`}
+                  className="px-1 text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]"
+                >
                   {section}
                 </p>
-                <div className="divide-y divide-slate-50">
-                  {items.map(({ label, icon: Icon, href, color, comingSoon }) =>
+                <div className="flex flex-col gap-2">
+                  {items.map(({ label, icon: Icon, href, iconBg, iconColor, comingSoon }) =>
                     comingSoon ? (
                       <button
                         key={label}
                         type="button"
                         onClick={() => showToast(`${label} — coming soon`)}
-                        className="flex w-full items-center gap-3 px-4 py-3.5 transition-colors duration-150 hover:bg-slate-50 active:bg-slate-100"
+                        className="bg-white rounded-2xl flex w-full items-center gap-4 p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10 transition hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] active:scale-[0.98] text-left"
                       >
-                        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-50 ${color}`}>
-                          <Icon className="h-4 w-4" />
+                        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconBg} ${iconColor}`}>
+                          <Icon className="h-5 w-5" />
                         </div>
-                        <span className="flex-1 text-left text-sm font-semibold text-slate-800">{label}</span>
-                        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-400">Soon</span>
+                        <span className="flex-1 text-sm font-semibold text-[#1a1c1f]">{label}</span>
+                        <span className="rounded-full bg-[#f3f3f8] px-2.5 py-1 text-[10px] font-bold text-[#424656]">Soon</span>
                       </button>
                     ) : (
                       <Link
                         key={label}
                         href={href}
-                        className="flex items-center gap-3 px-4 py-3.5 transition-colors duration-150 hover:bg-slate-50 active:bg-slate-100"
+                        className="bg-white rounded-2xl flex items-center gap-4 p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10 transition hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] active:scale-[0.98]"
                       >
-                        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-50 ${color}`}>
-                          <Icon className="h-4 w-4" />
+                        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconBg} ${iconColor}`}>
+                          <Icon className="h-5 w-5" />
                         </div>
-                        <span className="flex-1 text-sm font-semibold text-slate-800">{label}</span>
-                        <ChevronRight className="h-4 w-4 shrink-0 text-slate-300" />
+                        <span className="flex-1 text-sm font-semibold text-[#1a1c1f]">{label}</span>
+                        <ChevronRight className="h-4 w-4 shrink-0 text-[#c2c6d8]" />
                       </Link>
                     )
                   )}
@@ -469,12 +467,12 @@ export default function ProfilePage() {
               </section>
             ))}
 
+            {/* Sign out / Sign in */}
             {user ? (
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-red-100 bg-white py-4 text-sm font-bold text-red-500 shadow-card transition hover:bg-red-50 active:scale-[0.98] animate-slide-up"
-                style={{ animationDelay: "320ms" }}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-[#ba1a1a]/20 bg-white py-4 text-sm font-bold text-[#ba1a1a] shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition hover:bg-[#ffdad6]/40 active:scale-[0.98]"
               >
                 <LogOut className="h-4 w-4" />
                 Sign Out
@@ -483,8 +481,7 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={() => router.push("/auth")}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-primary/20 bg-white py-4 text-sm font-bold text-primary shadow-card transition hover:bg-primary/5 active:scale-[0.98] animate-slide-up"
-                style={{ animationDelay: "320ms" }}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-[#0056b7]/20 bg-white py-4 text-sm font-bold text-[#0056b7] shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition hover:bg-[#d8e2ff]/30 active:scale-[0.98]"
               >
                 <LogIn className="h-4 w-4" />
                 Sign In
@@ -495,7 +492,6 @@ export default function ProfilePage() {
         </div>
 
       </main>
-      </div>
     </div>
   );
 }

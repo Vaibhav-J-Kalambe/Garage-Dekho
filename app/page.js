@@ -52,10 +52,10 @@ function haversine(lat1, lng1, lat2, lng2) {
 
 // Service categories with Apple-style flat icon tiles + starting prices
 const SERVICES = [
-  { label: "Bike Service",   icon: Bike,        href: "/near-me?type=2-Wheeler", animated: false, price: "from ₹299", bg: "#EBF3FC", iconColor: "#1A6FD4" },
+  { label: "Bike Service",   icon: Bike,        href: "/near-me?type=2-Wheeler", animated: false, price: "from ₹299", bg: "#EBF3FC", iconColor: "#0056b7" },
   { label: "Car Service",    icon: Car,         href: "/near-me?type=4-Wheeler", animated: false, price: "from ₹499", bg: "#F0EEFF", iconColor: "#7C3AED" },
   { label: "Oil Change",     icon: DropletIcon, href: "/near-me?q=oil+change",   animated: true,  price: "from ₹349", bg: "#E0F7FA", iconColor: "#0097A7" },
-  { label: "Tyre Repair",    icon: GaugeIcon,   href: "/near-me?q=tyre",         animated: true,  price: "from ₹199", bg: "#F3F4F6", iconColor: "#374151" },
+  { label: "Tyre Repair",    icon: GaugeIcon,   href: "/near-me?q=tyre",         animated: true,  price: "from ₹199", bg: "#f3f3f8", iconColor: "#424656" },
   { label: "Battery Jump",   icon: ZapIcon,     href: "/near-me?q=battery",      animated: true,  price: "from ₹249", bg: "#FFFBEB", iconColor: "#D97706" },
   { label: "Towing",         icon: TruckIcon,   href: "/near-me?q=towing",       animated: true,  price: "from ₹599", bg: "#FFF1F2", iconColor: "#E11D48" },
   { label: "AC Repair",      icon: WindIcon,    href: "/near-me?q=ac+repair",    animated: true,  price: "from ₹799", bg: "#ECFDF5", iconColor: "#059669" },
@@ -126,7 +126,8 @@ function AnimatedSearchButton() {
       type="submit"
       aria-label="Search garages"
       onMouseEnter={() => iconRef.current?.startAnimation()}
-      className="flex shrink-0 items-center gap-2 rounded-xl bg-amber-300 px-5 py-3 text-sm font-bold text-slate-900 shadow-none transition-[transform,background-color,box-shadow] duration-150 hover:bg-amber-400 hover:shadow-[0_4px_16px_rgba(245,158,11,0.4)] hover:scale-[1.03] active:scale-[0.97] min-h-[44px]"
+      className="flex shrink-0 items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-white transition-[transform,background-color,box-shadow] duration-150 hover:brightness-110 hover:scale-[1.03] active:scale-[0.97] min-h-[44px]"
+      style={{ backgroundColor: "#0056b7" }}
     >
       <SearchIcon ref={iconRef} size={15} />
       Search
@@ -152,7 +153,7 @@ function SaveButton({ garageId, isSaved, isBursting, onToggle }) {
         ref={iconRef}
         size={16}
         className={`transition-colors ${
-          isSaved ? "fill-red-500 text-red-500" : "text-slate-200 hover:text-red-400"
+          isSaved ? "fill-red-500 text-red-500" : "text-[#c2c6d8] hover:text-red-400"
         } ${isBursting ? "animate-heart-burst" : ""}`}
       />
     </button>
@@ -175,6 +176,7 @@ export default function HomePage() {
   const [openCount,          setOpenCount]          = useState(null);
   const [savedIds,           setSavedIds]           = useState(new Set());
   const [heartBurst,         setHeartBurst]         = useState(null);
+  const [activeService,      setActiveService]      = useState(0);
   const [userCoords,         setUserCoords]         = useState(
     location?.lat && location?.lng ? [location.lat, location.lng] : null
   );
@@ -320,157 +322,296 @@ export default function HomePage() {
   const wrenchRef = useRef(null);
 
   return (
-    <div
-      className="min-h-screen"
-      style={{ backgroundColor: "#F7F7F5", fontFamily: "-apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif" }}
-    >
+    <div className="min-h-screen" style={{ backgroundColor: "#f9f9fe" }}>
       <Header />
       {showLocationPopup && <LocationPopup onClose={() => setShowLocationPopup(false)} />}
 
-      {/* ── HERO AREA ── */}
-      <div style={{ paddingTop: 64 }}>
+      <main style={{ paddingTop: 64 }} className="mx-auto max-w-screen-xl px-4 md:px-6 pb-32">
 
-        {/* Mobile greeting bar */}
-        <div className="md:hidden" style={{ padding: "12px 20px 0" }}>
-          <div className="flex items-center justify-between">
+        {/* ── HERO SECTION ── */}
+        <section className="pt-8 pb-6">
+
+          {/* Mobile greeting (hidden on md+) */}
+          <div className="md:hidden flex items-center justify-between mb-5">
             <div>
-              <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "#888888", margin: 0 }}>
+              <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]">
                 {getGreeting()}
               </p>
-              <p style={{ fontSize: 17, fontWeight: 700, color: "#1C1C1E", marginTop: 2, marginBottom: 0 }}>
-                {user?.user_metadata?.full_name?.split(" ")[0] || "Welcome"}
+              <p className="text-base font-bold text-[#1a1c1f] mt-0.5">
+                {user?.user_metadata?.full_name?.split(" ")[0] || "Welcome back"}
               </p>
             </div>
             <Link href="/profile" aria-label="View profile">
-              <div style={{ width: 38, height: 38, borderRadius: "50%", backgroundColor: "#1A6FD4", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <span style={{ color: "#fff", fontWeight: 700, fontSize: 15, lineHeight: 1 }}>
+              <div
+                className="flex items-center justify-center rounded-full shrink-0"
+                style={{ width: 40, height: 40, backgroundColor: "#0056b7" }}
+              >
+                <span className="text-white font-bold text-base leading-none">
                   {(user?.user_metadata?.full_name || user?.email || "G")[0].toUpperCase()}
                 </span>
               </div>
             </Link>
           </div>
-        </div>
 
-        {/* Hero heading */}
-        <div className="mx-auto max-w-5xl" style={{ padding: "20px 20px 0" }}>
+          {/* Open count pill */}
           {openCount !== null && (
-            <div className="flex items-center" style={{ gap: 6, marginBottom: 12 }}>
+            <div className="flex items-center gap-2 mb-4">
               <span className="relative flex" style={{ width: 8, height: 8, flexShrink: 0 }}>
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
                 <span className="relative inline-flex rounded-full bg-green-500" style={{ width: 8, height: 8 }} />
               </span>
-              <span style={{ fontSize: 11, fontWeight: 600, color: "#888888" }}>{openCount} garages open now</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]">
+                {openCount} garages open now
+              </span>
             </div>
           )}
-          <h1 style={{ fontSize: 34, fontWeight: 700, color: "#1C1C1E", lineHeight: 1.2, margin: 0 }}>
-            Find Your Garage.
-          </h1>
-          <p style={{ fontSize: 12, color: "#888888", marginTop: 8, marginBottom: 0 }}>
-            Trusted · Verified · Fixed pricing
-          </p>
-        </div>
 
-        {/* Search bar */}
-        <div className="mx-auto max-w-5xl" style={{ padding: "14px 20px 0" }}>
+          {/* Editorial heading */}
+          <h1 className="text-[3rem] md:text-[3.5rem] font-bold tracking-tight text-[#1a1c1f] leading-[1.1] mb-6">
+            Find Your<br /><span style={{ color: "#0056b7" }}>Mechanic.</span>
+          </h1>
+
+          {/* Search bar */}
           <form onSubmit={handleSearch} aria-label="Search garages">
-            <div style={{ backgroundColor: "#FFFFFF", borderRadius: 12, border: "0.5px solid #E0DFD8", padding: "0 14px", display: "flex", alignItems: "center", gap: 10, minHeight: 48 }}>
-              <SearchIcon size={16} style={{ color: "#888888", flexShrink: 0 }} aria-hidden="true" />
+            <div
+              className="bg-white rounded-2xl flex items-center gap-3 px-4 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10"
+              style={{ minHeight: 52 }}
+            >
+              <SearchIcon size={16} style={{ color: "#424656", flexShrink: 0 }} aria-hidden="true" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Tyre repair, oil change, AC…"
                 aria-label="Search garages"
-                style={{ flex: 1, background: "transparent", fontSize: 15, color: "#1C1C1E", outline: "none", border: "none", padding: "14px 0" }}
+                inputMode="search"
+                style={{ flex: 1, background: "transparent", fontSize: 16, color: "#1a1c1f", outline: "none", border: "none", padding: "14px 0" }}
               />
               {search.trim() && (
                 <button
                   type="submit"
-                  style={{ backgroundColor: "#1A6FD4", color: "#fff", fontSize: 13, fontWeight: 700, borderRadius: 8, padding: "6px 14px", border: "none", cursor: "pointer", flexShrink: 0, minHeight: 32 }}
+                  className="rounded-xl px-4 py-2 text-sm font-bold text-white shrink-0 min-h-[36px] transition-[filter] duration-150 hover:brightness-110 active:scale-95"
+                  style={{ backgroundColor: "#0056b7" }}
                 >
                   Search
                 </button>
               )}
             </div>
           </form>
-        </div>
-      </div>
 
-      {/* ── MAIN CONTENT ── */}
-      <main
-        className="mx-auto max-w-5xl"
-        style={{ padding: "28px 20px", paddingBottom: "max(120px, calc(env(safe-area-inset-bottom) + 100px))" }}
-      >
+          {/* Detect location button */}
+          {!userArea && (
+            <button
+              type="button"
+              onClick={() => setShowLocationPopup(true)}
+              className="mt-3 flex items-center gap-2 text-sm font-semibold text-[#0056b7] hover:opacity-80 transition-opacity active:scale-95"
+            >
+              <MapPinIcon size={14} />
+              Detect my location
+            </button>
+          )}
+          {userArea && (
+            <button
+              type="button"
+              onClick={() => setShowLocationPopup(true)}
+              className="mt-3 flex items-center gap-2 text-sm text-[#424656] hover:text-[#0056b7] transition-colors"
+            >
+              <MapPinIcon size={14} style={{ color: "#0056b7" }} />
+              <span>{userArea}</span>
+            </button>
+          )}
 
-        {/* ── SERVICES GRID ── */}
-        <section aria-labelledby="services-heading">
-          <div className="flex items-center justify-between" style={{ marginBottom: 14 }}>
-            <p id="services-heading" style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "#1C1C1E", margin: 0 }}>
-              Services
-            </p>
+          {/* Trust badges row */}
+          <div className="mt-5 flex flex-wrap gap-2">
+            {[
+              { icon: <ShieldCheckIcon size={13} />, label: "Verified Experts" },
+              { icon: <CircleCheckIcon size={13} />, label: "Fixed Pricing" },
+              { icon: <ClockIcon size={13} />, label: "15-min Response" },
+            ].map(({ icon, label }) => (
+              <span
+                key={label}
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold"
+                style={{ backgroundColor: "#d8e2ff", color: "#0056b7" }}
+              >
+                {icon}
+                {label}
+              </span>
+            ))}
           </div>
-          <div className="grid grid-cols-4" style={{ gap: 10 }}>
-            {SERVICES.map(({ label, icon: Icon, href, animated, price, bg, iconColor }) => (
+        </section>
+
+        {/* ── LAST BOOKING "Book Again" subtle card ── */}
+        {!lastBookingLoading && lastBooking && lastBooking.status === "completed" && (
+          <section className="mb-8">
+            <Link href={`/garage/${lastBooking.garage_id}`} aria-label={`Book again at ${lastBooking.garage_name}`}>
+              <div
+                className="bg-white rounded-3xl p-4 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10 flex items-center gap-4 transition-[transform] duration-150 hover:-translate-y-0.5 active:scale-[0.99]"
+              >
+                <div
+                  className="flex items-center justify-center rounded-2xl shrink-0"
+                  style={{ width: 44, height: 44, backgroundColor: "#d8e2ff" }}
+                >
+                  <RotateCcwIcon size={18} style={{ color: "#0056b7" }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]">Book Again</p>
+                  <p className="text-sm font-bold text-[#1a1c1f] truncate mt-0.5">
+                    {lastBooking.service_name} at {lastBooking.garage_name}
+                  </p>
+                  {serviceDue && (
+                    <p className="text-xs text-[#ba1a1a] mt-0.5 font-semibold">Service overdue — {daysAgo} days ago</p>
+                  )}
+                </div>
+                <ChevronRightIcon size={16} style={{ color: "#424656", flexShrink: 0 }} />
+              </div>
+            </Link>
+          </section>
+        )}
+
+        {/* ── VEHICLE CATEGORIES — horizontal scroll ── */}
+        <section className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide mb-8">
+          <div className="flex gap-3" style={{ width: "max-content" }}>
+            {SERVICES.map(({ label, icon: Icon, href, animated, price, bg, iconColor }, idx) => (
               <Link key={label} href={href} aria-label={`${label} — ${price}`}>
                 <div
-                  style={{ backgroundColor: "#FFFFFF", borderRadius: 12, border: "0.5px solid #E0DFD8", padding: "12px 6px", display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}
-                  className="transition-[transform] duration-150 hover:-translate-y-0.5 active:scale-95"
+                  onClick={() => setActiveService(idx)}
+                  className="w-36 shrink-0 rounded-2xl p-4 flex flex-col items-center gap-2 transition-[transform] duration-150 hover:-translate-y-0.5 active:scale-95 cursor-pointer"
+                  style={
+                    activeService === idx
+                      ? { backgroundColor: "#0056b7", border: "1px solid transparent" }
+                      : { backgroundColor: "#ffffff", border: "1px solid rgba(194,198,216,0.10)", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }
+                  }
                 >
-                  <div style={{ width: 40, height: 40, borderRadius: 10, backgroundColor: bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <div
+                    className="flex items-center justify-center rounded-xl shrink-0"
+                    style={{
+                      width: 44, height: 44,
+                      backgroundColor: activeService === idx ? "rgba(255,255,255,0.15)" : bg,
+                    }}
+                  >
                     {animated
-                      ? <Icon size={20} style={{ color: iconColor }} />
-                      : <Icon style={{ width: 20, height: 20, color: iconColor }} />}
+                      ? <Icon size={22} style={{ color: activeService === idx ? "#ffffff" : iconColor }} />
+                      : <Icon style={{ width: 22, height: 22, color: activeService === idx ? "#ffffff" : iconColor }} />}
                   </div>
-                  <p style={{ fontSize: 11, fontWeight: 700, color: "#1C1C1E", textAlign: "center", lineHeight: 1.3, margin: 0 }}>{label}</p>
-                  <p style={{ fontSize: 10, color: "#888888", margin: 0, textAlign: "center" }}>{price}</p>
+                  <p
+                    className="text-xs font-bold text-center leading-tight"
+                    style={{ color: activeService === idx ? "#ffffff" : "#1a1c1f" }}
+                  >
+                    {label}
+                  </p>
+                  <p
+                    className="text-[10px] text-center"
+                    style={{ color: activeService === idx ? "rgba(255,255,255,0.75)" : "#424656" }}
+                  >
+                    {price}
+                  </p>
                 </div>
               </Link>
             ))}
-            {/* See All */}
+            {/* See All tile */}
             <Link href="/near-me" aria-label="See all services">
               <div
-                style={{ backgroundColor: "#1A6FD4", borderRadius: 12, padding: "12px 6px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 5, minHeight: 90 }}
-                className="transition-[filter] duration-150 hover:brightness-110 active:scale-95"
+                className="w-36 shrink-0 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 transition-[filter] duration-150 hover:brightness-110 active:scale-95 cursor-pointer"
+                style={{ backgroundColor: "#d8e2ff", border: "1px solid transparent", minHeight: 110 }}
               >
-                <ChevronRightIcon size={20} style={{ color: "#FFFFFF" }} aria-hidden="true" />
-                <p style={{ fontSize: 11, fontWeight: 700, color: "#FFFFFF", textAlign: "center", margin: 0 }}>See All</p>
+                <ChevronRightIcon size={22} style={{ color: "#0056b7" }} aria-hidden="true" />
+                <p className="text-xs font-bold text-[#0056b7] text-center">See All</p>
               </div>
             </Link>
           </div>
         </section>
 
-        {/* ── SOS BANNER ── */}
-        <section style={{ marginTop: 20 }} aria-label="Roadside emergency SOS">
-          <Link href="/sos" aria-label="SOS — 24/7 roadside assistance">
-            <div
-              style={{ backgroundColor: "#1C1C1E", borderRadius: 12, border: "0.5px solid #2A2A2C", padding: "16px 18px", display: "flex", alignItems: "center", gap: 14 }}
-              className="transition-[transform] duration-150 hover:-translate-y-0.5 active:scale-[0.99]"
+        {/* ── HOW CAN WE HELP — bento grid ── */}
+        <section className="mb-8">
+          <div className="flex justify-between items-end mb-6">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight text-[#1a1c1f]">How can we help?</h2>
+              <p className="text-sm text-[#424656] mt-1">Professional care for every need</p>
+            </div>
+            <Link href="/near-me" className="text-sm font-bold" style={{ color: "#0056b7" }}>
+              View all
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {/* Large feature card */}
+            <Link
+              href="/near-me"
+              className="col-span-2 rounded-3xl overflow-hidden relative min-h-[160px] flex items-end p-6 shadow-[0_4px_24px_rgba(0,0,0,0.08)] transition-[transform] duration-150 hover:-translate-y-0.5 active:scale-[0.99]"
+              style={{ backgroundColor: "#0056b7" }}
+              aria-label="Find garages near you"
             >
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "#FF4D2D", margin: 0 }}>
+              <div className="relative z-10">
+                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#d8e2ff] mb-1">Nearby</p>
+                <p className="text-xl font-bold text-white leading-tight">Find garages<br />near you</p>
+              </div>
+              <div className="absolute top-4 right-4 opacity-20">
+                <MapPinIcon size={64} style={{ color: "#ffffff" }} />
+              </div>
+            </Link>
+
+            {/* Smaller service cards */}
+            {[
+              { label: "Oil Change",  icon: DropletIcon, href: "/near-me?q=oil+change",  animated: true,  bg: "#E0F7FA", iconColor: "#0097A7" },
+              { label: "Tyre Repair", icon: GaugeIcon,   href: "/near-me?q=tyre",        animated: true,  bg: "#f3f3f8", iconColor: "#424656" },
+            ].map(({ label, icon: Icon, href, animated, bg, iconColor }) => (
+              <Link
+                key={label}
+                href={href}
+                aria-label={label}
+                className="bg-white rounded-3xl p-5 flex flex-col gap-3 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10 transition-[transform] duration-150 hover:-translate-y-0.5 active:scale-[0.99]"
+              >
+                <div
+                  className="flex items-center justify-center rounded-2xl"
+                  style={{ width: 44, height: 44, backgroundColor: bg }}
+                >
+                  {animated
+                    ? <Icon size={22} style={{ color: iconColor }} />
+                    : <Icon style={{ width: 22, height: 22, color: iconColor }} />}
+                </div>
+                <p className="text-sm font-bold text-[#1a1c1f]">{label}</p>
+                <ChevronRightIcon size={14} style={{ color: "#424656" }} />
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* ── SOS SECTION ── */}
+        <section className="mb-8 rounded-3xl p-6" style={{ backgroundColor: "#ffdad6", border: "1px solid rgba(186,26,26,0.1)" }}>
+          <Link href="/sos" aria-label="SOS — 24/7 roadside assistance" className="block">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-bold uppercase tracking-[0.15em] mb-1" style={{ color: "#ba1a1a" }}>
                   Emergency
                 </p>
-                <p style={{ fontSize: 18, fontWeight: 700, color: "#FFFFFF", lineHeight: 1.25, margin: "5px 0 0" }}>
+                <h2 className="text-2xl font-bold tracking-tight leading-tight" style={{ color: "#1a1c1f" }}>
                   SOS Help — 24/7
-                </p>
-                <p style={{ fontSize: 12, color: "#888888", margin: "4px 0 0" }}>
-                  Instant roadside assistance
+                </h2>
+                <p className="text-sm mt-2" style={{ color: "#424656" }}>
+                  Instant roadside assistance, wherever you are.
                 </p>
               </div>
-              <div style={{ width: 44, height: 44, borderRadius: "50%", backgroundColor: "#1A6FD4", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <ChevronRightIcon size={18} style={{ color: "#FFFFFF" }} aria-hidden="true" />
+              <div
+                className="flex items-center justify-center rounded-full shrink-0 transition-[transform] duration-150 hover:scale-105"
+                style={{ width: 52, height: 52, backgroundColor: "#ba1a1a" }}
+              >
+                <ChevronRightIcon size={22} style={{ color: "#ffffff" }} aria-hidden="true" />
               </div>
             </div>
           </Link>
         </section>
 
-        {/* ── TOP RATED GARAGES ── */}
-        <section aria-labelledby="garages-heading" style={{ marginTop: 28 }}>
-          <div className="flex items-center justify-between" style={{ marginBottom: 14 }}>
-            <p id="garages-heading" style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "#1C1C1E", margin: 0 }}>
-              {isPersonalized ? "Recommended for You" : userCoords ? "Nearby Garages" : "Top Rated"}
-            </p>
-            <Link href="/near-me" style={{ fontSize: 12, fontWeight: 600, color: "#1A6FD4", textDecoration: "none" }}>
+        {/* ── GARAGES NEAR YOU ── */}
+        <section className="mb-8" aria-labelledby="garages-heading">
+          <div className="flex items-end justify-between mb-6">
+            <div>
+              <h2 id="garages-heading" className="text-2xl font-bold tracking-tight text-[#1a1c1f]">
+                {isPersonalized ? "Recommended for You" : userCoords ? "Garages near you" : "Top Rated"}
+              </h2>
+              {userArea && (
+                <p className="text-sm text-[#424656] mt-1">In {userArea}</p>
+              )}
+            </div>
+            <Link href="/near-me" className="text-sm font-bold" style={{ color: "#0056b7" }}>
               View all
             </Link>
           </div>
@@ -480,15 +621,14 @@ export default function HomePage() {
           ) : personalizedGarages.length === 0 ? (
             <EmptyState preset="near-me" />
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div className="flex flex-col gap-3">
               {personalizedGarages.map((garage, i) => (
                 <Link key={garage.id} href={`/garage/${garage.id}`} aria-label={`Book ${garage.name}`}>
                   <div
-                    style={{ backgroundColor: "#FFFFFF", borderRadius: 12, border: "0.5px solid #E0DFD8", padding: "14px 16px", display: "flex", alignItems: "center", gap: 14 }}
-                    className="transition-[transform] duration-150 hover:-translate-y-0.5 active:scale-[0.99]"
+                    className="bg-white rounded-2xl p-4 flex items-center gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10 transition-[transform] duration-150 hover:-translate-y-0.5 active:scale-[0.99]"
                   >
                     {/* Garage photo */}
-                    <div className="relative" style={{ width: 68, height: 68, borderRadius: 10, overflow: "hidden", flexShrink: 0 }}>
+                    <div className="relative shrink-0 rounded-xl overflow-hidden" style={{ width: 68, height: 68 }}>
                       <Image
                         src={garage.image || "/placeholder-garage.svg"}
                         alt={`${garage.name} garage`}
@@ -500,61 +640,71 @@ export default function HomePage() {
                       {garage.isOpen && (
                         <span
                           aria-label="Open now"
-                          style={{ position: "absolute", bottom: 4, right: 4, width: 8, height: 8, borderRadius: "50%", border: "1.5px solid white", backgroundColor: "#22C55E" }}
+                          className="absolute bottom-1 right-1 rounded-full border-2 border-white"
+                          style={{ width: 8, height: 8, backgroundColor: "#22C55E" }}
                         />
                       )}
                     </div>
 
                     {/* Garage info */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div className="flex items-center" style={{ gap: 5 }}>
-                        <p style={{ fontSize: 14, fontWeight: 700, color: "#1C1C1E", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                          {garage.name}
-                        </p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-sm font-bold text-[#1a1c1f] truncate">{garage.name}</p>
                         {garage.verified && (
-                          <CircleCheckIcon size={13} style={{ color: "#1A6FD4", flexShrink: 0 }} aria-label="Verified" />
+                          <CircleCheckIcon size={13} style={{ color: "#0056b7", flexShrink: 0 }} aria-label="Verified" />
                         )}
                       </div>
 
                       {/* Trust badge pills */}
-                      <div className="flex flex-wrap" style={{ gap: 4, marginTop: 5 }}>
+                      <div className="flex flex-wrap gap-1 mt-1.5">
                         {garage.verified && (
-                          <span style={{ fontSize: 10, fontWeight: 600, color: "#1A6FD4", backgroundColor: "#EBF3FC", borderRadius: 6, padding: "2px 7px", lineHeight: 1.5 }}>
+                          <span className="text-[10px] font-bold rounded-full px-2 py-0.5" style={{ color: "#0056b7", backgroundColor: "#d8e2ff" }}>
                             Verified
                           </span>
                         )}
-                        <span style={{ fontSize: 10, fontWeight: 600, color: "#16A34A", backgroundColor: "#F0FDF4", borderRadius: 6, padding: "2px 7px", lineHeight: 1.5 }}>
+                        <span className="text-[10px] font-bold rounded-full px-2 py-0.5" style={{ color: "#16A34A", backgroundColor: "#F0FDF4" }}>
                           Fixed Price
                         </span>
                       </div>
 
                       {/* Rating + distance + type */}
-                      <div className="flex items-center" style={{ gap: 8, marginTop: 6 }}>
-                        <div className="flex items-center" style={{ gap: 3 }}>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <div className="flex items-center gap-1">
                           <Star style={{ width: 11, height: 11, fill: "#F59E0B", color: "#F59E0B" }} aria-hidden="true" />
-                          <span style={{ fontSize: 12, fontWeight: 700, color: "#1C1C1E" }}>{garage.rating}</span>
-                          <span style={{ fontSize: 12, color: "#888888" }}>({garage.reviews})</span>
+                          <span className="text-xs font-bold text-[#1a1c1f]">{garage.rating}</span>
+                          <span className="text-xs text-[#424656]">({garage.reviews})</span>
                         </div>
-                        {garage.distance && <span style={{ fontSize: 12, color: "#888888" }}>{garage.distance}</span>}
-                        {garage.type && <span style={{ fontSize: 12, color: "#888888" }}>{garage.type}</span>}
+                        {garage.distance && <span className="text-xs text-[#424656]">{garage.distance}</span>}
+                        {garage.type && <span className="text-xs text-[#424656]">{garage.type}</span>}
                       </div>
                     </div>
 
-                    {/* Right: open badge + Book CTA */}
-                    <div className="flex flex-col items-end justify-between" style={{ flexShrink: 0, gap: 8, alignSelf: "stretch" }}>
-                      <span style={{
-                        fontSize: 10, fontWeight: 600, borderRadius: 6, padding: "2px 8px", lineHeight: 1.5,
-                        backgroundColor: garage.isOpen ? "#F0FDF4" : "#F5F5F5",
-                        color: garage.isOpen ? "#16A34A" : "#888888",
-                      }}>
+                    {/* Right: open badge + Book CTA + Save */}
+                    <div className="flex flex-col items-end justify-between shrink-0 gap-2 self-stretch">
+                      <span
+                        className="text-[10px] font-bold rounded-full px-2 py-0.5"
+                        style={{
+                          backgroundColor: garage.isOpen ? "#F0FDF4" : "#f3f3f8",
+                          color: garage.isOpen ? "#16A34A" : "#424656",
+                        }}
+                      >
                         {garage.isOpen ? "Open" : "Closed"}
                       </span>
-                      <button
-                        onClick={(e) => { e.preventDefault(); router.push(`/garage/${garage.id}`); }}
-                        style={{ backgroundColor: "#1A6FD4", color: "#FFFFFF", fontSize: 12, fontWeight: 700, borderRadius: 8, padding: "7px 16px", border: "none", cursor: "pointer", minHeight: 32 }}
-                      >
-                        Book
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <SaveButton
+                          garageId={garage.id}
+                          isSaved={savedIds.has(garage.id)}
+                          isBursting={heartBurst === garage.id}
+                          onToggle={toggleSave}
+                        />
+                        <button
+                          onClick={(e) => { e.preventDefault(); router.push(`/garage/${garage.id}`); }}
+                          className="rounded-xl px-4 py-1.5 text-xs font-bold text-white min-h-[32px] transition-[filter] duration-150 hover:brightness-110 active:scale-95"
+                          style={{ backgroundColor: "#0056b7" }}
+                        >
+                          Book
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </Link>
@@ -563,39 +713,90 @@ export default function HomePage() {
           )}
         </section>
 
-        {/* ── FOOTER ── */}
-        <footer style={{ borderTop: "0.5px solid #E0DFD8", paddingTop: 24, marginTop: 32 }} role="contentinfo">
-          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-            <div>
-              <p style={{ fontSize: 13, fontWeight: 700, color: "#1C1C1E", margin: 0 }}>GarageDekho</p>
-              <p style={{ fontSize: 12, color: "#888888", marginTop: 6, lineHeight: 1.6, maxWidth: 280, marginBottom: 0 }}>
-                Hyperlocal automotive services — find trusted garages, book instantly, get roadside help 24/7.
-              </p>
-            </div>
-            <nav aria-label="Footer navigation" className="grid grid-cols-2" style={{ gap: "6px 40px" }}>
-              {[
-                { label: "Near Me",     href: "/near-me"  },
-                { label: "Bookings",    href: "/bookings" },
-                { label: "Offers",      href: "/offers"   },
-                { label: "SOS Help",    href: "/sos"      },
-                { label: "For Garages", href: "/partner"  },
-                { label: "Profile",     href: "/profile"  },
-              ].map(({ label, href }) => (
-                <Link
-                  key={label}
-                  href={href}
-                  style={{ fontSize: 12, color: "#888888", fontWeight: 500 }}
-                  className="transition-colors duration-150 hover:text-[#1A6FD4]"
-                >
-                  {label}
-                </Link>
-              ))}
-            </nav>
+        {/* ── TRUST STATS ── */}
+        <section className="mb-8">
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { value: 500, suffix: "+", label: "Partner Garages" },
+              { value: 10000, suffix: "+", label: "Happy Customers" },
+              { value: 15, suffix: " min", label: "Avg. Response" },
+            ].map(({ value, suffix, label }) => (
+              <div
+                key={label}
+                className="rounded-2xl bg-white p-4 text-center shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10"
+              >
+                <p className="text-2xl font-black text-[#0056b7]">
+                  <NumberTicker value={value} suffix={suffix} />
+                </p>
+                <p className="mt-1 text-[11px] font-semibold text-[#424656] leading-snug">{label}</p>
+              </div>
+            ))}
           </div>
-          <p style={{ fontSize: 11, color: "#888888", marginTop: 20, textAlign: "center" }}>
-            © {new Date().getFullYear()} GarageDekho. All rights reserved.
-          </p>
-        </footer>
+        </section>
+
+        {/* ── FIRST SERVICE FREE PROMO ── */}
+        <section className="mb-8">
+          <div
+            className="relative overflow-hidden rounded-3xl p-6"
+            style={{ background: "linear-gradient(135deg, #0056b7 0%, #1a6fd4 100%)" }}
+          >
+            {/* Decorative circles */}
+            <div className="pointer-events-none absolute -right-6 -top-6 h-32 w-32 rounded-full" style={{ background: "rgba(255,255,255,0.08)" }} />
+            <div className="pointer-events-none absolute -bottom-4 right-12 h-20 w-20 rounded-full" style={{ background: "rgba(255,255,255,0.06)" }} />
+
+            <div className="relative z-10 flex items-center justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <span className="inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest mb-3" style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "#fff" }}>
+                  Limited Offer
+                </span>
+                <h2 className="text-xl font-black text-white leading-tight mb-1">
+                  First Service<br />Inspection Free
+                </h2>
+                <p className="text-sm text-white/70">Book your first service and get a free vehicle health check.</p>
+              </div>
+              <Link
+                href="/near-me"
+                className="shrink-0 flex items-center gap-1.5 rounded-2xl px-5 py-3 text-sm font-bold transition-[filter] duration-150 hover:brightness-110 active:scale-95"
+                style={{ backgroundColor: "#ffffff", color: "#0056b7" }}
+              >
+                Book Now
+                <ArrowRightIcon size={14} />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ── FOR GARAGE OWNERS ── */}
+        <section className="mb-8">
+          <div className="bg-white rounded-3xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10">
+            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656] mb-2">For Garage Owners</p>
+            <h2 className="text-2xl font-bold tracking-tight text-[#1a1c1f] mb-1">List Your Garage</h2>
+            <p className="text-sm text-[#424656] mb-5">Zero listing fee. Reach thousands of customers. Get real-time SOS job requests.</p>
+
+            <div className="grid grid-cols-3 gap-3 mb-6">
+              {[
+                { value: "₹0", label: "Listing Fee" },
+                { value: "10k+", label: "Customers" },
+                { value: "24/7", label: "SOS Jobs" },
+              ].map(({ value, label }) => (
+                <div key={label} className="rounded-2xl p-3 text-center" style={{ backgroundColor: "#f3f3f8" }}>
+                  <p className="text-lg font-black text-[#0056b7]">{value}</p>
+                  <p className="text-[11px] font-semibold text-[#424656] mt-0.5">{label}</p>
+                </div>
+              ))}
+            </div>
+
+            <Link
+              href="/partner"
+              className="flex items-center justify-center gap-2 rounded-2xl py-3.5 text-sm font-bold text-white transition-[filter] duration-150 hover:brightness-110 active:scale-95"
+              style={{ backgroundColor: "#0056b7" }}
+            >
+              <WrenchIcon size={15} />
+              Join as Partner — It&apos;s Free
+            </Link>
+          </div>
+        </section>
+
 
       </main>
     </div>

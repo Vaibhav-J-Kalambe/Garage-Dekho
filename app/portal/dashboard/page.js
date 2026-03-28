@@ -87,7 +87,7 @@ export default function PortalDashboard() {
   if (loading || !garage) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
-        <div className="h-8 w-8 rounded-full border-4 border-[#0056D2] border-t-transparent animate-spin" />
+        <div className="h-8 w-8 rounded-full border-4 border-[#0056b7] border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -96,49 +96,31 @@ export default function PortalDashboard() {
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
+    <div className="min-h-screen bg-[#f9f9fe]">
 
-      {/* ── Header ── */}
-      <div className="relative overflow-hidden px-5 pb-24 pt-12">
-        {/* Dot-grid */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{
-            backgroundImage: "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)",
-            backgroundSize: "28px 28px",
-          }}
-        />
-        {/* Glow blobs */}
-        <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-blue-400/30 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute -bottom-10 -left-10 h-56 w-56 rounded-full bg-sky-300/20 blur-3xl" />
-
-        <div className="relative z-10 flex items-start justify-between">
-          <div>
-            <p className="text-sm text-blue-200">{greeting},</p>
-            <h1 className="text-2xl font-black text-white leading-tight">{garage.garage_name}</h1>
-            <p className="mt-0.5 flex items-center gap-1 text-xs text-blue-300">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+      <div style={{ paddingTop: 64 }}>
+        <div className="mx-auto max-w-2xl px-4 md:px-8 pt-6 pb-2">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#727687]">{greeting}</p>
+              <h1 className="mt-1 text-[2rem] md:text-[2.5rem] font-bold tracking-tight text-[#1a1c1f]">{garage.garage_name}</h1>
+              <p className="mt-1 text-sm text-[#727687]">{garage.address}, {garage.city}</p>
+            </div>
+            <button
+              onClick={signOut}
+              aria-label="Sign out"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] transition-colors duration-150 hover:bg-[#ededf2] active:scale-95"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
               </svg>
-              {garage.address}, {garage.city}
-            </p>
+            </button>
           </div>
-          <button
-            onClick={signOut}
-            aria-label="Sign out"
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white transition-colors duration-150 hover:bg-white/25 active:scale-95"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-          </button>
         </div>
       </div>
 
-      {/* ── Pull-up content ── */}
-      <div className="relative -mt-12 rounded-t-[3rem] bg-white" style={{ paddingBottom: "max(96px, calc(env(safe-area-inset-bottom) + 96px))" }}>
-        <div className="mx-auto max-w-2xl px-4 pt-6 space-y-4">
+      <div style={{ paddingBottom: "max(96px, calc(env(safe-area-inset-bottom) + 96px))" }}>
+        <div className="mx-auto max-w-2xl px-4 pt-4 space-y-4">
 
           {/* Active SOS Alert Banner */}
           {activeSos.filter((s) => s.status === "pending").length > 0 && (
@@ -169,7 +151,7 @@ export default function PortalDashboard() {
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-3">
             {[
-              { label: "Bookings Today", value: stats.bookings, color: "bg-[#0056D2]", icon: (
+              { label: "Bookings Today", value: stats.bookings, color: "bg-[#0056b7]", icon: (
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="9 16 11 18 15 14"/></svg>
               )},
               { label: "Revenue Today", value: `₹${stats.revenue.toLocaleString()}`, color: "bg-emerald-600", icon: (
@@ -186,8 +168,8 @@ export default function PortalDashboard() {
                 <div className={`mb-3 flex h-9 w-9 items-center justify-center rounded-xl ${color}`}>
                   {icon}
                 </div>
-                <p className="text-2xl font-black text-slate-900">{value}</p>
-                <p className="mt-0.5 text-xs text-slate-500">{label}</p>
+                <p className="text-2xl font-black text-[#1a1c1f]">{value}</p>
+                <p className="mt-0.5 text-xs text-[#727687]">{label}</p>
               </div>
             ))}
           </div>
@@ -195,27 +177,27 @@ export default function PortalDashboard() {
           {/* Active SOS List */}
           {activeSos.length > 0 && (
             <div className="rounded-2xl bg-white shadow-sm overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
-                <p className="text-sm font-black text-slate-900">Active SOS</p>
-                <Link href="/portal/sos" className="text-xs font-semibold text-[#0056D2]">View all →</Link>
+              <div className="flex items-center justify-between px-4 py-3 border-b border-[#c2c6d8]/30">
+                <p className="text-sm font-black text-[#1a1c1f]">Active SOS</p>
+                <Link href="/portal/sos" className="text-xs font-semibold text-[#0056b7]">View all →</Link>
               </div>
               <div className="p-3 space-y-1">
                 {activeSos.slice(0, 3).map((req) => {
                   const dist = garage?.lat && garage?.lng
                     ? haversine(garage.lat, garage.lng, req.user_lat, req.user_lng).toFixed(1)
                     : null;
-                  const statusColor = { pending: "bg-red-100 text-red-600", accepted: "bg-blue-100 text-blue-600", arrived: "bg-green-100 text-green-600" }[req.status] ?? "bg-slate-100 text-slate-600";
+                  const statusColor = { pending: "bg-red-100 text-red-600", accepted: "bg-blue-100 text-blue-600", arrived: "bg-green-100 text-green-600" }[req.status] ?? "bg-[#f3f3f8] text-[#424656]";
                   return (
                     <Link key={req.id} href="/portal/sos">
-                      <div className="flex items-center gap-3 rounded-xl p-3 hover:bg-slate-50 active:bg-slate-100 transition-colors duration-150">
+                      <div className="flex items-center gap-3 rounded-xl p-3 hover:bg-[#f3f3f8] active:bg-[#ededf2] transition-colors duration-150">
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50">
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
                             <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
                           </svg>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-bold text-slate-900 truncate">{req.issue_type}</p>
-                          <p className="text-xs text-slate-500 truncate">{req.user_address || "Location shared"}{dist ? ` · ${dist} km` : ""}</p>
+                          <p className="text-sm font-bold text-[#1a1c1f] truncate">{req.issue_type}</p>
+                          <p className="text-xs text-[#727687] truncate">{req.user_address || "Location shared"}{dist ? ` · ${dist} km` : ""}</p>
                         </div>
                         <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold capitalize ${statusColor}`}>{req.status}</span>
                       </div>
@@ -228,8 +210,8 @@ export default function PortalDashboard() {
 
           {/* Quick Actions */}
           <div className="rounded-2xl bg-white shadow-sm overflow-hidden">
-            <div className="px-4 py-3 border-b border-slate-100">
-              <p className="text-sm font-black text-slate-900">Quick Actions</p>
+            <div className="px-4 py-3 border-b border-[#c2c6d8]/30">
+              <p className="text-sm font-black text-[#1a1c1f]">Quick Actions</p>
             </div>
             <div className="p-3 grid grid-cols-2 gap-3">
               {[

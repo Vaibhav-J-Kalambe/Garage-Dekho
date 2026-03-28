@@ -73,7 +73,7 @@ export default function DatePicker({ value, min, onChange }) {
   }
 
   return (
-    <div className="select-none rounded-2xl border border-slate-200 bg-white p-4">
+    <div className="select-none rounded-2xl border border-[#c2c6d8]/30 bg-white p-4">
 
       {/* Month navigation */}
       <div className="mb-3 flex items-center justify-between">
@@ -82,12 +82,12 @@ export default function DatePicker({ value, min, onChange }) {
           onClick={prevMonth}
           disabled={!canGoPrev}
           aria-label="Previous month"
-          className="flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-100 active:scale-95 disabled:opacity-30"
+          className="flex h-8 w-8 items-center justify-center rounded-xl text-[#727687] transition hover:bg-[#f3f3f8] active:scale-95 disabled:opacity-30"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
 
-        <span className="text-sm font-black text-slate-800">
+        <span className="text-sm font-black text-[#1a1c1f]">
           {MONTHS[viewMonth]} {viewYear}
         </span>
 
@@ -95,7 +95,7 @@ export default function DatePicker({ value, min, onChange }) {
           type="button"
           onClick={nextMonth}
           aria-label="Next month"
-          className="flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-100 active:scale-95"
+          className="flex h-8 w-8 items-center justify-center rounded-xl text-[#727687] transition hover:bg-[#f3f3f8] active:scale-95"
         >
           <ChevronRight className="h-4 w-4" />
         </button>
@@ -104,7 +104,7 @@ export default function DatePicker({ value, min, onChange }) {
       {/* Day-of-week headers */}
       <div className="mb-1 grid grid-cols-7">
         {DAYS.map((d) => (
-          <div key={d} className="py-1 text-center text-[10px] font-bold text-slate-400">
+          <div key={d} className="py-1 text-center text-[10px] font-bold text-[#727687]">
             {d}
           </div>
         ))}
@@ -130,10 +130,10 @@ export default function DatePicker({ value, min, onChange }) {
               disabled={disabled}
               className={[
                 "mx-auto flex h-9 w-9 items-center justify-center rounded-xl text-sm font-semibold transition active:scale-95",
-                selected  ? "bg-primary text-white shadow-sm"           : "",
-                !selected && todayDay ? "border border-primary text-primary"  : "",
-                !selected && !todayDay && !disabled ? "text-slate-700 hover:bg-slate-100" : "",
-                disabled  ? "cursor-not-allowed text-slate-200"         : "",
+                selected  ? "bg-[#0056b7] text-white shadow-sm"           : "",
+                !selected && todayDay ? "border border-[#0056b7] text-[#0056b7]"  : "",
+                !selected && !todayDay && !disabled ? "text-[#1a1c1f] hover:bg-[#f3f3f8]" : "",
+                disabled  ? "cursor-not-allowed text-[#c2c6d8]"         : "",
               ].filter(Boolean).join(" ")}
             >
               {day}

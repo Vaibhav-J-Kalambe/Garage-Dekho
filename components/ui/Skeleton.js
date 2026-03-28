@@ -3,7 +3,7 @@
 /* Base shimmer block */
 function Base({ className = "" }) {
   return (
-    <div className={`animate-shimmer rounded-lg bg-slate-100 ${className}`} />
+    <div className={`animate-shimmer rounded-lg bg-[#e8e8f0] ${className}`} />
   );
 }
 
@@ -76,7 +76,7 @@ function BookingCard() {
         </div>
         <Base className="h-6 w-20 rounded-full shrink-0" />
       </div>
-      <div className="border-t border-slate-100" />
+      <div className="border-t border-[#f3f3f8]" />
       <div className="flex gap-4">
         <Line className="w-28 h-3" />
         <Line className="w-16 h-3" />
@@ -92,12 +92,12 @@ function BookingCard() {
 /* Garage detail page skeleton — matches hero + identity + tabs + service cards */
 function GarageDetail() {
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-[#f9f9fe]">
       {/* Hero image */}
       <Base className="h-72 w-full rounded-none md:h-96" />
 
       {/* Content pulled up */}
-      <div className="relative -mt-5 rounded-t-3xl bg-[#F8FAFC]">
+      <div className="relative -mt-5 rounded-t-3xl bg-[#f9f9fe]">
         <div className="mx-auto max-w-5xl px-4 pb-28 pt-5 md:px-8">
           <div className="flex flex-col gap-5 md:flex-row md:gap-8">
 

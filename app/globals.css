@@ -11,11 +11,12 @@
 html,
 body {
   height: 100%;
+  overflow-x: hidden;
 }
 
 body {
-  background-color: #ffffff;
-  color: #0f172a;
+  background-color: #f9f9fe;
+  color: #1a1c1f;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
@@ -33,7 +34,7 @@ main {
   outline: none;
 }
 *:focus-visible {
-  outline: 2px solid #0056D2;
+  outline: 2px solid #0056b7;
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -92,7 +93,7 @@ button, a, [role="button"] {
 
   /* ── Gradient text ── */
   .gradient-text {
-    background: linear-gradient(135deg, #0056D2 0%, #0EA5E9 100%);
+    background: linear-gradient(135deg, #0056b7 0%, #0EA5E9 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -108,9 +109,9 @@ button, a, [role="button"] {
   .animate-shimmer {
     background: linear-gradient(
       90deg,
-      #f1f5f9 25%,
-      #e8edf5 50%,
-      #f1f5f9 75%
+      #f3f3f8 25%,
+      #e8e8f0 50%,
+      #f3f3f8 75%
     );
     background-size: 200% 100%;
     animation: shimmer 1.6s ease-in-out infinite;
@@ -239,7 +240,7 @@ button, a, [role="button"] {
   position: absolute;
   inset: -1.5px;
   border-radius: inherit;
-  background: linear-gradient(90deg, #0056D2, #3b82f6, #60a5fa, #0056D2);
+  background: linear-gradient(90deg, #0056b7, #3b82f6, #60a5fa, #0056b7);
   background-size: 300% 100%;
   animation: border-beam-move 4s linear infinite;
   z-index: -1;
