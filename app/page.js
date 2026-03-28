@@ -572,7 +572,7 @@ export default function HomePage() {
                     </div>
 
                     {/* Right: open badge + Book CTA + Save */}
-                    <div className="flex flex-col items-end justify-between shrink-0 gap-2 self-stretch">
+                    <div className="flex flex-col items-end shrink-0 gap-2">
                       <span
                         className="text-[10px] font-bold rounded-full px-2 py-0.5"
                         style={{
