@@ -307,7 +307,7 @@ export default function HomePage() {
       >
 
         {/* ── HERO SECTION ── */}
-        <section className="pt-8 pb-6">
+        <section className="pt-5 pb-4 md:pt-8 md:pb-6">
           <div className="md:grid md:grid-cols-2 md:gap-12 md:items-center">
 
             {/* Left column: greeting + H1 + trust badges */}
@@ -328,7 +328,7 @@ export default function HomePage() {
               </div>
 
               {/* H1 */}
-              <h1 className="text-[3rem] md:text-[3.75rem] font-black tracking-[-0.03em] text-[#1a1c1f] leading-[1.05] mb-6">
+              <h1 className="text-[2rem] md:text-[3.75rem] font-black tracking-[-0.03em] text-[#1a1c1f] leading-[1.05] mb-4 md:mb-6">
                 Find Your<br /><span style={{ background: "linear-gradient(90deg, #006de6 0%, #0056b7 50%, #1a3fa8 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Mechanic.</span>
               </h1>
 
@@ -397,7 +397,7 @@ export default function HomePage() {
         </section>
 
         {/* ── BOOKING CARD + SOS — side by side on desktop ── */}
-        <section className="mb-12">
+        <section className="mb-6 md:mb-12">
           <div className="md:grid md:grid-cols-2 md:gap-4 flex flex-col gap-4">
 
             {/* Book Again card (or empty state) */}
@@ -455,10 +455,10 @@ export default function HomePage() {
         </section>
 
         {/* ── HOW CAN WE HELP — service tiles ── */}
-        <section className="mb-12">
+        <section className="mb-6 md:mb-12">
           <div className="flex justify-between items-end mb-5">
             <div>
-              <h2 className="text-3xl font-bold tracking-[-0.02em] text-[#1a1c1f]">How can we help?</h2>
+              <h2 className="text-xl md:text-3xl font-bold tracking-[-0.02em] text-[#1a1c1f]">How can we help?</h2>
               <p className="text-sm text-[#727687] mt-1.5">Professional care for every need</p>
             </div>
             <Link href="/near-me" className="text-sm font-bold" style={{ color: "#0056b7" }}>
@@ -495,7 +495,7 @@ export default function HomePage() {
         <section className="mb-12" aria-labelledby="garages-heading">
           <div className="flex items-end justify-between mb-5">
             <div>
-              <h2 id="garages-heading" className="text-3xl font-bold tracking-[-0.02em] text-[#1a1c1f]">
+              <h2 id="garages-heading" className="text-xl md:text-3xl font-bold tracking-[-0.02em] text-[#1a1c1f]">
                 {isPersonalized ? "Recommended for You" : userCoords ? "Garages near you" : "Top Rated"}
               </h2>
               {userArea && (
@@ -606,7 +606,7 @@ export default function HomePage() {
 
 
         {/* ── FIRST SERVICE FREE PROMO ── */}
-        <section className="mb-12">
+        <section className="mb-6 md:mb-12">
           <div
             className="relative overflow-hidden rounded-3xl p-6"
             style={{ background: "linear-gradient(135deg, #0056b7 0%, #006de6 100%)" }}
@@ -639,7 +639,7 @@ export default function HomePage() {
         <section className="mb-4">
           <div className="bg-white rounded-3xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#727687] mb-2">For Garage Owners</p>
-            <h2 className="text-3xl font-bold tracking-[-0.02em] text-[#1a1c1f] mb-2">List Your Garage</h2>
+            <h2 className="text-xl md:text-3xl font-bold tracking-[-0.02em] text-[#1a1c1f] mb-2">List Your Garage</h2>
             <p className="text-sm text-[#727687] leading-relaxed mb-6">Zero listing fee. Reach thousands of customers. Get real-time SOS job requests.</p>
 
             <div className="grid grid-cols-3 gap-3 mb-6">
