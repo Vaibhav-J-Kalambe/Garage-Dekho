@@ -329,7 +329,7 @@ export default function HomePage() {
 
               {/* H1 */}
               <h1 className="text-[3rem] md:text-[3.75rem] font-black tracking-[-0.03em] text-[#1a1c1f] leading-[1.05] mb-6">
-                Find Your<br /><span style={{ color: "#0056b7" }}>Mechanic.</span>
+                Find Your<br /><span style={{ background: "linear-gradient(90deg, #006de6 0%, #0056b7 50%, #1a3fa8 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Mechanic.</span>
               </h1>
 
               {/* Trust badges */}
