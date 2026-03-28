@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Background: blue rounded square -->
+  <rect width="32" height="32" rx="8" fill="#0056b7"/>
+
+  <!-- Letter G -->
+  <text
+    x="7"
+    y="23"
+    font-family="Arial Black, Arial, sans-serif"
+    font-weight="900"
+    font-size="20"
+    fill="white"
+    letter-spacing="-1"
+  >G</text>
+
+  <!-- Small wrench in bottom-right -->
+  <g transform="translate(19, 17) rotate(45, 6, 6)" fill="white">
+    <rect x="5" y="0" width="2" height="9" rx="1"/>
+    <rect x="3" y="7" width="6" height="2" rx="1"/>
+  </g>
+</svg>
