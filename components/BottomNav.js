@@ -97,10 +97,10 @@ export default function BottomNav() {
     <nav
       aria-label="Main navigation"
       className="fixed bottom-0 left-0 right-0 z-[600] md:hidden"
-      style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))", paddingLeft: 16, paddingRight: 16 }}
+      style={{ paddingBottom: "max(8px, env(safe-area-inset-bottom))", paddingLeft: 12, paddingRight: 12 }}
     >
       {/* Floating pill nav bar */}
-      <div className="mx-auto flex max-w-md items-center justify-around rounded-[32px] bg-white/95 px-2 pt-2 pb-2 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-[#e8e8f0]">
+      <div className="mx-auto flex max-w-md items-center justify-around rounded-[32px] bg-white/95 px-2 pt-1 pb-1 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-[#e8e8f0]">
         {NAV_ITEMS.map(({ label, href, icon, iconFilled, isSOS, isHome }) => {
           const active = isHome ? pathname === "/" : pathname.startsWith(href);
 
@@ -111,9 +111,9 @@ export default function BottomNav() {
                 href={href}
                 aria-label="SOS Emergency"
                 aria-current={active ? "page" : undefined}
-                className="relative flex flex-col items-center justify-center gap-0.5 px-3 pb-2 active:scale-90 transition-transform duration-150"
+                className="relative flex flex-col items-center justify-center gap-0.5 px-3 py-1 active:scale-90 transition-transform duration-150"
               >
-                <div className={`relative flex h-[44px] w-[44px] items-center justify-center rounded-full transition-colors duration-150 ${
+                <div className={`relative flex h-[38px] w-[38px] items-center justify-center rounded-full transition-colors duration-150 ${
                   active ? "bg-[#ba1a1a] text-white" : "bg-[#ffdad6] text-[#ba1a1a]"
                 }`}>
                   {active ? iconFilled : icon}
@@ -134,9 +134,9 @@ export default function BottomNav() {
               href={href}
               aria-label={label}
               aria-current={active ? "page" : undefined}
-              className="flex flex-col items-center justify-center gap-0.5 px-3 pb-2 min-w-[48px] active:scale-90 transition-transform duration-150"
+              className="flex flex-col items-center justify-center gap-0.5 px-3 py-1 min-w-[44px] active:scale-90 transition-transform duration-150"
             >
-              <div className={`flex h-[44px] w-[44px] items-center justify-center rounded-2xl transition-colors duration-150 ${
+              <div className={`flex h-[38px] w-[38px] items-center justify-center rounded-2xl transition-colors duration-150 ${
                 active
                   ? "bg-[#d8e2ff]/60 text-[#0056b7]"
                   : "text-[#727687] hover:text-[#424656]"
