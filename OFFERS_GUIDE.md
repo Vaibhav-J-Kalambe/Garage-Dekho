@@ -19,20 +19,22 @@ Click **"Insert row"** and fill in these fields:
 
 | Field | What to enter | Example |
 |---|---|---|
-| `badge` | Small label shown on the card | `NEW USER`, `WEEKEND DEAL`, `LIMITED` |
+| `badge` | Small label on the card | `NEW USER`, `WEEKEND DEAL`, `LIMITED` |
 | `title` | Main heading of the offer | `Free First Inspection` |
-| `subtitle` | Short description line | `Get a free vehicle health check on your first booking.` |
-| `cta_label` | Button text | `Book Now`, `Refer Now`, `Learn More` |
+| `subtitle` | Short description | `Get a free vehicle health check on your first booking.` |
+| `discount` | Discount badge text | `FREE`, `20% OFF`, `₹100 OFF`, `₹199 FLAT` |
+| `code` | Coupon code users apply at checkout | `FIRST100`, `WEEKEND20` |
+| `valid_till` | Expiry date — format **YYYY-MM-DD** | `2026-06-30` |
+| `category` | Filter category on Offers page | `all`, `car`, `bike`, `ev`, `refer` |
+| `cta_label` | Button text | `Book Now`, `Refer Now`, `Claim Offer` |
 | `cta_href` | Button link | `/near-me`, `/profile`, `/offers` |
-| `gradient` | CSS gradient for background | `linear-gradient(135deg, #0056D2 0%, #003fa3 100%)` |
-| `active` | Show or hide the offer | `true` = visible, `false` = hidden |
+| `gradient` | CSS gradient for background color | `linear-gradient(135deg, #0056D2 0%, #003fa3 100%)` |
+| `active` | Show or hide | `true` = visible, `false` = hidden |
 | `sort_order` | Display order (lower = first) | `1`, `2`, `3` |
 
 ---
 
 ## Gradient Color Examples
-
-Copy any of these into the `gradient` field:
 
 | Color | Value |
 |---|---|
@@ -46,25 +48,32 @@ Copy any of these into the `gradient` field:
 
 ---
 
-## Step 3 — Save
+## Category Values (for the filter on /offers page)
 
-Click **Save**. The offer appears on the home page instantly — no deployment needed.
+| Value | Shows under filter |
+|---|---|
+| `all` | All + All filter |
+| `car` | Cars filter |
+| `bike` | Bikes filter |
+| `ev` | EV filter |
+| `refer` | Refer filter |
 
 ---
 
 ## How to Hide an Offer
 
-Set `active` = `false` → offer disappears from the site immediately.
+- Set `active` = `false` → hides immediately
+- Or set `valid_till` to a past date → auto-hides when expired
 
 ---
 
 ## How to Reorder Offers
 
-Change the `sort_order` number. Lower number = shown first.
+Change `sort_order`. Lower number = shown first.
 
 ---
 
 ## Where Offers Appear
 
-- **Home page** — as banner cards (only shows if at least 1 active offer exists)
-- **Offers page** (`/offers`) — full list with filters
+- **Home page** — banner cards (only shows when at least 1 active offer exists)
+- **Offers page** (`/offers`) — full cards with coupon code reveal, expiry date, and category filters

@@ -523,7 +523,7 @@ export default function HomePage() {
           <div className="flex items-end justify-between mb-3 md:mb-5">
             <div>
               <h2 id="garages-heading" className="text-xl md:text-3xl font-bold tracking-[-0.02em] text-[#1a1c1f]">
-                {isPersonalized ? "Recommended for you" : "Top rated garages near you"}
+                {"Top rated garages near you"}
               </h2>
               {userArea && (
                 <p className="text-sm text-[#727687] mt-1.5">In {userArea}</p>
@@ -632,46 +632,6 @@ export default function HomePage() {
         </section>
 
 
-        {/* ── OFFERS (dynamic from Supabase) ── */}
-        {offers.length > 0 && (
-          <section className="mb-6 md:mb-12">
-            <div className="flex flex-col gap-3">
-              {offers.map((offer) => {
-                const bg = Array.isArray(offer.gradient)
-                  ? `linear-gradient(135deg, ${offer.gradient[0]} 0%, ${offer.gradient[1]} 100%)`
-                  : (offer.gradient || "linear-gradient(135deg, #0056b7 0%, #006de6 100%)");
-                return (
-                  <div
-                    key={offer.id}
-                    className="relative overflow-hidden rounded-3xl p-6"
-                    style={{ background: bg }}
-                  >
-                    <div className="pointer-events-none absolute -right-6 -top-6 h-32 w-32 rounded-full" style={{ background: "rgba(255,255,255,0.08)" }} />
-                    <div className="pointer-events-none absolute -bottom-4 right-12 h-20 w-20 rounded-full" style={{ background: "rgba(255,255,255,0.06)" }} />
-                    <div className="relative z-10 flex items-center justify-between gap-4">
-                      <div className="flex-1 min-w-0">
-                        {offer.badge && (
-                          <span className="inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest mb-3" style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "#fff" }}>
-                            {offer.badge}
-                          </span>
-                        )}
-                        <h2 className="text-xl font-black text-white leading-tight mb-1">{offer.title}</h2>
-                        {offer.subtitle && <p className="text-sm text-white/70">{offer.subtitle}</p>}
-                      </div>
-                      <Link
-                        href={offer.ctaHref}
-                        className="shrink-0 flex items-center gap-1.5 rounded-2xl px-4 py-2.5 text-sm font-bold transition-[filter] duration-150 hover:brightness-110 active:scale-95"
-                        style={{ backgroundColor: "#ffffff", color: "#0056b7" }}
-                      >
-                        {offer.ctaLabel}
-                      </Link>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        )}
 
         {/* ── FOR GARAGE OWNERS ── */}
         <section className="mb-4">
