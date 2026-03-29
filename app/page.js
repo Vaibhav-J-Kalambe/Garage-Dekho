@@ -529,7 +529,7 @@ export default function HomePage() {
                 <p className="text-sm text-[#727687] mt-1.5">In {userArea}</p>
               )}
             </div>
-            <Link href="/near-me" className="text-sm font-bold" style={{ color: "#0056b7" }}>
+            <Link href="/near-me" className="hidden md:block text-sm font-bold" style={{ color: "#0056b7" }}>
               View all
             </Link>
           </div>
@@ -589,8 +589,8 @@ export default function HomePage() {
                       <div className="flex items-center gap-2 mt-1.5">
                         <div className="flex items-center gap-1">
                           <Star style={{ width: 11, height: 11, fill: "#F59E0B", color: "#F59E0B" }} aria-hidden="true" />
-                          <span className="text-xs font-bold text-[#1a1c1f]">{garage.rating}</span>
-                          <span className="text-xs text-[#424656]">({garage.reviews})</span>
+                          <span className="text-xs font-bold text-[#1a1c1f]">{garage.rating || "New"}</span>
+                          {garage.reviews > 0 && <span className="text-xs text-[#424656]">({garage.reviews})</span>}
                         </div>
                         {garage.distance && <span className="text-xs text-[#424656]">{garage.distance}</span>}
                         {garage.type && <span className="text-xs text-[#424656]">{garage.type}</span>}
@@ -629,13 +629,16 @@ export default function HomePage() {
               ))}
             </div>
           )}
+          <Link href="/near-me" className="md:hidden mt-3 flex items-center justify-center gap-2 rounded-2xl py-3 text-sm font-bold border border-[#0056b7]/30 text-[#0056b7] transition hover:bg-[#d8e2ff]/40 active:scale-[0.98]">
+            See all garages near you
+          </Link>
         </section>
 
 
 
         {/* ── FOR GARAGE OWNERS ── */}
         <section className="mb-4">
-          <div className="bg-white rounded-3xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10">
+          <div className="bg-[#eef3ff] rounded-3xl p-6 border border-[#d8e2ff]">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#727687] mb-2">For Garage Owners</p>
             <h2 className="text-xl md:text-3xl font-bold tracking-[-0.02em] text-[#1a1c1f] mb-2">List Your Garage</h2>
             <p className="text-sm text-[#727687] leading-relaxed mb-6">Zero listing fee. Reach thousands of customers. Get real-time SOS job requests.</p>

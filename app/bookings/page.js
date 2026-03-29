@@ -266,6 +266,8 @@ export default function BookingsPage() {
     getUserBookings(user.id).then(async (data) => {
       setBookings(data);
       setLoading(false);
+      const hasUpcoming = data.some((b) => b.status === "confirmed");
+      if (!hasUpcoming && data.length > 0) setTab("past");
       const completed = data.filter((b) => b.status === "completed");
       const checks = await Promise.all(
         completed.map((b) => hasReviewed(user.id, b.id).then((r) => r ? b.id : null))

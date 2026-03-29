@@ -307,7 +307,7 @@ export default function GarageDetailPage({ params }) {
                 <div className="flex flex-col items-center gap-0.5">
                   <div className="flex items-center gap-1">
                     <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                    <span className="text-base font-black text-[#1a1c1f]">{garage.rating}</span>
+                    <span className="text-base font-black text-[#1a1c1f]">{garage.rating || "New"}</span>
                   </div>
                   <p className="text-[10px] font-semibold text-[#424656]">Rating</p>
                 </div>
@@ -342,13 +342,18 @@ export default function GarageDetailPage({ params }) {
                   key={tab}
                   type="button"
                   onClick={() => setActiveTab(tab)}
-                  className={`flex-1 rounded-xl py-2.5 text-xs font-bold capitalize transition-[background-color,color] duration-150 ${
+                  className={`flex-1 rounded-xl py-2.5 text-xs font-bold capitalize transition-[background-color,color] duration-150 flex items-center justify-center gap-1 ${
                     activeTab === tab
                       ? "bg-[#0056b7] text-white shadow-sm"
                       : "text-[#424656] hover:text-[#1a1c1f]"
                   }`}
                 >
                   {tab}
+                  {tab === "reviews" && reviews.length > 0 && (
+                    <span className={`text-[10px] rounded-full px-1.5 py-0.5 font-black leading-none ${activeTab === tab ? "bg-white/20 text-white" : "bg-[#d8e2ff] text-[#0056b7]"}`}>
+                      {reviews.length}
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
