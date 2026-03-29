@@ -26,9 +26,10 @@ const FILTERS = [
 ];
 
 function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString("en-IN", {
-    day: "numeric", month: "short", year: "numeric",
-  });
+  if (!dateStr) return "No expiry";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "No expiry";
+  return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 }
 
 function OfferSkeleton() {

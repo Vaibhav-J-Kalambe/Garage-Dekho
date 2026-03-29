@@ -209,21 +209,7 @@ function AuthForm() {
               ))}
             </div>
 
-            {/* Alerts */}
-            <div aria-live="polite" aria-atomic="true" className="space-y-2">
-              {error && (
-                <p role="alert" className="flex items-center gap-2 rounded-2xl bg-[#ffdad6] border border-[#ba1a1a]/20 px-4 py-3 text-sm font-semibold text-[#ba1a1a]">
-                  <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />{error}
-                </p>
-              )}
-              {success && (
-                <p className="flex items-center gap-2 rounded-2xl bg-[#d8e2ff]/40 border border-[#0056b7]/20 px-4 py-3 text-sm font-semibold text-[#0056b7]">
-                  <ShieldCheck className="h-4 w-4 shrink-0" aria-hidden="true" />{success}
-                </p>
-              )}
-            </div>
-
-            {/* Google OAuth */}
+            {/* Google OAuth — shown first, most users prefer this */}
             <button
               type="button"
               onClick={handleGoogle}
@@ -243,8 +229,22 @@ function AuthForm() {
             {/* Divider */}
             <div className="flex items-center gap-3">
               <div className="h-px flex-1 bg-[#f3f3f8]" />
-              <span className="text-xs text-[#c2c6d8] font-medium">or</span>
+              <span className="text-xs text-[#c2c6d8] font-medium">or sign in with</span>
               <div className="h-px flex-1 bg-[#f3f3f8]" />
+            </div>
+
+            {/* Alerts */}
+            <div aria-live="polite" aria-atomic="true" className="space-y-2">
+              {error && (
+                <p role="alert" className="flex items-center gap-2 rounded-2xl bg-[#ffdad6] border border-[#ba1a1a]/20 px-4 py-3 text-sm font-semibold text-[#ba1a1a]">
+                  <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />{error}
+                </p>
+              )}
+              {success && (
+                <p className="flex items-center gap-2 rounded-2xl bg-[#d8e2ff]/40 border border-[#0056b7]/20 px-4 py-3 text-sm font-semibold text-[#0056b7]">
+                  <ShieldCheck className="h-4 w-4 shrink-0" aria-hidden="true" />{success}
+                </p>
+              )}
             </div>
 
             {/* Email / Phone method toggle */}
