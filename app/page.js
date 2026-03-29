@@ -52,6 +52,7 @@ import {
 import Image from "next/image";
 import Header from "../components/Header";
 import { getAllGarages, getOpenGarageCount } from "../lib/garages";
+import { getOffers } from "../lib/offers";
 import { getLastBooking } from "../lib/bookings";
 import { getSavedGarageIds, saveGarage, unsaveGarage } from "../lib/saved";
 import { useAuth } from "../components/AuthProvider";
@@ -167,6 +168,7 @@ export default function HomePage() {
   const [showLocationPopup, setShowLocationPopup] = useState(false);
   const [topGarages,         setTopGarages]         = useState([]);
   const [garagesLoading,     setGaragesLoading]     = useState(true);
+  const [offers,             setOffers]             = useState([]);
   const [search,             setSearch]             = useState("");
   const [lastBooking,        setLastBooking]        = useState(null);
   const [lastBookingLoading, setLastBookingLoading] = useState(true);
@@ -212,6 +214,7 @@ export default function HomePage() {
       .finally(() => setGaragesLoading(false));
 
     getOpenGarageCount().then(setOpenCount);
+    getOffers().then(setOffers);
 
     const alreadyHasArea = !!location?.area;
     const doGeoLookup = () => {
@@ -629,35 +632,49 @@ export default function HomePage() {
         </section>
 
 
-        {/* ── FIRST SERVICE FREE PROMO ── */}
-        <section className="mb-6 md:mb-12">
-          <div
-            className="relative overflow-hidden rounded-3xl p-6"
-            style={{ background: "linear-gradient(135deg, #0056b7 0%, #006de6 100%)" }}
-          >
-            <div className="pointer-events-none absolute -right-6 -top-6 h-32 w-32 rounded-full" style={{ background: "rgba(255,255,255,0.08)" }} />
-            <div className="pointer-events-none absolute -bottom-4 right-12 h-20 w-20 rounded-full" style={{ background: "rgba(255,255,255,0.06)" }} />
-            <div className="relative z-10 flex items-center justify-between gap-4">
-              <div className="flex-1 min-w-0">
-                <span className="inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest mb-3" style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "#fff" }}>
-                  Limited Offer
-                </span>
-                <h2 className="text-xl font-black text-white leading-tight mb-1">
-                  First Service<br />Inspection Free
-                </h2>
-                <p className="text-sm text-white/70">Book your first service and get a free vehicle health check.</p>
-              </div>
-              <Link
-                href="/near-me"
-                className="shrink-0 flex items-center gap-1.5 rounded-2xl px-5 py-3 text-sm font-bold transition-[filter] duration-150 hover:brightness-110 active:scale-95"
-                style={{ backgroundColor: "#ffffff", color: "#0056b7" }}
-              >
-                Book Now
-                <ArrowRightIcon size={14} />
-              </Link>
+        {/* ── OFFERS (dynamic from Supabase) ── */}
+        {offers.length > 0 && (
+          <section className="mb-6 md:mb-12">
+            <div className="flex flex-col gap-3">
+              {offers.map((offer) => {
+                const bg = Array.isArray(offer.gradient)
+                  ? `linear-gradient(135deg, ${offer.gradient[0]} 0%, ${offer.gradient[1]} 100%)`
+                  : (offer.gradient || "linear-gradient(135deg, #0056b7 0%, #006de6 100%)");
+                return (
+                  <div
+                    key={offer.id}
+                    className="relative overflow-hidden rounded-3xl p-6"
+                    style={{ background: bg }}
+                  >
+                    <div className="pointer-events-none absolute -right-6 -top-6 h-32 w-32 rounded-full" style={{ background: "rgba(255,255,255,0.08)" }} />
+                    <div className="pointer-events-none absolute -bottom-4 right-12 h-20 w-20 rounded-full" style={{ background: "rgba(255,255,255,0.06)" }} />
+                    <div className="relative z-10 flex items-center justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        {offer.tag && (
+                          <span className="inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest mb-3" style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "#fff" }}>
+                            {offer.tag}
+                          </span>
+                        )}
+                        <h2 className="text-xl font-black text-white leading-tight mb-1">{offer.title}</h2>
+                        {offer.description && <p className="text-sm text-white/70">{offer.description}</p>}
+                        {offer.code && (
+                          <p className="mt-2 text-xs font-bold text-white/60">
+                            Code: <span className="text-white">{offer.code}</span>
+                          </p>
+                        )}
+                      </div>
+                      {offer.discount && (
+                        <div className="shrink-0 flex flex-col items-center justify-center rounded-2xl px-4 py-3 text-center" style={{ backgroundColor: "rgba(255,255,255,0.15)" }}>
+                          <span className="text-lg font-black text-white leading-none">{offer.discount}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* ── FOR GARAGE OWNERS ── */}
         <section className="mb-4">
