@@ -7,6 +7,30 @@ import Link from "next/link";
 // Static icons — not in lucide-animated
 import { Bike, Car, BadgeCheck, AlertTriangle, Tag, Star } from "lucide-react";
 
+function TowTruckIcon({ style, size, className }) {
+  const s = size || (style?.width ?? 24);
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+      {/* crane arm */}
+      <line x1="4" y1="10" x2="14" y2="4" />
+      {/* hook drop */}
+      <line x1="14" y1="4" x2="14" y2="9" />
+      {/* hook */}
+      <path d="M13 9 q-1.5 0 -1.5 1.5 t1.5 1.5" />
+      {/* truck cab */}
+      <rect x="1" y="10" width="7" height="7" rx="1" />
+      {/* truck bed */}
+      <rect x="8" y="12" width="13" height="5" rx="1" />
+      {/* cab window */}
+      <rect x="2" y="11.5" width="3" height="2.5" rx="0.5" />
+      {/* wheels */}
+      <circle cx="4" cy="18.5" r="1.5" />
+      <circle cx="12" cy="18.5" r="1.5" />
+      <circle cx="19" cy="18.5" r="1.5" />
+    </svg>
+  );
+}
+
 // Animated icons — micro-animations on hover / click / ref trigger
 import {
   SearchIcon,
@@ -14,7 +38,6 @@ import {
   DropletIcon,
   GaugeIcon,
   ZapIcon,
-  TruckIcon,
   WindIcon,
   RotateCcwIcon,
   HeartIcon,
@@ -57,7 +80,7 @@ const SERVICES = [
   { label: "Oil Change",      icon: DropletIcon, href: "/near-me?q=oil+change",   animated: true,  gradient: "linear-gradient(135deg,#06b6d4,#0891b2)" },
   { label: "Tyre Repair",     icon: GaugeIcon,   href: "/near-me?q=tyre",         animated: true,  gradient: "linear-gradient(135deg,#4b5563,#1f2937)" },
   { label: "Battery Jump",    icon: ZapIcon,     href: "/near-me?q=battery",      animated: true,  gradient: "linear-gradient(135deg,#f97316,#ea580c)" },
-  { label: "Towing",          icon: TruckIcon,   href: "/near-me?q=towing",       animated: true,  gradient: "linear-gradient(135deg,#ef4444,#dc2626)" },
+  { label: "Towing",          icon: TowTruckIcon, href: "/near-me?q=towing",       animated: false, gradient: "linear-gradient(135deg,#ef4444,#dc2626)" },
   { label: "AC Repair",       icon: WindIcon,    href: "/near-me?q=ac+repair",    animated: true,  gradient: "linear-gradient(135deg,#10b981,#059669)" },
   { label: "General Repair",  icon: WrenchIcon,  href: "/near-me?q=general",      animated: true,  gradient: "linear-gradient(135deg,#6366f1,#4338ca)" },
 ];
