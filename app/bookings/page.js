@@ -308,22 +308,22 @@ export default function BookingsPage() {
       <main
         style={{ paddingTop: 64 }}
         aria-label="My bookings"
-        className="mx-auto max-w-screen-xl px-4 md:px-6 pb-52 md:pb-8 pt-8"
+        className="mx-auto max-w-screen-xl px-4 md:px-6 pb-28 md:pb-8 pt-4 md:pt-8"
       >
 
         {/* ── EDITORIAL HEADER ── */}
-        <section className="mb-8">
-          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656] mb-2">Dashboard</p>
-          <h1 className="text-[3rem] md:text-[3.5rem] font-bold tracking-tight text-[#1a1c1f] leading-[1.1] mb-2">
+        <section className="mb-4 md:mb-8">
+          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656] mb-1">Dashboard</p>
+          <h1 className="text-[2rem] md:text-[3.5rem] font-bold tracking-tight text-[#1a1c1f] leading-[1.1] mb-1">
             My Bookings
           </h1>
-          <p className="text-base text-[#424656] max-w-md">
-            Track your active services and review your vehicle's maintenance history.
+          <p className="text-sm md:text-base text-[#424656] max-w-md">
+            Track your active services and review your vehicle&apos;s maintenance history.
           </p>
 
           {/* Stat chips */}
           {!loading && (
-            <div className="mt-5 flex flex-wrap gap-2">
+            <div className="mt-3 flex flex-wrap gap-2">
               {[
                 { label: "Total",     value: mapped.length },
                 { label: "Upcoming",  value: upcoming.length },
@@ -331,7 +331,7 @@ export default function BookingsPage() {
               ].map(({ label, value }) => (
                 <div
                   key={label}
-                  className="flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold text-[#424656]"
+                  className="flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold text-[#424656]"
                   style={{ backgroundColor: "#f3f3f8" }}
                 >
                   <span>{label}</span>
@@ -346,7 +346,7 @@ export default function BookingsPage() {
         <div
           role="tablist"
           aria-label="Booking history"
-          className="flex p-1.5 rounded-xl mb-8 w-fit"
+          className="flex p-1.5 rounded-xl mb-4 md:mb-8 w-fit"
           style={{ backgroundColor: "#f3f3f8" }}
         >
           {[
@@ -508,7 +508,7 @@ export default function BookingsPage() {
 
       {/* ── Sticky bottom CTA (mobile, upcoming tab, no bookings) ── */}
       {!loading && tab === "upcoming" && upcoming.length === 0 && (
-        <div className="fixed inset-x-0 z-[590] md:hidden px-16" style={{ bottom: "max(155px, calc(env(safe-area-inset-bottom) + 155px))" }}>
+        <div className="fixed inset-x-0 z-[590] md:hidden px-6" style={{ bottom: "max(72px, calc(env(safe-area-inset-bottom) + 72px))" }}>
           <Link
             href="/near-me"
             className="flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white active:scale-[0.98] transition-[filter] duration-150 hover:brightness-110 shadow-[0_4px_16px_rgba(0,86,183,0.3)]"
