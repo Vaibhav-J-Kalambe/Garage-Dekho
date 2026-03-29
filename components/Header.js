@@ -46,7 +46,8 @@ export default function Header() {
           {/* ── Left: brand name only ── */}
           <Link
             href="/"
-            className="text-[1.1rem] font-black tracking-tight text-[#0056b7] select-none"
+            className="text-[1.4rem] font-black tracking-tight select-none"
+            style={{ background: "linear-gradient(90deg, #006de6 0%, #0056b7 50%, #1a3fa8 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
           >
             GarageDekho
           </Link>

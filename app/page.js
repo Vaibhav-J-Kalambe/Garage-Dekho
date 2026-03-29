@@ -643,7 +643,7 @@ export default function HomePage() {
             <div className="grid grid-cols-3 gap-3 mb-6">
               {[
                 { value: "₹0", label: "Listing Fee" },
-                { value: "10k+", label: "Customers" },
+                { value: "Free", label: "Always" },
                 { value: "24/7", label: "SOS Jobs" },
               ].map(({ value, label }) => (
                 <div key={label} className="rounded-2xl p-3 text-center" style={{ backgroundColor: "#f3f3f8" }}>
