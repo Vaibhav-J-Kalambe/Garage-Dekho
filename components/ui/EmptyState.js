@@ -87,7 +87,7 @@ const PRESETS = {
     illo: IlloBookings,
     title: "No bookings yet",
     description: "Your upcoming service appointments will appear here.",
-    cta: { label: "Find a Garage", href: "/" },
+    cta: { label: "Find a Garage", href: "/near-me" },
   },
   "bookings-past": {
     illo: IlloBookings,

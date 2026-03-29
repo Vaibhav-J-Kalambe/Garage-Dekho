@@ -506,19 +506,6 @@ export default function BookingsPage() {
 
       </main>
 
-      {/* ── Sticky bottom CTA (mobile, upcoming tab, no bookings) ── */}
-      {!loading && tab === "upcoming" && upcoming.length === 0 && (
-        <div className="fixed inset-x-0 z-[590] md:hidden px-6" style={{ bottom: "max(72px, calc(env(safe-area-inset-bottom) + 72px))" }}>
-          <Link
-            href="/near-me"
-            className="flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white active:scale-[0.98] transition-[filter] duration-150 hover:brightness-110 shadow-[0_4px_16px_rgba(0,86,183,0.3)]"
-            style={{ backgroundColor: "#0056b7" }}
-          >
-            <CalendarCheck className="h-4 w-4" aria-hidden="true" />
-            Book a Service
-          </Link>
-        </div>
-      )}
 
       {cancelTarget && (
         <CancelConfirmModal
