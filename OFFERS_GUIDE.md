@@ -19,16 +19,12 @@ Click **"Insert row"** and fill in these fields:
 
 | Field | What to enter | Example |
 |---|---|---|
-| `tag` | Badge label shown on the card | `NEW USER`, `WEEKEND DEAL`, `LIMITED` |
+| `badge` | Small label shown on the card | `NEW USER`, `WEEKEND DEAL`, `LIMITED` |
 | `title` | Main heading of the offer | `Free First Inspection` |
-| `description` | Short description line | `Get a free vehicle health check on your first booking.` |
-| `discount` | Discount badge text | `FREE`, `20% OFF`, `₹100 OFF` |
-| `code` | Promo code users apply | `FIRST100` |
-| `valid_till` | Expiry date (YYYY-MM-DD) | `2026-06-30` |
-| `category` | Which users see it | `all`, `car`, `bike`, `ev`, `refer` |
-| `gradient` | Background colors (array) | `["#0056D2", "#003fa3"]` |
-| `min_order` | Minimum order requirement | `₹499` or leave blank |
-| `usage_limit` | Usage rule text | `One-time per user` or blank |
+| `subtitle` | Short description line | `Get a free vehicle health check on your first booking.` |
+| `cta_label` | Button text | `Book Now`, `Refer Now`, `Learn More` |
+| `cta_href` | Button link | `/near-me`, `/profile`, `/offers` |
+| `gradient` | CSS gradient for background | `linear-gradient(135deg, #0056D2 0%, #003fa3 100%)` |
 | `active` | Show or hide the offer | `true` = visible, `false` = hidden |
 | `sort_order` | Display order (lower = first) | `1`, `2`, `3` |
 
@@ -40,37 +36,35 @@ Copy any of these into the `gradient` field:
 
 | Color | Value |
 |---|---|
-| Blue (default) | `["#0056D2", "#003fa3"]` |
-| Orange | `["#FF6B00", "#e05a00"]` |
-| Green | `["#16a34a", "#15803d"]` |
-| Teal | `["#0891b2", "#0e7490"]` |
-| Purple | `["#7c3aed", "#6d28d9"]` |
-| Red | `["#ef4444", "#dc2626"]` |
-| Dark gray | `["#4b5563", "#1f2937"]` |
+| Blue (default) | `linear-gradient(135deg, #0056D2 0%, #003fa3 100%)` |
+| Orange | `linear-gradient(135deg, #FF6B00 0%, #e05a00 100%)` |
+| Green | `linear-gradient(135deg, #16a34a 0%, #15803d 100%)` |
+| Teal | `linear-gradient(135deg, #0891b2 0%, #0e7490 100%)` |
+| Purple | `linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)` |
+| Red | `linear-gradient(135deg, #ef4444 0%, #dc2626 100%)` |
+| Dark gray | `linear-gradient(135deg, #4b5563 0%, #1f2937 100%)` |
 
 ---
 
 ## Step 3 — Save
 
-Click **Save** (or **Confirm**). The offer appears on the home page instantly — no deployment needed.
+Click **Save**. The offer appears on the home page instantly — no deployment needed.
 
 ---
 
 ## How to Hide an Offer
 
-- Set `active` = `false` → offer disappears from the site immediately
-- Or set `valid_till` to a past date → auto-hides when expired
+Set `active` = `false` → offer disappears from the site immediately.
 
 ---
 
 ## How to Reorder Offers
 
 Change the `sort_order` number. Lower number = shown first.
-Example: offer with `sort_order = 1` appears above offer with `sort_order = 2`.
 
 ---
 
 ## Where Offers Appear
 
 - **Home page** — as banner cards (only shows if at least 1 active offer exists)
-- **Offers page** (`/offers`) — full list with copy-code button and filters
+- **Offers page** (`/offers`) — full list with filters

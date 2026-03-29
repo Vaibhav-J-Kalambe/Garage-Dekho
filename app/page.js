@@ -650,24 +650,21 @@ export default function HomePage() {
                     <div className="pointer-events-none absolute -bottom-4 right-12 h-20 w-20 rounded-full" style={{ background: "rgba(255,255,255,0.06)" }} />
                     <div className="relative z-10 flex items-center justify-between gap-4">
                       <div className="flex-1 min-w-0">
-                        {offer.tag && (
+                        {offer.badge && (
                           <span className="inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest mb-3" style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "#fff" }}>
-                            {offer.tag}
+                            {offer.badge}
                           </span>
                         )}
                         <h2 className="text-xl font-black text-white leading-tight mb-1">{offer.title}</h2>
-                        {offer.description && <p className="text-sm text-white/70">{offer.description}</p>}
-                        {offer.code && (
-                          <p className="mt-2 text-xs font-bold text-white/60">
-                            Code: <span className="text-white">{offer.code}</span>
-                          </p>
-                        )}
+                        {offer.subtitle && <p className="text-sm text-white/70">{offer.subtitle}</p>}
                       </div>
-                      {offer.discount && (
-                        <div className="shrink-0 flex flex-col items-center justify-center rounded-2xl px-4 py-3 text-center" style={{ backgroundColor: "rgba(255,255,255,0.15)" }}>
-                          <span className="text-lg font-black text-white leading-none">{offer.discount}</span>
-                        </div>
-                      )}
+                      <Link
+                        href={offer.ctaHref}
+                        className="shrink-0 flex items-center gap-1.5 rounded-2xl px-4 py-2.5 text-sm font-bold transition-[filter] duration-150 hover:brightness-110 active:scale-95"
+                        style={{ backgroundColor: "#ffffff", color: "#0056b7" }}
+                      >
+                        {offer.ctaLabel}
+                      </Link>
                     </div>
                   </div>
                 );
