@@ -10,7 +10,7 @@ export default function PendingPage() {
   const router    = useRouter();
   const pollRef   = useRef(null);
 
-  // Poll every 30 seconds — when approved, redirect to dashboard
+  // Poll every 30 seconds - when approved, redirect to dashboard
   useEffect(() => {
     pollRef.current = setInterval(async () => {
       await refreshGarage();
@@ -46,7 +46,7 @@ export default function PendingPage() {
 
           <h1 className="text-2xl font-black text-[#1a1c1f] mb-2">Inspection in Progress</h1>
           <p className="text-sm text-[#727687] leading-relaxed mb-6">
-            Our team is reviewing your garage details. Your garage will be listed on GarageDekho within <span className="font-bold text-[#1a1c1f]">1–2 hours</span>.
+            Our team is reviewing your garage details. Your garage will be listed on GarageDekho within <span className="font-bold text-[#1a1c1f]">1-2 hours</span>.
           </p>
 
           {/* Steps */}

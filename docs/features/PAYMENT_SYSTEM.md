@@ -1,4 +1,4 @@
-# GarageDekho — Payment & Payout System Guide
+# GarageDekho - Payment & Payout System Guide
 
 ## Overview
 
@@ -56,19 +56,19 @@ Commission % can be changed in `.env.local` → `COMMISSION_PCT=15`
 
 ## How a Payment Works (Technical)
 
-### Step 1 — Customer clicks "Book & Pay"
+### Step 1 - Customer clicks "Book & Pay"
 - `BookingModal.js` calls `/api/payment/create-order`
 - Order is created in Razorpay
 - A `pending` record is saved in the `payments` table with commission split
 
-### Step 2 — Customer completes payment
+### Step 2 - Customer completes payment
 - Razorpay Checkout opens (card / UPI / netbanking)
 - On success, `BookingModal.js` calls `/api/payment/verify`
 - Signature is verified (security check)
 - Payment status updated to `captured` in `payments` table
 - Booking is confirmed in `bookings` table
 
-### Step 3 — Admin pays garage (Manual)
+### Step 3 - Admin pays garage (Manual)
 - Admin visits `/admin/payouts`
 - Sees list of all captured payments with garage name + amount to pay
 - Sends money to garage via UPI manually
@@ -97,7 +97,7 @@ Commission % can be changed in `.env.local` → `COMMISSION_PCT=15`
 
 ---
 
-## Admin Panel — /admin/payouts
+## Admin Panel - /admin/payouts
 
 **Password:** Same as admin panel (`NEXT_PUBLIC_ADMIN_PASSWORD` in .env.local)
 
@@ -136,7 +136,7 @@ COMMISSION_PCT=15                   # Your commission percentage
 
 ---
 
-## Future Upgrade — Razorpay Route (When eligible)
+## Future Upgrade - Razorpay Route (When eligible)
 
 Once GarageDekho reaches ₹40L+ annual turnover, apply for **Razorpay Route**:
 - Split payments become automatic

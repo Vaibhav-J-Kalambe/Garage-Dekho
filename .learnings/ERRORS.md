@@ -1,4 +1,4 @@
-# Errors — GarageDekho
+# Errors - GarageDekho
 
 ## Error: useSearchParams Suspense boundary missing
 **Date:** 2026-03-22
@@ -24,4 +24,4 @@ Export encountered an error on /portal/register/page: /portal/register, exiting 
 ```
 **Root cause:** Next.js 14+ separates `themeColor` and `viewport` into a dedicated `export const viewport = {}` export.
 **Fix:** Move `themeColor` and `width/initialScale` from `metadata` export to `export const viewport = { themeColor: "...", width: "device-width", initialScale: 1 }`.
-**Status:** Fixed in root layout. Residual warnings are from individual page files that still export them in metadata — these are warnings only and do not block the build.
+**Status:** Fixed in root layout. Residual warnings are from individual page files that still export them in metadata - these are warnings only and do not block the build.

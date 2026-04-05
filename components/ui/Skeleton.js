@@ -35,7 +35,7 @@ function CardBlock({ className = "" }) {
   );
 }
 
-/* Garage card skeleton — matches the horizontal garage card layout */
+/* Garage card skeleton - matches the horizontal garage card layout */
 function GarageCard() {
   return (
     <div className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-card">
@@ -53,7 +53,7 @@ function GarageCard() {
   );
 }
 
-/* Page-level loading — list of garage cards */
+/* Page-level loading - list of garage cards */
 function GarageList({ count = 3 }) {
   return (
     <div className="flex flex-col gap-3 md:grid md:grid-cols-2 md:gap-4">
@@ -89,7 +89,7 @@ function BookingCard() {
   );
 }
 
-/* Garage detail page skeleton — matches hero + identity + tabs + service cards */
+/* Garage detail page skeleton - matches hero + identity + tabs + service cards */
 function GarageDetail() {
   return (
     <div className="min-h-screen bg-[#f9f9fe]">
@@ -144,7 +144,7 @@ function GarageDetail() {
               ))}
             </div>
 
-            {/* Right column — desktop only */}
+            {/* Right column - desktop only */}
             <div className="hidden md:block md:w-80 md:shrink-0">
               <div className="rounded-2xl bg-white p-5 shadow-card space-y-3">
                 <Line className="w-1/2 h-5" />

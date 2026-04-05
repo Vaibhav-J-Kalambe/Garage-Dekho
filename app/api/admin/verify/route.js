@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import crypto from "crypto";
 
 /* Simple in-memory rate limiter: max 5 attempts per IP per 15 minutes */
 const attempts = new Map();
@@ -34,7 +35,15 @@ export async function POST(request) {
       return NextResponse.json({ ok: false, error: "Admin password not configured on server." }, { status: 500 });
     }
 
-    if (password === correct) {
+    // Timing-safe comparison
+    const pwBuf      = Buffer.alloc(64);
+    const correctBuf = Buffer.alloc(64);
+    pwBuf.write(String(password || "").slice(0, 64));
+    correctBuf.write(correct.slice(0, 64));
+    const match = crypto.timingSafeEqual(pwBuf, correctBuf) &&
+                  String(password).length === correct.length;
+
+    if (match) {
       record.count = 0;
       attempts.set(ip, record);
       return NextResponse.json({ ok: true });

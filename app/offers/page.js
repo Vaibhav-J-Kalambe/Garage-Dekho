@@ -253,7 +253,7 @@ export default function OffersPage() {
 
       <main aria-label="Offers and deals" className="mx-auto flex max-w-5xl flex-col gap-6 px-4 md:px-8 pb-28 md:pb-10 pt-6 md:pt-8">
 
-        {/* Filter chips — horizontal scroll on mobile */}
+        {/* Filter chips - horizontal scroll on mobile */}
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none -mx-1 px-1">
           {FILTERS.map(({ label, value, icon: Icon }) => (
             <button

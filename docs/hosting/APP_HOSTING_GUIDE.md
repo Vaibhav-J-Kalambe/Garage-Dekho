@@ -1,9 +1,9 @@
-# GarageDekho — App Publishing Guide
+# GarageDekho - App Publishing Guide
 
 Guide to publishing GarageDekho as a mobile app on Google Play Store and Apple App Store using Capacitor.
 
 > Since you are self-hosting on a **GoDaddy VPS**, the app and website can run **independently**.
-> The app is built with **Capacitor** — the UI is bundled inside the app itself (not loaded from your website).
+> The app is built with **Capacitor** - the UI is bundled inside the app itself (not loaded from your website).
 > Only database calls (Supabase) and payments (Razorpay) need the internet.
 > If your website goes down, the app keeps working. ✓
 
@@ -56,14 +56,14 @@ Before packaging for any store, verify your PWA is properly configured.
 The `app/manifest.js` file generates `/manifest.json`. Verify it includes:
 
 ```js
-// app/manifest.js — verify these fields are correct
+// app/manifest.js - verify these fields are correct
 export default function manifest() {
   return {
     name: "GarageDekho",
     short_name: "GarageDekho",
     description: "Find verified garages, book services, and get 24/7 roadside help",
     start_url: "/",
-    display: "standalone",          // hides browser UI — required for app-like feel
+    display: "standalone",          // hides browser UI - required for app-like feel
     background_color: "#ffffff",
     theme_color: "#0056b7",
     orientation: "portrait",
@@ -78,8 +78,8 @@ export default function manifest() {
 ### Verify icons exist
 
 ```
-public/icons/icon-192.png   — must be exactly 192×192px, PNG
-public/icons/icon-512.png   — must be exactly 512×512px, PNG
+public/icons/icon-192.png   - must be exactly 192×192px, PNG
+public/icons/icon-512.png   - must be exactly 512×512px, PNG
 ```
 
 > If icons are missing or wrong size, generate them free at [realfavicongenerator.net](https://realfavicongenerator.net)
@@ -98,13 +98,13 @@ All pages must be served over HTTPS. Vercel does this automatically with a custo
 
 ## 3. Google Play Store (Android)
 
-### Method: PWABuilder (Easiest — free, no coding)
+### Method: PWABuilder (Easiest - free, no coding)
 
 **Step 1: Go to PWABuilder**
 
 1. Visit [pwabuilder.com](https://www.pwabuilder.com)
 2. Enter your live website URL: `https://www.garagedekho.com`
-3. Click **Start** — it will analyze your PWA score
+3. Click **Start** - it will analyze your PWA score
 4. Fix any issues it flags, then click **Next**
 
 **Step 2: Generate Android package**
@@ -118,14 +118,14 @@ All pages must be served over HTTPS. Vercel does this automatically with a custo
    - **Display mode:** `Standalone`
    - **Status bar color:** `#0056b7`
    - **Nav bar color:** `#ffffff`
-   - **Signing key:** Generate a new one (save the keystore file — you'll need it for every future update)
-3. Click **Generate** — downloads a `.zip` file
+   - **Signing key:** Generate a new one (save the keystore file - you'll need it for every future update)
+3. Click **Generate** - downloads a `.zip` file
 
 **Step 3: What's in the zip**
 
-- `app-release-signed.aab` — upload this to Play Store
-- `signing.keystore` — **keep this file safe** — losing it means you cannot update the app
-- `assetlinks.json` — host this file on your website (see next step)
+- `app-release-signed.aab` - upload this to Play Store
+- `signing.keystore` - **keep this file safe** - losing it means you cannot update the app
+- `assetlinks.json` - host this file on your website (see next step)
 
 **Step 4: Host assetlinks.json**
 
@@ -151,7 +151,7 @@ Paste the content from the generated file. It looks like:
 }]
 ```
 
-4. Deploy to Vercel — verify it's accessible at the `.well-known` path.
+4. Deploy to Vercel - verify it's accessible at the `.well-known` path.
 
 **Step 5: Create Google Play Developer Account**
 
@@ -175,7 +175,7 @@ Required before submission:
 |-------|-------|
 | Short description | Find garages, book auto services & get 24/7 roadside SOS |
 | Full description | (Write 200–500 words about the app features) |
-| App icon | 512×512px PNG (no rounded corners — Play Store adds them) |
+| App icon | 512×512px PNG (no rounded corners - Play Store adds them) |
 | Feature graphic | 1024×500px JPG or PNG (banner shown in store) |
 | Screenshots | At least 2 phone screenshots (min 320px, max 3840px) |
 | Category | Auto & Vehicles |
@@ -191,9 +191,9 @@ Required before submission:
 **Step 9: Complete compliance forms**
 
 Play Console will ask you to fill out:
-- **Privacy policy URL** — add a privacy policy page to your site or use termsfeed.com to generate one free
-- **Data safety form** — declare what data your app collects (email, location, payment info)
-- **App content rating** — fill the questionnaire (GarageDekho is rated Everyone)
+- **Privacy policy URL** - add a privacy policy page to your site or use termsfeed.com to generate one free
+- **Data safety form** - declare what data your app collects (email, location, payment info)
+- **App content rating** - fill the questionnaire (GarageDekho is rated Everyone)
 
 **Timeline:** Review takes 1–7 days for new apps.
 
@@ -206,7 +206,7 @@ Play Console will ask you to fill out:
 **Step 1: Apple Developer Account**
 
 1. Go to [developer.apple.com](https://developer.apple.com)
-2. Enroll in the **Apple Developer Program** — costs **$99/year**
+2. Enroll in the **Apple Developer Program** - costs **$99/year**
 3. Complete identity verification (takes 1–2 days)
 
 **Step 2: Generate iOS package with PWABuilder**
@@ -218,7 +218,7 @@ Play Console will ask you to fill out:
    - **App name:** `GarageDekho`
    - **URL:** `https://www.garagedekho.com`
    - **Image URL:** Your 512×512 icon URL
-4. Download the `.zip` — it contains an Xcode project
+4. Download the `.zip` - it contains an Xcode project
 
 **Step 3: Build with Xcode (requires a Mac)**
 
@@ -231,7 +231,7 @@ Play Console will ask you to fill out:
 7. **Product → Archive** to create a release build
 8. **Distribute App → App Store Connect → Upload**
 
-> If you don't have a Mac, use a cloud Mac service: [MacStadium](https://www.macstadium.com) or [MacInCloud](https://www.macincloud.com) — pay per hour.
+> If you don't have a Mac, use a cloud Mac service: [MacStadium](https://www.macstadium.com) or [MacInCloud](https://www.macincloud.com) - pay per hour.
 
 **Step 4: App Store Connect**
 
@@ -253,7 +253,7 @@ Play Console will ask you to fill out:
 | Description | Up to 4000 characters |
 | Keywords | Comma-separated (garage, car repair, mechanic, SOS, auto service) |
 | Support URL | Your website or a support page |
-| Privacy policy URL | Required — must exist before submission |
+| Privacy policy URL | Required - must exist before submission |
 | Category | **Navigation** or **Lifestyle** |
 | Age rating | 4+ |
 | Price | Free |
@@ -262,7 +262,7 @@ Play Console will ask you to fill out:
 
 App Store Connect → your app → **Submit for Review**
 
-**Timeline:** Apple reviews take 1–3 days. First submission often comes back with feedback — common requests are privacy policy, screenshots, and app description clarity.
+**Timeline:** Apple reviews take 1–3 days. First submission often comes back with feedback - common requests are privacy policy, screenshots, and app description clarity.
 
 ---
 
@@ -302,7 +302,7 @@ Complete before submitting to either store:
 
 ### Website update (most common)
 
-Since the app is a TWA/PWA wrapper around your website, any change you deploy to Vercel is **automatically live** in the app — no new store submission needed.
+Since the app is a TWA/PWA wrapper around your website, any change you deploy to Vercel is **automatically live** in the app - no new store submission needed.
 
 This covers:
 - UI changes
@@ -336,13 +336,13 @@ In PWABuilder, increment the version number:
 | "App does not meet core app quality" | Ensure app works fully offline or shows a clear offline message |
 | "Policy violation: deceptive behavior" | Remove any placeholder "500+ garages live" if not yet true |
 | "assetlinks.json not found" | Host the file at `/.well-known/assetlinks.json` and redeploy |
-| "Target API level requirement" | PWABuilder generates correct `targetSdkVersion` — ensure you're using latest PWABuilder |
+| "Target API level requirement" | PWABuilder generates correct `targetSdkVersion` - ensure you're using latest PWABuilder |
 
 ### Apple App Store
 
 | Rejection reason | Fix |
 |-----------------|-----|
-| "Guideline 4.0 - Design" | App must function as more than a website wrapper — ensure core features work well on mobile |
+| "Guideline 4.0 - Design" | App must function as more than a website wrapper - ensure core features work well on mobile |
 | "Guideline 5.1.1 - Privacy policy" | Add a privacy policy URL to both the app listing and inside the app |
 | "We found that your app collects user and device information" | Complete the privacy nutrition label in App Store Connect |
 | Screenshots don't match the app | Take real screenshots on an iPhone simulator in Xcode |

@@ -173,10 +173,10 @@ export default function GarageDetailPage({ params }) {
               <Wrench className="h-16 w-16 text-[#0056b7]/30" />
             </div>
         }
-        {/* Gradient overlay — bottom to transparent */}
+        {/* Gradient overlay - bottom to transparent */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
 
-        {/* Floating header — back + share + save */}
+        {/* Floating header - back + share + save */}
         <div className="absolute left-0 right-0 top-0 flex items-center justify-between px-4 pt-12">
           <button
             type="button"
@@ -220,7 +220,7 @@ export default function GarageDetailPage({ params }) {
           </div>
         </div>
 
-        {/* Open/Closed badge — bottom right of image area */}
+        {/* Open/Closed badge - bottom right of image area */}
         <div className="absolute bottom-4 right-4">
           <span
             className={`rounded-full px-3 py-1.5 text-xs font-bold shadow-lg ${
@@ -251,7 +251,7 @@ export default function GarageDetailPage({ params }) {
         {/* ── Desktop: 2-column layout ── */}
         <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
 
-          {/* ── LEFT — main content ── */}
+          {/* ── LEFT - main content ── */}
           <div className="flex flex-col gap-6 md:flex-1">
 
             {/* Garage stats row */}
@@ -320,7 +320,7 @@ export default function GarageDetailPage({ params }) {
                 </div>
                 <div className="h-8 w-px bg-[#f3f3f8]" />
                 <div className="flex flex-col items-center gap-0.5">
-                  <span className="text-base font-black text-[#1a1c1f]">{distance || "—"}</span>
+                  <span className="text-base font-black text-[#1a1c1f]">{distance || "-"}</span>
                   <p className="text-[10px] font-semibold text-[#424656]">Distance</p>
                 </div>
                 {Number(garage.experience) > 0 && (
@@ -546,7 +546,7 @@ export default function GarageDetailPage({ params }) {
             </div>
           )}
 
-          {/* ── RIGHT — sticky booking card (desktop only) ── */}
+          {/* ── RIGHT - sticky booking card (desktop only) ── */}
           <div className="hidden md:block md:w-80 md:shrink-0 md:sticky md:top-6 md:flex md:flex-col md:gap-4">
             <div className="rounded-3xl bg-white p-5 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10">
               <h3 className="text-base font-black text-[#1a1c1f]">Book a Service</h3>
@@ -591,7 +591,7 @@ export default function GarageDetailPage({ params }) {
               </a>
             </div>
 
-            {/* Similar garages — desktop sidebar */}
+            {/* Similar garages - desktop sidebar */}
             {similarGarages.length > 0 && (
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-black text-[#1a1c1f]">Similar Garages Nearby</h3>
@@ -630,7 +630,7 @@ export default function GarageDetailPage({ params }) {
         />
       )}
 
-      {/* ── Sticky Book Now — mobile only ── */}
+      {/* ── Sticky Book Now - mobile only ── */}
       <div
         className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#f3f3f8] bg-white/95 px-4 pt-3 backdrop-blur-xl md:hidden"
         style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}

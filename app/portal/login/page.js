@@ -78,7 +78,7 @@ export default function PortalLoginPage() {
   return (
     <div className="flex min-h-screen">
 
-      {/* ── Left panel — desktop only ── */}
+      {/* ── Left panel - desktop only ── */}
       <div className="relative hidden overflow-hidden lg:flex lg:w-[52%] lg:flex-col bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
 
         <div
@@ -138,7 +138,7 @@ export default function PortalLoginPage() {
         </div>
       </div>
 
-      {/* ── Right panel — form ── */}
+      {/* ── Right panel - form ── */}
       <div className="flex flex-1 flex-col bg-white">
 
         {/* Mobile top bar */}

@@ -69,7 +69,7 @@ export function PortalAuthProvider({ children }) {
     if (!mounted) return;
 
     if (!data) {
-      // Session exists but no garage record — registration was incomplete
+      // Session exists but no garage record - registration was incomplete
       setLoading(false);
       if (!pathname.startsWith("/portal/register") && pathname !== "/portal/login") {
         router.replace("/portal/register?complete=1");

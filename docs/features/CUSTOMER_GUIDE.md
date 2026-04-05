@@ -1,4 +1,4 @@
-# GarageDekho — Customer Guide
+# GarageDekho - Customer Guide
 
 Everything you need to know to use GarageDekho.
 
@@ -6,7 +6,7 @@ Everything you need to know to use GarageDekho.
 
 ## What is GarageDekho?
 
-GarageDekho is an app that helps you find trusted garages near you, book vehicle services, and get emergency roadside help when you need it most — all from your phone.
+GarageDekho is an app that helps you find trusted garages near you, book vehicle services, and get emergency roadside help when you need it most - all from your phone.
 
 ---
 
@@ -18,7 +18,7 @@ GarageDekho is an app that helps you find trusted garages near you, book vehicle
 2. Tap **Profile** in the bottom navigation
 3. Tap **Sign Up**
 4. Enter your email address and create a password
-5. Check your email — click the confirmation link sent to you
+5. Check your email - click the confirmation link sent to you
 6. You're in
 
 You can also browse garages and use most features without signing in, but you'll need an account to book services and track your bookings.
@@ -31,7 +31,7 @@ You can also browse garages and use most features without signing in, but you'll
 
 When you open the app, the home page automatically shows garages near your current location.
 
-- Allow location access when the browser asks — this is needed to show garages near you
+- Allow location access when the browser asks - this is needed to show garages near you
 - Each garage card shows the name, distance from you, rating, and services offered
 - Tap any garage card to see its full details
 
@@ -68,9 +68,9 @@ Your booking will appear under the **Bookings** tab. The garage will contact you
 
 ---
 
-## SOS — Emergency Roadside Help
+## SOS - Emergency Roadside Help
 
-Use SOS when you're stuck on the road and need immediate help. This is different from a regular booking — it's for right now.
+Use SOS when you're stuck on the road and need immediate help. This is different from a regular booking - it's for right now.
 
 ### When to Use SOS
 
@@ -84,7 +84,7 @@ Use SOS when you're stuck on the road and need immediate help. This is different
 1. Tap the **SOS** button in the centre of the bottom navigation bar (the red triangle icon)
 2. You'll see the Emergency SOS screen
 
-**Step 1 — Pick your issue:**
+**Step 1 - Pick your issue:**
 - Flat Tyre
 - Battery Dead
 - Engine Fail
@@ -93,35 +93,35 @@ Use SOS when you're stuck on the road and need immediate help. This is different
 
 Tap the one that matches your situation.
 
-**Step 2 — Tap "Get Help Now":**
-- Allow location access if asked — this is essential so mechanics can find you
+**Step 2 - Tap "Get Help Now":**
+- Allow location access if asked - this is essential so mechanics can find you
 - The app gets your GPS location automatically
 - Your address is detected and shown on screen
 
-**Step 3 — Wait while garages are notified:**
+**Step 3 - Wait while garages are notified:**
 - Nearby garages (within 10 km) are shown on screen
 - You'll see each garage name and how far they are
 - You can tap "Notify" next to any garage to send them a WhatsApp message directly as a backup
 
-**Step 4 — Mechanic accepts:**
+**Step 4 - Mechanic accepts:**
 - When a garage accepts your request, the screen switches automatically
-- You'll see a live map — your location (red dot) and the mechanic's location (blue icon)
+- You'll see a live map - your location (red dot) and the mechanic's location (blue icon)
 - The mechanic's icon moves on the map as they drive toward you in real time
 - You'll see their name, which garage they're from, and an estimated arrival time
 - You can call them or message them on WhatsApp directly from this screen
 
-**Step 5 — Mechanic arrives:**
+**Step 5 - Mechanic arrives:**
 - When the mechanic reaches you, the screen shows a 4-digit OTP
 - Read this OTP aloud to the mechanic
 - The mechanic will enter it on their phone to confirm arrival
 
-**Step 6 — Service starts:**
+**Step 6 - Service starts:**
 - Once the OTP is verified, you'll see "Service Started!" confirmation
 - The mechanic is now officially confirmed and helping you
 
 ### If No One Accepts
 
-- Keep the screen open — new garages may come online
+- Keep the screen open - new garages may come online
 - Tap the WhatsApp "Notify" button next to any listed garage to contact them manually
 - Use the emergency call button at the bottom as a last resort
 - Tap **Cancel Request** if you no longer need help
@@ -136,8 +136,8 @@ Yes. SOS works for guest users. However, if you're logged in, your request is li
 
 Tap **Bookings** in the bottom navigation to see:
 
-- Upcoming bookings — confirmed appointments with garages
-- Past bookings — your service history
+- Upcoming bookings - confirmed appointments with garages
+- Past bookings - your service history
 
 Tap any booking to see its details.
 
@@ -166,7 +166,7 @@ Your vehicles appear when booking a service so the garage knows what they're wor
 
 ## Tips for Using the App
 
-- **Allow location access.** Almost everything — finding nearby garages, SOS, Near Me — needs your location. Without it, the app cannot show garages near you.
+- **Allow location access.** Almost everything - finding nearby garages, SOS, Near Me - needs your location. Without it, the app cannot show garages near you.
 - **Use SOS only for genuine emergencies.** Triggering SOS notifies real garages and mechanics who may leave other work to help you.
 - **Keep the SOS screen open** while waiting. If you close or refresh the page, you'll lose your active session.
 - **Save the mechanic's number** when they're en route, in case you lose signal.
@@ -189,11 +189,11 @@ The app shows you garages up to 10 km away. If none appear, use the emergency ca
 Your location is shared only with the garage/mechanic that accepts your SOS request. It is used solely to help them navigate to you.
 
 **Can I track the mechanic after closing the SOS page?**
-No — keep the SOS page open throughout the process. If you close it, you'll need to start a new request.
+No - keep the SOS page open throughout the process. If you close it, you'll need to start a new request.
 
 **What happens after the OTP is verified?**
 The job is officially started. After service is complete, you'll be able to leave a review for the garage.
 
 ---
 
-*GarageDekho — Roadside help, when you need it most.*
+*GarageDekho - Roadside help, when you need it most.*

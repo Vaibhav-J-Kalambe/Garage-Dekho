@@ -2,7 +2,7 @@ export default function manifest() {
   return {
     name: "GarageDekho",
     short_name: "GarageDekho",
-    description: "Hyperlocal automotive service marketplace — find & book garages near you",
+    description: "Find and book trusted car garages near you. Oil changes, repairs, tyres, and 24/7 SOS.",
     start_url: "/",
     display: "standalone",
     background_color: "#F8FAFC",

@@ -77,7 +77,7 @@ export async function POST(request) {
     });
 
     if (garageErr) {
-      // Already has a garage — just redirect them to dashboard/pending
+      // Already has a garage - just redirect them to dashboard/pending
       if (garageErr.code === "23505") {
         return NextResponse.json({ ok: true, existing: true });
       }

@@ -262,11 +262,11 @@ export default function PartnerPage() {
             <h1 className="text-2xl font-black text-[#1a1c1f]">Application Submitted!</h1>
             <p className="mt-2 text-sm font-semibold text-primary">{garageName}</p>
             <p className="mt-2 text-sm leading-relaxed text-[#727687]">
-              We've received your application, <strong>{ownerName}</strong>. Our team will contact you on <strong>{phone}</strong> within 24–48 hours.
+              We've received your application, <strong>{ownerName}</strong>. Our team will contact you on <strong>{phone}</strong> within 24-48 hours.
             </p>
             <div className="mt-5 space-y-2.5 rounded-2xl bg-[#f3f3f8] p-4 text-left">
               <p className="text-[10px] font-black uppercase tracking-widest text-[#727687]">What happens next</p>
-              {["Our team reviews your application","We verify your garage location","You get a call for final onboarding","Your garage goes live on GarageDekho"].map((s, i) => (
+              {["We review your details","Someone from our team calls you","Your garage location gets verified","You go live and start getting bookings"].map((s, i) => (
                 <div key={i} className="flex items-center gap-3 text-sm text-[#424656]">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-black text-primary">{i + 1}</span>
                   {s}
@@ -381,7 +381,7 @@ export default function PartnerPage() {
                 <InputField label="Years of Experience">
                   <select value={experience} onChange={(e) => setExperience(e.target.value)} className={inputCls}>
                     <option value="">Select</option>
-                    {["Less than 1 year","1–3 years","3–5 years","5–10 years","10+ years"].map((y) => (
+                    {["Less than 1 year","1-3 years","3-5 years","5-10 years","10+ years"].map((y) => (
                       <option key={y} value={y}>{y}</option>
                     ))}
                   </select>
@@ -593,7 +593,7 @@ export default function PartnerPage() {
                     <input
                       value={customHours}
                       onChange={(e) => setCustomHours(e.target.value)}
-                      placeholder="e.g. 10:00 AM – 6:00 PM (Mon–Sat)"
+                      placeholder="e.g. 10:00 AM - 6:00 PM (Mon-Sat)"
                       className={inputCls}
                     />
                   </InputField>
@@ -660,12 +660,12 @@ export default function PartnerPage() {
                     ["GPS",           lat && lng ? "Auto-detected ✓" : "Not captured"],
                     ["Hours",         openHours === "Custom" ? customHours : openHours],
                     ["Phone",         phone],
-                    ["WhatsApp",      whatsapp || "—"],
-                    ["Email",         email || "—"],
+                    ["WhatsApp",      whatsapp || "-"],
+                    ["Email",         email || "-"],
                   ].map(([label, value]) => (
                     <div key={label} className="flex gap-3 text-sm">
                       <span className="w-28 shrink-0 font-bold text-[#727687]">{label}</span>
-                      <span className="break-all text-[#424656]">{value || "—"}</span>
+                      <span className="break-all text-[#424656]">{value || "-"}</span>
                     </div>
                   ))}
 
@@ -686,7 +686,7 @@ export default function PartnerPage() {
 
                 <div className="rounded-xl border border-amber-200 bg-amber-50 p-3">
                   <p className="text-xs font-semibold text-amber-700">
-                    By submitting, you confirm that all details are accurate. Our team will verify and contact you within 24–48 hours.
+                    By submitting, you confirm that all details are accurate. Our team will verify and contact you within 24-48 hours.
                   </p>
                 </div>
               </>

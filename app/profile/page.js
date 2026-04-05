@@ -63,7 +63,7 @@ const BRANDS = {
 const CURRENT_YEAR = new Date().getFullYear();
 const YEARS = Array.from({ length: CURRENT_YEAR - 1999 }, (_, i) => String(CURRENT_YEAR - i));
 
-/* Indian number plate: AA 00 AA 0000 — e.g. MH03EY2122 or MH 03 EY 2122 */
+/* Indian number plate: AA 00 AA 0000 - e.g. MH03EY2122 or MH 03 EY 2122 */
 const PLATE_REGEX = /^[A-Z]{2}[0-9]{1,2}[A-Z]{1,3}[0-9]{1,4}$/;
 
 function formatPlate(raw) {
@@ -177,7 +177,7 @@ export default function ProfilePage() {
       setAvatarUrl(finalUrl);
       showToast("Profile photo updated!");
     } catch (err) {
-      showToast("Upload failed — " + (err.message || "please try again"));
+      showToast("Upload failed - " + (err.message || "please try again"));
     } finally {
       setUploadingAvatar(false);
       e.target.value = "";
@@ -185,7 +185,7 @@ export default function ProfilePage() {
   }
 
   const name  = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Guest";
-  const email = user?.email || "—";
+  const email = user?.email || "-";
   const initial = name.charAt(0).toUpperCase();
 
   async function handleSignOut() {
@@ -409,7 +409,7 @@ export default function ProfilePage() {
                 </div>
               )}
 
-              {/* Add vehicle dashed card — only when not in add mode */}
+              {/* Add vehicle dashed card - only when not in add mode */}
               {!adding && (
                 <button
                   type="button"
@@ -423,7 +423,7 @@ export default function ProfilePage() {
 
           </div>
 
-          {/* ── RIGHT COL — menu + sign out ── */}
+          {/* ── RIGHT COL - menu + sign out ── */}
           <div className="flex flex-1 flex-col gap-4">
 
             {MENU.map(({ section, items }, si) => (
@@ -445,7 +445,7 @@ export default function ProfilePage() {
                       <button
                         key={label}
                         type="button"
-                        onClick={() => showToast(`${label} — coming soon`)}
+                        onClick={() => showToast(`${label} - coming soon`)}
                         className="bg-white rounded-2xl flex w-full items-center gap-3 p-3 md:p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10 transition hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] active:scale-[0.98] text-left"
                       >
                         <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconBg} ${iconColor}`}>

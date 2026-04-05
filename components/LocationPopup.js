@@ -147,7 +147,7 @@ export default function LocationPopup({ onClose }) {
                 opacity: 0.4,
               }}
             />
-            {/* Glow blobs — each isolated so blur stays contained */}
+            {/* Glow blobs - each isolated so blur stays contained */}
             <div className="pointer-events-none absolute -bottom-4 -left-4 h-24 w-24 rounded-full" style={{ background: "rgba(125,211,252,0.18)", filter: "blur(24px)" }} />
 
             {/* Logo row + close button */}
@@ -259,7 +259,7 @@ export default function LocationPopup({ onClose }) {
               )}
             </div>
 
-            {/* Popular city chips — hidden when suggestions show */}
+            {/* Popular city chips - hidden when suggestions show */}
             {suggestions.length === 0 && (
               <div style={{ marginTop: 12 }}>
                 <p style={{ fontSize: 11, color: "#9ca3af", fontWeight: 500, marginBottom: 8 }}>Popular cities</p>
@@ -378,7 +378,7 @@ export default function LocationPopup({ onClose }) {
               <p className="text-[11px] text-[#727687]">Only used to show nearby garages · Never shared</p>
             </div>
 
-            {/* Bottom spacer — clears iOS home indicator only (nav is now below z-index) */}
+            {/* Bottom spacer - clears iOS home indicator only (nav is now below z-index) */}
             <div style={{ height: "max(24px, calc(env(safe-area-inset-bottom) + 16px))" }} />
           </div>
         </SwipeableSheet>

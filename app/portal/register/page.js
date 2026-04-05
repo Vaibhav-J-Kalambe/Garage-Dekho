@@ -216,7 +216,7 @@ function RegisterForm() {
   return (
     <div className="flex min-h-screen">
 
-      {/* ── Left panel — identical to login ── */}
+      {/* ── Left panel - identical to login ── */}
       <div className="relative hidden overflow-hidden lg:flex lg:w-[52%] lg:flex-col bg-gradient-to-br from-[#001f5b] via-[#003091] to-[#0056D2]">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-30" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
         <div aria-hidden="true" className="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-blue-400/25 blur-3xl" />
@@ -527,7 +527,7 @@ function RegisterForm() {
                 </p>
 
                 <div>
-                  <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[#727687]">UPI ID <span className="normal-case font-normal text-green-600">(Recommended — instant transfer)</span></label>
+                  <label className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[#727687]">UPI ID <span className="normal-case font-normal text-green-600">(Recommended - instant transfer)</span></label>
                   <input type="text" value={upiId} onChange={(e) => setUpiId(e.target.value)} placeholder="yourname@upi" style={{ fontSize: 16 }} className={inp} />
                 </div>
 

@@ -35,10 +35,10 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow] duration-200 ${
+        className={`fixed left-0 right-2 top-0 z-50 transition-[background-color,box-shadow] duration-200 ${
           scrolled
-            ? "bg-white/90 backdrop-blur-xl shadow-[0_1px_0_rgba(0,0,0,0.04)]"
-            : "bg-white/80 backdrop-blur-md"
+            ? "bg-white shadow-[0_1px_0_rgba(0,0,0,0.06)]"
+            : "bg-white/95"
         }`}
       >
         <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4 py-3 md:px-6 md:py-4">

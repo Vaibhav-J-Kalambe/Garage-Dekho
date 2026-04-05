@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import crypto from "crypto";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -7,7 +8,8 @@ const supabase = createClient(
 );
 
 function generateOtp() {
-  return String(Math.floor(1000 + Math.random() * 9000));
+  // 6-digit cryptographically secure OTP (1,000,000 possibilities)
+  return (crypto.randomInt(100000, 999999)).toString();
 }
 
 export async function POST(request) {

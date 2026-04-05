@@ -8,7 +8,7 @@ const DISMISS_THRESHOLD = 110; // px dragged down to trigger close
  * Wraps the inner modal sheet with swipe-to-dismiss on mobile.
  * - Only activates on touch devices (pointer: coarse).
  * - Only swipes when already at scrollTop === 0 (doesn't fight scroll).
- * - On desktop (items-center modals) touch drag is irrelevant — no interference.
+ * - On desktop (items-center modals) touch drag is irrelevant - no interference.
  *
  * Usage:
  *   <SwipeableSheet onClose={onClose} className="...sheet classes...">

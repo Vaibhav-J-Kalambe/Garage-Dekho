@@ -33,7 +33,7 @@ function haversine(lat1, lng1, lat2, lng2) {
 
 export default function PortalDashboard() {
   const { garage, portalUser, signOut } = usePortalAuth();
-  const [stats,      setStats]      = useState({ bookings: 0, revenue: 0, sos: 0, rating: "—" });
+  const [stats,      setStats]      = useState({ bookings: 0, revenue: 0, sos: 0, rating: "-" });
   const [activeSos,  setActiveSos]  = useState([]);
   const [loading,    setLoading]    = useState(true);
 
@@ -86,7 +86,7 @@ export default function PortalDashboard() {
       .select("id, garage_id")
       .eq("garage_id", garage?.id)
       .gte("created_at", today.toISOString());
-    setStats({ bookings: 0, revenue: 0, sos: sosData?.length ?? 0, rating: "—" });
+    setStats({ bookings: 0, revenue: 0, sos: sosData?.length ?? 0, rating: "-" });
   }
 
   if (loading || !garage) {

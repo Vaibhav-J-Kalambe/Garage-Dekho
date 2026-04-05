@@ -1,9 +1,9 @@
-# GarageDekho — Website Hosting Guide (GoDaddy VPS)
+# GarageDekho - Website Hosting Guide (GoDaddy VPS)
 
 Complete guide to deploying GarageDekho on GoDaddy VPS with Nginx + PM2 + SSL.
 
 > **Important:** GoDaddy Shared Hosting does NOT support Next.js.
-> You must use a **GoDaddy VPS (Virtual Private Server)** — Linux, Ubuntu 22.04 recommended.
+> You must use a **GoDaddy VPS (Virtual Private Server)** - Linux, Ubuntu 22.04 recommended.
 > Recommended plan: GoDaddy VPS 2GB RAM or higher.
 
 ---
@@ -28,7 +28,7 @@ Complete guide to deploying GarageDekho on GoDaddy VPS with Nginx + PM2 + SSL.
 
 Before starting, make sure you have:
 
-- [ ] GoDaddy VPS plan (Linux, Ubuntu 22.04) — minimum 2GB RAM
+- [ ] GoDaddy VPS plan (Linux, Ubuntu 22.04) - minimum 2GB RAM
 - [ ] Your domain connected to GoDaddy (e.g. `garagedekho.com`)
 - [ ] SSH access to the VPS (GoDaddy gives you IP, username, password)
 - [ ] Your code pushed to a GitHub repository (private is fine)
@@ -41,20 +41,20 @@ Before starting, make sure you have:
 
 ## 2. First-Time Server Setup
 
-### Step 1 — SSH into your VPS
+### Step 1 - SSH into your VPS
 
 ```bash
 ssh root@YOUR_VPS_IP_ADDRESS
 # Enter the password GoDaddy gave you
 ```
 
-### Step 2 — Update the server
+### Step 2 - Update the server
 
 ```bash
 apt update && apt upgrade -y
 ```
 
-### Step 3 — Create a non-root user (safer than running everything as root)
+### Step 3 - Create a non-root user (safer than running everything as root)
 
 ```bash
 adduser garagedekho
@@ -64,7 +64,7 @@ usermod -aG sudo garagedekho
 su - garagedekho
 ```
 
-### Step 4 — Install Git
+### Step 4 - Install Git
 
 ```bash
 sudo apt install git -y
@@ -88,7 +88,7 @@ npm --version    # should show 10.x.x
 
 ### Install PM2 (keeps the app running 24/7)
 
-PM2 is a process manager — it restarts your app if it crashes and keeps it running after server reboots.
+PM2 is a process manager - it restarts your app if it crashes and keeps it running after server reboots.
 
 ```bash
 sudo npm install -g pm2
@@ -107,7 +107,7 @@ sudo systemctl enable nginx   # auto-start on reboot
 
 ## 4. Deploy the App
 
-### Step 1 — Clone your GitHub repository
+### Step 1 - Clone your GitHub repository
 
 ```bash
 cd /home/garagedekho
@@ -118,15 +118,15 @@ cd app
 > If your repo is private, GitHub will ask for your username and a **Personal Access Token** (not your password).
 > Generate one at: GitHub → Settings → Developer Settings → Personal Access Tokens → Tokens (classic) → Generate new token → select `repo` scope.
 
-### Step 2 — Install dependencies
+### Step 2 - Install dependencies
 
 ```bash
 npm install
 ```
 
-### Step 3 — Set environment variables (see Section 5 first)
+### Step 3 - Set environment variables (see Section 5 first)
 
-### Step 4 — Build the app
+### Step 4 - Build the app
 
 ```bash
 npm run build
@@ -141,7 +141,7 @@ This will take 1-2 minutes. You should see:
 
 If you see errors, check Section 11.
 
-### Step 5 — Start the app with PM2
+### Step 5 - Start the app with PM2
 
 ```bash
 pm2 start npm --name "garagedekho" -- start
@@ -245,7 +245,7 @@ Save: `Ctrl+X` → `Y` → `Enter`
 
 ```bash
 sudo ln -s /etc/nginx/sites-available/garagedekho /etc/nginx/sites-enabled/
-sudo nginx -t          # test config — must say "syntax is ok"
+sudo nginx -t          # test config - must say "syntax is ok"
 sudo systemctl reload nginx
 ```
 
@@ -253,7 +253,7 @@ Your site is now accessible at `http://YOUR_VPS_IP` (no HTTPS yet).
 
 ---
 
-## 7. Set Up SSL (HTTPS — Free with Let's Encrypt)
+## 7. Set Up SSL (HTTPS - Free with Let's Encrypt)
 
 ### Install Certbot
 
@@ -275,7 +275,7 @@ Follow the prompts:
 
 ### Verify auto-renewal
 
-SSL certificates expire every 90 days — Certbot renews them automatically.
+SSL certificates expire every 90 days - Certbot renews them automatically.
 Test that renewal works:
 
 ```bash
@@ -383,7 +383,7 @@ pm2 save
 # Generate startup script
 pm2 startup
 
-# PM2 will print a command — copy and run it. It looks like:
+# PM2 will print a command - copy and run it. It looks like:
 sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u garagedekho --hp /home/garagedekho
 ```
 
@@ -453,16 +453,16 @@ Since you're self-hosting on a VPS (not Vercel), the architecture becomes:
 
 ```
 GoDaddy VPS
-├── Nginx (port 80/443) — your website
-├── Next.js app (port 3000) — website code
-└── (optional) Separate API server (port 3001) — app-only APIs
+├── Nginx (port 80/443) - your website
+├── Next.js app (port 3000) - website code
+└── (optional) Separate API server (port 3001) - app-only APIs
 
 Mobile App (Capacitor)
 └── Calls APIs directly on your VPS
     → If website is down but VPS is up, app still works ✓
 ```
 
-With a VPS you have full control. You can run the website and app backend as completely separate processes — meaning the website going down doesn't kill the app. This is covered in `APP_HOSTING_GUIDE.md`.
+With a VPS you have full control. You can run the website and app backend as completely separate processes - meaning the website going down doesn't kill the app. This is covered in `APP_HOSTING_GUIDE.md`.
 
 ---
 

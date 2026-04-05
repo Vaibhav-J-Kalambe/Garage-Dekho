@@ -6,11 +6,11 @@ export async function generateMetadata({ params }) {
 
   if (!garage) {
     return {
-      title: "Garage Not Found — GarageDekho",
+      title: "Garage Not Found - GarageDekho",
     };
   }
 
-  const title = `${garage.name} — Book Auto Service | GarageDekho`;
+  const title = `${garage.name} - Book Auto Service | GarageDekho`;
   const description = `${garage.speciality} · ${garage.address}. Rated ${garage.rating}★ by ${garage.reviews} customers. Book online in seconds.`;
   const image = garage.image || "https://garagedekho.in/og-default.jpg";
 

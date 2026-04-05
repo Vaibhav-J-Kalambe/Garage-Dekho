@@ -6,9 +6,21 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+function isValidCoord(lat, lng) {
+  return (
+    typeof lat === "number" && typeof lng === "number" &&
+    isFinite(lat) && isFinite(lng) &&
+    lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180
+  );
+}
+
 export async function POST(request) {
   try {
     const { requestId, lat, lng } = await request.json();
+
+    if (!requestId || !isValidCoord(lat, lng)) {
+      return NextResponse.json({ error: "Invalid coordinates" }, { status: 400 });
+    }
 
     const { error } = await supabase
       .from("sos_assignments")

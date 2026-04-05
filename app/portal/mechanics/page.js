@@ -289,7 +289,7 @@ export default function PortalMechanicsPage() {
                       </div>
                     </div>
 
-                    {/* Status badge — tap to cycle */}
+                    {/* Status badge - tap to cycle */}
                     <button
                       onClick={() => cycleStatus(m)}
                       aria-label={`Status: ${m.status}. Tap to change.`}

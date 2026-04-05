@@ -295,10 +295,10 @@ function NearMeContent() {
         </div>
       </div>
 
-      {/* ── Map + List — fills remaining height ── */}
+      {/* ── Map + List - fills remaining height ── */}
       <div className="relative flex flex-1 overflow-hidden flex-col md:flex-row">
 
-        {/* ── MAP — fills all remaining space ── */}
+        {/* ── MAP - fills all remaining space ── */}
         <div className="relative flex-1 overflow-hidden">
           <MapView
             garages={filtered}
@@ -342,7 +342,7 @@ function NearMeContent() {
             md:h-full
           `}
         >
-          {/* Pull handle — mobile only */}
+          {/* Pull handle - mobile only */}
           <button
             type="button"
             aria-label={listExpanded ? "Collapse garage list" : "Expand garage list"}

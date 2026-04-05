@@ -19,7 +19,7 @@ export default function PortalNav() {
   const { garage } = usePortalAuth();
   const [pendingCount, setPendingCount] = useState(0);
 
-  // All hooks must run unconditionally — hide via return below after hooks
+  // All hooks must run unconditionally - hide via return below after hooks
   useEffect(() => {
     if (!garage) return;
 

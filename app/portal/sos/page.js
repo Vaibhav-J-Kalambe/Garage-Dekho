@@ -213,7 +213,7 @@ export default function PortalSosPage() {
     setVerifying(false);
   }
 
-  // ── Tracking overlay (full-screen map — keep compact layout) ─────────────
+  // ── Tracking overlay (full-screen map - keep compact layout) ─────────────
   if (tracking) {
     const userCoords = [tracking.user_lat, tracking.user_lng];
     const isArrived  = tracking.status === "arrived";

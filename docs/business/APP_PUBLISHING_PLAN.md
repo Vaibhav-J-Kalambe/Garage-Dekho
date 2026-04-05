@@ -1,4 +1,4 @@
-# GarageDekho — App Publishing Plan
+# GarageDekho - App Publishing Plan
 # Play Store + App Store + Windows
 
 Publishing both the Customer App and the Garage Management Portal as native apps across Android, iOS, and Windows using Capacitor (wrapping the existing Next.js web app).
@@ -12,7 +12,7 @@ Publishing both the Customer App and the Garage Management Portal as native apps
 | GarageDekho (Customer) | com.garagedekho.app | Android, iOS, Windows |
 | GarageDekho Portal (Garage) | com.garagedekho.portal | Android, iOS, Windows |
 
-**Approach:** Capacitor — wraps your existing Next.js/React web app in a native shell. You keep all your current code. No rewrite needed.
+**Approach:** Capacitor - wraps your existing Next.js/React web app in a native shell. You keep all your current code. No rewrite needed.
 
 ---
 
@@ -20,7 +20,7 @@ Publishing both the Customer App and the Garage Management Portal as native apps
 
 | Factor | Capacitor | React Native |
 |--------|-----------|-------------|
-| Reuse existing code | Yes — wrap as-is | No — rewrite in RN |
+| Reuse existing code | Yes - wrap as-is | No - rewrite in RN |
 | Dev time | 1–2 weeks | 3–6 months |
 | Cost | Low | High |
 | Performance | Good (WebView) | Better (native) |
@@ -99,13 +99,13 @@ npm run build
 # This outputs to /out folder
 ```
 
-> Note: Static export disables API routes. Your API calls to Supabase from the client still work. But Next.js `/api/*` routes won't run — move any remaining server logic to Supabase Edge Functions or keep them on Vercel separately.
+> Note: Static export disables API routes. Your API calls to Supabase from the client still work. But Next.js `/api/*` routes won't run - move any remaining server logic to Supabase Edge Functions or keep them on Vercel separately.
 
 ---
 
 ## Phase 2: Capacitor Setup
 
-Do this twice — once for the customer app, once for the portal app.
+Do this twice - once for the customer app, once for the portal app.
 
 ### 2.1 Install Capacitor
 
@@ -141,7 +141,7 @@ npx cap sync
 # Push notifications
 npm install @capacitor/push-notifications
 
-# Geolocation (GPS) — replaces navigator.geolocation in some cases
+# Geolocation (GPS) - replaces navigator.geolocation in some cases
 npm install @capacitor/geolocation
 
 # Status bar styling
@@ -170,8 +170,8 @@ npx cap open android
 
 This opens Android Studio. From there:
 - Build → Generate Signed Bundle/APK
-- Choose **Android App Bundle (.aab)** — required for Play Store
-- Create a keystore file (keep this safe — you need it for every update)
+- Choose **Android App Bundle (.aab)** - required for Play Store
+- Create a keystore file (keep this safe - you need it for every update)
 
 ### 3.2 Google Play Console Setup
 
@@ -183,7 +183,7 @@ This opens Android Studio. From there:
 4. For each app, fill in:
    - Store listing (name, description, screenshots)
    - Content rating questionnaire
-   - Privacy policy URL (required — host a simple page on your site)
+   - Privacy policy URL (required - host a simple page on your site)
    - Target audience
 5. Upload the `.aab` file
 6. Submit for review
@@ -195,8 +195,8 @@ This opens Android Studio. From there:
 | Type | Size | Count |
 |------|------|-------|
 | Phone screenshots | 1080x1920 or similar | Min 2, Max 8 |
-| 7-inch tablet | Optional | — |
-| 10-inch tablet | Optional | — |
+| 7-inch tablet | Optional | - |
+| 10-inch tablet | Optional | - |
 | Feature graphic | 1024x500 | 1 (required) |
 
 Use your browser (Chrome DevTools device mode) to take screenshots at the right size.
@@ -252,7 +252,7 @@ Use a simulator in Xcode or an iPhone to take these.
 
 ## Phase 5: Windows
 
-Two approaches — choose based on your needs.
+Two approaches - choose based on your needs.
 
 ### Option A: PWA on Microsoft Store (Easiest)
 
@@ -347,7 +347,7 @@ const response = await fetch("https://fcm.googleapis.com/fcm/send", {
     to: garage.fcm_token,
     notification: {
       title: "New SOS Alert!",
-      body: `${issueType} — ${distance} km away`,
+      body: `${issueType} - ${distance} km away`,
     },
   }),
 });
@@ -452,8 +452,8 @@ Week 1
 Week 2
  ├── Day 1: Set up Firebase, integrate push notifications in portal app
  ├── Day 2: Write Supabase Edge Function to send push on new SOS
- ├── Day 3: iOS build (Mac required) — customer app
- ├── Day 4: iOS build — portal app
+ ├── Day 3: iOS build (Mac required) - customer app
+ ├── Day 4: iOS build - portal app
  ├── Day 5: Submit both to App Store Connect
  └── Day 5: Submit PWAs to Microsoft Store
 
@@ -527,4 +527,4 @@ Play Store updates go live in a few hours. App Store updates take 1–3 days rev
 
 ---
 
-*GarageDekho — One codebase, three platforms.*
+*GarageDekho - One codebase, three platforms.*

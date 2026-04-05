@@ -1,4 +1,4 @@
-# Learnings — GarageDekho
+# Learnings - GarageDekho
 
 ## Category: best_practice
 

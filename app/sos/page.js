@@ -281,7 +281,7 @@ export default function SosPage() {
             Need Emergency Help?
           </h1>
           <p className="mt-2 max-w-xs text-center text-sm leading-relaxed text-slate-400">
-            Select your issue — we'll notify the nearest mechanics immediately
+            Select your issue - we'll notify the nearest mechanics immediately
           </p>
         </div>
 
@@ -402,7 +402,7 @@ export default function SosPage() {
               </div>
               <a
                 href={`https://wa.me/91${g.phone?.replace(/\D/g, "")}?text=${encodeURIComponent(
-                  `🚨 SOS Alert — GarageDekho\nIssue: *${selectedIssue}*\nLocation: ${userAddress || "Shared via link"}\n\nAccept & track:\n${mechanicLink}`
+                  `🚨 SOS Alert - GarageDekho\nIssue: *${selectedIssue}*\nLocation: ${userAddress || "Shared via link"}\n\nAccept & track:\n${mechanicLink}`
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -438,7 +438,7 @@ export default function SosPage() {
   }
 
   // ══════════════════════════════════════════════════════════════
-  // PHASE: ACCEPTED — live map (Rapido-style)
+  // PHASE: ACCEPTED - live map (Rapido-style)
   // ══════════════════════════════════════════════════════════════
   if (phase === "accepted") {
     const mechPhone = assignment?.mechanic_phone;
@@ -540,7 +540,7 @@ export default function SosPage() {
   }
 
   // ══════════════════════════════════════════════════════════════
-  // PHASE: ARRIVED — OTP shown to user
+  // PHASE: ARRIVED - OTP shown to user
   // ══════════════════════════════════════════════════════════════
   if (phase === "arrived") {
     return (
@@ -604,7 +604,7 @@ export default function SosPage() {
   }
 
   // ══════════════════════════════════════════════════════════════
-  // PHASE: VERIFIED — service started
+  // PHASE: VERIFIED - service started
   // ══════════════════════════════════════════════════════════════
   if (phase === "verified") {
     return (

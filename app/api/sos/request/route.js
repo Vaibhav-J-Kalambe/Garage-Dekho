@@ -18,6 +18,14 @@ export async function POST(request) {
   try {
     const { userLat, userLng } = await request.json();
 
+    if (
+      typeof userLat !== "number" || typeof userLng !== "number" ||
+      !isFinite(userLat) || !isFinite(userLng) ||
+      userLat < -90 || userLat > 90 || userLng < -180 || userLng > 180
+    ) {
+      return NextResponse.json({ error: "Invalid coordinates" }, { status: 400 });
+    }
+
     const { data: garages } = await supabase
       .from("garages")
       .select("id, name, phone, lat, lng");

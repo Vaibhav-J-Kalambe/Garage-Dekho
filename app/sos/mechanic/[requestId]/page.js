@@ -80,7 +80,7 @@ export default function MechanicSosPage({ params }) {
       setRequest(data);
       setUserCoords([Number(data.user_lat), Number(data.user_lng)]);
 
-      // Already accepted or arrived — check if this mechanic was dispatched for this job
+      // Already accepted or arrived - check if this mechanic was dispatched for this job
       if (["accepted", "arrived"].includes(data.status)) {
         const { data: asgn } = await supabase
           .from("sos_assignments")
@@ -105,7 +105,7 @@ export default function MechanicSosPage({ params }) {
         return;
       }
 
-      // pending — show request details + acceptance form
+      // pending - show request details + acceptance form
       setPhase("view");
     }
 
@@ -269,7 +269,7 @@ export default function MechanicSosPage({ params }) {
   }
 
   // ══════════════════════════════════════════════════════════════
-  // VIEW — show request details + acceptance form
+  // VIEW - show request details + acceptance form
   // ══════════════════════════════════════════════════════════════
   if (phase === "view") {
     const distFromMe = myCoords && userCoords
@@ -290,7 +290,7 @@ export default function MechanicSosPage({ params }) {
           </div>
         </div>
 
-        {/* Map — user's location */}
+        {/* Map - user's location */}
         <div className="h-52 shrink-0 relative">
           <SosMap userCoords={userCoords} mechanicCoords={null} className="h-full w-full" />
           <div className="absolute bottom-3 left-3 right-3 z-[1000] flex items-center gap-2 rounded-2xl bg-black/65 backdrop-blur-md px-3 py-2">
@@ -370,13 +370,13 @@ export default function MechanicSosPage({ params }) {
   }
 
   // ══════════════════════════════════════════════════════════════
-  // ACCEPTED — en route, live location sharing
+  // ACCEPTED - en route, live location sharing
   // ══════════════════════════════════════════════════════════════
   if (phase === "accepted") {
     return (
       <div className="flex h-dvh flex-col bg-[#0F172A]">
 
-        {/* Live map — shows both positions */}
+        {/* Live map - shows both positions */}
         <div className="flex-1 relative min-h-0">
           <SosMap userCoords={userCoords} mechanicCoords={myCoords} className="h-full w-full" />
 
@@ -441,7 +441,7 @@ export default function MechanicSosPage({ params }) {
   }
 
   // ══════════════════════════════════════════════════════════════
-  // ARRIVED — OTP entry by mechanic
+  // ARRIVED - OTP entry by mechanic
   // ══════════════════════════════════════════════════════════════
   if (phase === "arrived") {
     return (
@@ -459,7 +459,7 @@ export default function MechanicSosPage({ params }) {
         </div>
 
         <form onSubmit={handleVerify} className="w-full max-w-xs space-y-4">
-          {/* OTP input — large digits */}
+          {/* OTP input - large digits */}
           <div className="rounded-3xl bg-white/8 border border-white/15 p-6 space-y-4">
             <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 text-center">
               Enter Customer OTP
@@ -500,7 +500,7 @@ export default function MechanicSosPage({ params }) {
   }
 
   // ══════════════════════════════════════════════════════════════
-  // VERIFIED — all done
+  // VERIFIED - all done
   // ══════════════════════════════════════════════════════════════
   if (phase === "verified") {
     return (

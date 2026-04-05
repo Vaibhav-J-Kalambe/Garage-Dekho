@@ -22,9 +22,9 @@ function toYMD(date) {
 /**
  * Custom inline date picker.
  * Props:
- *   value   — "YYYY-MM-DD" or ""
- *   min     — "YYYY-MM-DD" (disable before this date)
- *   onChange — (valueStr: string) => void
+ *   value   - "YYYY-MM-DD" or ""
+ *   min     - "YYYY-MM-DD" (disable before this date)
+ *   onChange - (valueStr: string) => void
  */
 export default function DatePicker({ value, min, onChange }) {
   const today   = new Date();

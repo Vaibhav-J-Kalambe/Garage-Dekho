@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-// Static icons — not in lucide-animated
+// Static icons - not in lucide-animated
 import { Bike, Car, BadgeCheck, AlertTriangle, Tag, Star } from "lucide-react";
 
 function TowTruckIcon({ style, size, className }) {
@@ -31,7 +31,7 @@ function TowTruckIcon({ style, size, className }) {
   );
 }
 
-// Animated icons — micro-animations on hover / click / ref trigger
+// Animated icons - micro-animations on hover / click / ref trigger
 import {
   SearchIcon,
   WrenchIcon,
@@ -101,7 +101,7 @@ function getGreeting() {
 // ── MagicUI-inspired inline components ────────────────────────────────────────
 
 
-/** MagicCard: subtle radial gradient follows mouse cursor — GPU-only (transform/opacity) */
+/** MagicCard: subtle radial gradient follows mouse cursor - GPU-only (transform/opacity) */
 function MagicCard({ children, className = "", onMouseEnter }) {
   const ref = useRef(null);
   function onMove(e) {
@@ -189,7 +189,7 @@ export default function HomePage() {
     const saved = localStorage.getItem("gd_location");
     if (!saved) setShowLocationPopup(true);
 
-    // 5-min sessionStorage cache — skip DB on repeat visits
+    // 5-min sessionStorage cache - skip DB on repeat visits
     const CACHE_KEY = "gd_garages_v1";
     const CACHE_TTL = 5 * 60 * 1000;
     try {
@@ -236,7 +236,7 @@ export default function HomePage() {
         { timeout: 8000, maximumAge: 300000 }
       );
     };
-    // Only auto-detect if user has already granted permission — avoids
+    // Only auto-detect if user has already granted permission - avoids
     // Chrome showing its own permission dialog before the app's LocationPopup.
     if (navigator.geolocation) {
       navigator.permissions?.query({ name: "geolocation" }).then((result) => {
@@ -333,12 +333,12 @@ export default function HomePage() {
 
             {/* Left column: greeting + H1 + trust badges */}
             <div>
-              {/* Greeting + open count — visible on all screens */}
+              {/* Greeting + open count - visible on all screens */}
               <div className="flex items-center gap-2 mb-4 flex-wrap">
                 <span className="text-sm text-outline">{getGreeting()}</span>
                 {openCount !== null && (
                   <>
-                    <span className="text-outline">—</span>
+                    <span className="text-outline">-</span>
                     <span className="relative flex shrink-0 w-2 h-2">
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
                       <span className="relative inline-flex w-2 h-2 rounded-full bg-green-500" />
@@ -414,7 +414,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── BOOKING CARD + SOS — side by side on desktop ── */}
+        {/* ── BOOKING CARD + SOS - side by side on desktop ── */}
         <section className="mb-6 md:mb-12">
           <div className="md:grid md:grid-cols-2 md:gap-4 flex flex-col gap-4">
 
@@ -428,7 +428,7 @@ export default function HomePage() {
                   <div className="flex-1 min-w-0">
                     <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-on-surface-variant">Book Again</p>
                     <p className="text-sm font-bold text-on-surface truncate mt-0.5">{lastBooking.service_name} at {lastBooking.garage_name}</p>
-                    {serviceDue && <p className="text-xs text-error mt-0.5 font-semibold">Service overdue — {daysAgo} days ago</p>}
+                    {serviceDue && <p className="text-xs text-error mt-0.5 font-semibold">Service overdue - {daysAgo} days ago</p>}
                   </div>
                   <ChevronRightIcon size={16} className="text-on-surface-variant shrink-0" />
                 </div>
@@ -450,7 +450,7 @@ export default function HomePage() {
               </Link>
             )}
 
-            {/* SOS card — desktop only (mobile has SOS in bottom nav) */}
+            {/* SOS card - desktop only (mobile has SOS in bottom nav) */}
             <Link href="/sos" aria-label="SOS Emergency Roadside Help" className="hidden md:block">
               <div className="relative overflow-hidden rounded-2xl p-5 flex items-center gap-4 shadow-[0_8px_32px_rgba(186,26,26,0.22)] transition-[transform,box-shadow] duration-200 hover:shadow-[0_12px_40px_rgba(186,26,26,0.28)] active:scale-[0.99]"
                 style={{ background: "linear-gradient(135deg, #ba1a1a 0%, #c62828 100%)" }}>
@@ -472,7 +472,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── HOW CAN WE HELP — service tiles ── */}
+        {/* ── HOW CAN WE HELP - service tiles ── */}
         <section className="mb-6 md:mb-12">
           <div className="flex justify-between items-end mb-3">
             <div>

@@ -1,5 +1,5 @@
 -- ============================================================
--- GarageDekho — Garage Management Portal Schema
+-- GarageDekho - Garage Management Portal Schema
 -- Run in Supabase SQL Editor one query at a time
 -- ============================================================
 

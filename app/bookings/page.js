@@ -343,7 +343,7 @@ export default function BookingsPage() {
           )}
         </section>
 
-        {/* ── TABS — segmented control ── */}
+        {/* ── TABS - segmented control ── */}
         <div
           role="tablist"
           aria-label="Booking history"
@@ -403,7 +403,7 @@ export default function BookingsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
 
-            {/* Hero booking card — large */}
+            {/* Hero booking card - large */}
             {shown[0] && (
               <div className="md:col-span-8" style={{ animationDelay: "0ms" }}>
                 <BookingCard
@@ -415,7 +415,7 @@ export default function BookingsPage() {
               </div>
             )}
 
-            {/* Side card — next booking or placeholder */}
+            {/* Side card - next booking or placeholder */}
             <div className="md:col-span-4 flex flex-col gap-4">
               {shown[1] ? (
                 <div style={{ animationDelay: "60ms" }}>

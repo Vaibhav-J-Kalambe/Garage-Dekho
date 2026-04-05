@@ -28,7 +28,12 @@ export async function POST(request) {
       .update(body)
       .digest("hex");
 
-    if (expected !== razorpay_signature) {
+    // Timing-safe comparison prevents signature oracle attacks
+    const expectedBuf  = Buffer.from(expected);
+    const receivedBuf  = Buffer.from(razorpay_signature);
+    const valid = expectedBuf.length === receivedBuf.length &&
+                  crypto.timingSafeEqual(expectedBuf, receivedBuf);
+    if (!valid) {
       return NextResponse.json({ ok: false, error: "Invalid signature" }, { status: 400 });
     }
 

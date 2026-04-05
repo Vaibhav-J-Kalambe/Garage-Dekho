@@ -107,7 +107,7 @@ const PRESETS = {
   offers: {
     illo: IlloOffers,
     title: "No offers right now",
-    description: "Check back soon — new deals are added regularly.",
+    description: "Check back soon - new deals are added regularly.",
   },
   saved: {
     illo: IlloSaved,

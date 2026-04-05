@@ -209,7 +209,7 @@ function AuthForm() {
               ))}
             </div>
 
-            {/* Google OAuth — shown first, most users prefer this */}
+            {/* Google OAuth - shown first, most users prefer this */}
             <button
               type="button"
               onClick={handleGoogle}
@@ -319,7 +319,7 @@ function AuthForm() {
               </form>
             )}
 
-            {/* ── PHONE LOGIN — phone + password ── */}
+            {/* ── PHONE LOGIN - phone + password ── */}
             {method === "phone" && tab === "login" && !otpSent && (
               <form onSubmit={handlePhoneLogin} className="space-y-3">
                 <div className="relative">
@@ -358,7 +358,7 @@ function AuthForm() {
               </form>
             )}
 
-            {/* ── PHONE SIGN UP — OTP ── */}
+            {/* ── PHONE SIGN UP - OTP ── */}
             {method === "phone" && tab === "signup" && !otpSent && (
               <form onSubmit={handleSendOtp} className="space-y-3">
                 <div className="relative">

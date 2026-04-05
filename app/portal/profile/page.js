@@ -240,28 +240,28 @@ export default function PortalProfilePage() {
               {editing ? (
                 <input value={garageName} onChange={(e) => setGarageName(e.target.value)} style={{ fontSize: 16 }} className={inputCls} />
               ) : (
-                <span className="text-sm font-semibold text-[#1a1c1f]">{garageName || "—"}</span>
+                <span className="text-sm font-semibold text-[#1a1c1f]">{garageName || "-"}</span>
               )}
             </InfoRow>
             <InfoRow icon={<IcPhone />} label="Phone">
               {editing ? (
                 <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+91 98765 43210" autoComplete="tel" style={{ fontSize: 16 }} className={inputCls} />
               ) : (
-                <a href={`tel:${phone}`} className="text-sm font-semibold text-[#0056b7]">{phone || "—"}</a>
+                <a href={`tel:${phone}`} className="text-sm font-semibold text-[#0056b7]">{phone || "-"}</a>
               )}
             </InfoRow>
             <InfoRow icon={<IcPin />} label="Address">
               {editing ? (
                 <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Street / Area" style={{ fontSize: 16 }} className={inputCls} />
               ) : (
-                <span className="text-sm text-[#424656]">{address || "—"}</span>
+                <span className="text-sm text-[#424656]">{address || "-"}</span>
               )}
             </InfoRow>
             <InfoRow icon={<IcPin />} label="City">
               {editing ? (
                 <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" style={{ fontSize: 16 }} className={inputCls} />
               ) : (
-                <span className="text-sm text-[#424656]">{city || "—"}</span>
+                <span className="text-sm text-[#424656]">{city || "-"}</span>
               )}
             </InfoRow>
             <InfoRow icon={<IcNav />} label="Garage Location">
@@ -272,7 +272,7 @@ export default function PortalProfilePage() {
                       {lat.toFixed(5)}, {lng.toFixed(5)}
                     </span>
                   ) : (
-                    <span className="text-xs text-[#727687]">Not set — SOS distance won't work</span>
+                    <span className="text-xs text-[#727687]">Not set - SOS distance won't work</span>
                   )}
                   <button
                     type="button"
@@ -419,7 +419,7 @@ export default function PortalProfilePage() {
             {(garage.upi_id || garage.bank_account_number) && (
               <div className="flex items-center gap-2 rounded-xl bg-green-50 px-4 py-3">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                <p className="text-xs font-semibold text-green-700">Payout details saved — you&apos;re all set to receive payments</p>
+                <p className="text-xs font-semibold text-green-700">Payout details saved - you&apos;re all set to receive payments</p>
               </div>
             )}
           </Card>

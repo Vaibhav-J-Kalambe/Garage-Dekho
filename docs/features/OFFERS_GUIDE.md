@@ -1,10 +1,10 @@
 # How to Add Offers on GarageDekho
 
-Offers are managed directly from the **Supabase Dashboard** — no code changes needed.
+Offers are managed directly from the **Supabase Dashboard** - no code changes needed.
 
 ---
 
-## Step 1 — Open Supabase
+## Step 1 - Open Supabase
 
 1. Go to [supabase.com](https://supabase.com) → Sign in
 2. Open your **GarageDekho** project
@@ -13,7 +13,7 @@ Offers are managed directly from the **Supabase Dashboard** — no code changes 
 
 ---
 
-## Step 2 — Add a New Offer
+## Step 2 - Add a New Offer
 
 Click **"Insert row"** and fill in these fields:
 
@@ -24,7 +24,7 @@ Click **"Insert row"** and fill in these fields:
 | `subtitle` | Short description | `Get a free vehicle health check on your first booking.` |
 | `discount` | Discount badge text | `FREE`, `20% OFF`, `₹100 OFF`, `₹199 FLAT` |
 | `code` | Coupon code users apply at checkout | `FIRST100`, `WEEKEND20` |
-| `valid_till` | Expiry date — format **YYYY-MM-DD** | `2026-06-30` |
+| `valid_till` | Expiry date - format **YYYY-MM-DD** | `2026-06-30` |
 | `category` | Filter category on Offers page | `all`, `car`, `bike`, `ev`, `refer` |
 | `cta_label` | Button text | `Book Now`, `Refer Now`, `Claim Offer` |
 | `cta_href` | Button link | `/near-me`, `/profile`, `/offers` |
@@ -75,5 +75,5 @@ Change `sort_order`. Lower number = shown first.
 
 ## Where Offers Appear
 
-- **Home page** — banner cards (only shows when at least 1 active offer exists)
-- **Offers page** (`/offers`) — full cards with coupon code reveal, expiry date, and category filters
+- **Home page** - banner cards (only shows when at least 1 active offer exists)
+- **Offers page** (`/offers`) - full cards with coupon code reveal, expiry date, and category filters

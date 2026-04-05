@@ -1,4 +1,4 @@
-# GarageDekho — UI Improvement Plan
+# GarageDekho - UI Improvement Plan
 **Frameworks:** ui-ux-design-1.0.0 · ui-ux-pro-max-0.1.0 · frontend-design-3-0.1.0 · self-improving-agent-3.0.5
 **Rule:** One page at a time. Read → Audit → Plan → Execute → Review → Log learnings.
 
@@ -52,23 +52,23 @@
 ## Current Page: `/auth`
 
 ### Audit (what exists)
-- Hero band with gradient + logo + tagline — good base
-- Tab switcher (Login / Sign Up) — exists
-- Google OAuth button — exists
-- Email + password inputs with icons — exists
-- Show/hide password toggle — exists
-- Error / success messages — exists
-- Pulls up over hero with `-mt-6 rounded-t-3xl` — exists
+- Hero band with gradient + logo + tagline - good base
+- Tab switcher (Login / Sign Up) - exists
+- Google OAuth button - exists
+- Email + password inputs with icons - exists
+- Show/hide password toggle - exists
+- Error / success messages - exists
+- Pulls up over hero with `-mt-6 rounded-t-3xl` - exists
 
 ### What needs improving
 1. Hero gradient doesn't match brand (`#0047BE` instead of `#001f5b`)
-2. Pull-up uses `-mt-6 rounded-t-3xl` — should match home page (`-mt-12 rounded-t-[2.5rem]`)
-3. Tab switcher active state uses solid blue — make it match design system
+2. Pull-up uses `-mt-6 rounded-t-3xl` - should match home page (`-mt-12 rounded-t-[2.5rem]`)
+3. Tab switcher active state uses solid blue - make it match design system
 4. Input fields need larger padding and `min-h-[44px]` touch target
-5. Submit button loading state — show spinner, not just text
+5. Submit button loading state - show spinner, not just text
 6. Error message needs an icon (AlertCircle)
-7. Trust badges row (Verified · Fixed Pricing · 24/7) — good, keep it
-8. Back button position — good
+7. Trust badges row (Verified · Fixed Pricing · 24/7) - good, keep it
+8. Back button position - good
 9. No bottom spacing for mobile (BottomNav overlap)
 
 ### Plan

@@ -3,13 +3,14 @@
 import { useState, useEffect, useRef } from "react";
 import { X, Truck, Car, Bike, Zap, Wrench, Loader2, CheckCircle2, Tag, Check, MapPin, LocateFixed, CreditCard, Store, Calendar, Star } from "lucide-react";
 import { createBooking, getLastBooking } from "../lib/bookings";
+import { supabase } from "../lib/supabase";
 import { useAuth } from "./AuthProvider";
 import { getUserVehicles } from "../lib/vehicles";
 import SwipeableSheet from "./SwipeableSheet";
 import { useFocusTrap } from "../hooks/useFocusTrap";
 import DatePicker from "./ui/DatePicker";
 
-// Promo codes are validated server-side — see /api/promo/validate
+// Promo codes are validated server-side - see /api/promo/validate
 
 const TIME_SLOTS = [
   "9:00 AM", "10:00 AM", "11:00 AM",
@@ -128,7 +129,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
     const code = promoInput.trim().toUpperCase();
     if (!code) return;
     setPromoError(null);
-    // Check client-side cache first — avoid hitting the server for repeated attempts
+    // Check client-side cache first - avoid hitting the server for repeated attempts
     if (promoCache.current.has(code)) {
       const cached = promoCache.current.get(code);
       if (cached.valid) setPromoApplied({ code, ...cached });
@@ -191,7 +192,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
       payment_method:  paidId ? "online" : payMethod === "later" ? "pay_at_garage" : "free",
     });
 
-    // Send confirmation email — fire and forget
+    // Send confirmation email - fire and forget
     fetch("/api/booking/confirm", {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
@@ -236,16 +237,20 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
     try {
       const amount = getFinalAmount(); // in rupees
 
-      // Free service, free promo, or Pay at Garage — skip Razorpay
+      // Free service, free promo, or Pay at Garage - skip Razorpay
       if (amount === 0 || payMethod === "later") {
         await finishBooking(null);
         return;
       }
 
       // Create Razorpay order
+      const { data: { session } } = await supabase.auth.getSession();
       const orderRes = await fetch("/api/payment/create-order", {
         method:  "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type":  "application/json",
+          "Authorization": session?.access_token ? `Bearer ${session.access_token}` : "",
+        },
         body: JSON.stringify({
           amount:      amount * 100, // paise
           receipt:     "bkg_" + Date.now(),
@@ -292,7 +297,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
 
             await finishBooking(response.razorpay_payment_id);
           } catch (err) {
-            setError(err.message + " — contact support with payment ID: " + response.razorpay_payment_id);
+            setError(err.message + " - contact support with payment ID: " + response.razorpay_payment_id);
             setLoading(false);
           }
         },
@@ -544,7 +549,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
                   className="w-full rounded-xl border border-[#c2c6d8] bg-white px-3 py-2.5 text-sm placeholder:text-[#c2c6d8] focus:border-[#0056b7] focus:outline-none focus:ring-1 focus:ring-[#0056b7]/10 text-base"
                 />
 
-                {/* Locality — auto-filled or typed */}
+                {/* Locality - auto-filled or typed */}
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-primary" />
                   <input
@@ -601,7 +606,7 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
               <div className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 px-3 py-2.5">
                 <Check className="h-4 w-4 shrink-0 text-green-500" />
                 <div className="flex-1">
-                  <p className="text-xs font-bold text-green-700">{promoApplied.code} applied — {promoApplied.label}</p>
+                  <p className="text-xs font-bold text-green-700">{promoApplied.code} applied - {promoApplied.label}</p>
                 </div>
                 <button type="button" onClick={() => { setPromoApplied(null); setPromoInput(""); }} className="text-[#727687] hover:text-[#424656]">
                   <X className="h-4 w-4" />

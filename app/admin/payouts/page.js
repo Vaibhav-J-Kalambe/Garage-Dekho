@@ -10,7 +10,6 @@ const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY // reads via RLS policy
 );
 
-const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
 
 function fmt(paise) {
   return "₹" + (paise / 100).toLocaleString("en-IN");
@@ -43,6 +42,15 @@ export default function PayoutsPage() {
     );
   }
 
+  async function handleAuth() {
+    const res = await fetch("/api/admin/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: pw }),
+    });
+    if (res.ok) { setAuthed(true); } else { alert("Wrong password"); }
+  }
+
   function copyId(text) {
     navigator.clipboard.writeText(text).catch(() => {});
     setCopied(text);
@@ -60,10 +68,10 @@ export default function PayoutsPage() {
             onChange={(e) => setPw(e.target.value)}
             placeholder="Admin password"
             className="w-full rounded-xl border border-[#e8e8f0] px-4 py-3 text-sm mb-4 outline-none focus:border-[#0056b7]"
-            onKeyDown={(e) => e.key === "Enter" && pw === ADMIN_PASSWORD && setAuthed(true)}
+            onKeyDown={(e) => { if (e.key === "Enter") handleAuth(); }}
           />
           <button
-            onClick={() => pw === ADMIN_PASSWORD ? setAuthed(true) : alert("Wrong password")}
+            onClick={handleAuth}
             className="w-full rounded-xl bg-[#0056b7] text-white py-3 text-sm font-bold hover:brightness-110"
           >
             Enter

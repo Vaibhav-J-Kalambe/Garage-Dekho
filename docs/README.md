@@ -1,4 +1,4 @@
-# GarageDekho — Documentation Index
+# GarageDekho - Documentation Index
 
 All guides and references organized by category.
 
@@ -7,7 +7,7 @@ All guides and references organized by category.
 ## Hosting
 | File | Description |
 |------|-------------|
-| [WEBSITE_HOSTING_GUIDE.md](hosting/WEBSITE_HOSTING_GUIDE.md) | Deploy website on GoDaddy VPS — Nginx, PM2, SSL, domain setup |
+| [WEBSITE_HOSTING_GUIDE.md](hosting/WEBSITE_HOSTING_GUIDE.md) | Deploy website on GoDaddy VPS - Nginx, PM2, SSL, domain setup |
 | [APP_HOSTING_GUIDE.md](hosting/APP_HOSTING_GUIDE.md) | Publish app on Google Play Store & Apple App Store |
 | [FAILURE_PREVENTION_GUIDE.md](hosting/FAILURE_PREVENTION_GUIDE.md) | Prevent & recover from every type of failure |
 

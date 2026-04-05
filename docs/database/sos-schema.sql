@@ -1,5 +1,5 @@
 -- ============================================================
--- GarageDekho SOS Feature — Supabase Schema
+-- GarageDekho SOS Feature - Supabase Schema
 -- Run this in Supabase SQL Editor
 -- ============================================================
 
@@ -65,8 +65,8 @@ CREATE POLICY "Users can read own sos_requests"
   ON sos_requests FOR SELECT
   USING (auth.uid() = user_id OR user_id IS NULL);
 
--- Service role (API routes) can do everything — handled via service role key
--- Mechanic page reads sos_requests publicly (by requestId link — security by obscurity for MVP)
+-- Service role (API routes) can do everything - handled via service role key
+-- Mechanic page reads sos_requests publicly (by requestId link - security by obscurity for MVP)
 CREATE POLICY "Public can read sos_requests by id"
   ON sos_requests FOR SELECT
   USING (true);

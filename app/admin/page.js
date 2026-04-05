@@ -127,7 +127,7 @@ export default function AdminPage() {
     }
   }
 
-  /* ── Password gate — verified server-side ── */
+  /* ── Password gate - verified server-side ── */
   async function handleLogin() {
     setError(null);
     try {
@@ -327,8 +327,8 @@ export default function AdminPage() {
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       {[
                         ["Phone",       app.phone],
-                        ["WhatsApp",    app.whatsapp || "—"],
-                        ["Email",       app.email || "—"],
+                        ["WhatsApp",    app.whatsapp || "-"],
+                        ["Email",       app.email || "-"],
                         ["Speciality",  app.speciality],
                         ["Experience",  app.experience],
                         ["Vehicle Types", app.vehicle_types],

@@ -12,13 +12,13 @@ export async function POST(request) {
     const body = await request.json();
 
     const {
-      // Step 1 — Basic Info
+      // Step 1 - Basic Info
       garage_name, speciality, about, experience, vehicle_types,
-      // Step 2 — Location
+      // Step 2 - Location
       address, city, pincode, lat, lng,
-      // Step 3 — Services
+      // Step 3 - Services
       services,
-      // Step 4 — Hours & Contact
+      // Step 4 - Hours & Contact
       open_hours, phone, whatsapp, email,
       // Owner
       owner_name,

@@ -1,4 +1,4 @@
-# GarageDekho — SOS & Garage Portal System
+# GarageDekho - SOS & Garage Portal System
 
 How every part of the system works, written for the team.
 
@@ -8,8 +8,8 @@ How every part of the system works, written for the team.
 
 1. [Big Picture](#1-big-picture)
 2. [Database Tables](#2-database-tables)
-3. [SOS Flow — Customer Side](#3-sos-flow--customer-side)
-4. [SOS Flow — Mechanic Side](#4-sos-flow--mechanic-side)
+3. [SOS Flow - Customer Side](#3-sos-flow--customer-side)
+4. [SOS Flow - Mechanic Side](#4-sos-flow--mechanic-side)
 5. [Garage Management Portal](#5-garage-management-portal)
 6. [How Live Tracking Works](#6-how-live-tracking-works)
 7. [API Routes](#7-api-routes)
@@ -33,9 +33,9 @@ GarageDekho (Customer App)          Garage Management Portal
   Track mechanic live                  Track active jobs
 ```
 
-They are **not separate deployments** — both run inside the same Next.js project. The portal lives under `/portal/*` routes, isolated by its own layout and auth context.
+They are **not separate deployments** - both run inside the same Next.js project. The portal lives under `/portal/*` routes, isolated by its own layout and auth context.
 
-They share the **same Supabase project** (same database, same auth system). A garage owner creates an account in the portal — that account lives in Supabase Auth just like a regular customer account does.
+They share the **same Supabase project** (same database, same auth system). A garage owner creates an account in the portal - that account lives in Supabase Auth just like a regular customer account does.
 
 ---
 
@@ -47,7 +47,7 @@ Created when a customer hits "Get Help Now".
 | Column         | Type      | Description                                      |
 |----------------|-----------|--------------------------------------------------|
 | `id`           | UUID (PK) | Unique ID for this SOS event                     |
-| `user_id`      | UUID      | Customer's auth ID (nullable — guest users allowed) |
+| `user_id`      | UUID      | Customer's auth ID (nullable - guest users allowed) |
 | `issue_type`   | text      | "Flat Tyre", "Battery Dead", "Engine Fail", etc. |
 | `user_lat`     | float8    | Customer's GPS latitude                          |
 | `user_lng`     | float8    | Customer's GPS longitude                         |
@@ -101,11 +101,11 @@ Staff members linked to a garage.
 
 ---
 
-## 3. SOS Flow — Customer Side
+## 3. SOS Flow - Customer Side
 
 **File:** `app/sos/page.js`
 
-The page is a state machine with 6 phases. The customer never leaves this page — the UI changes based on phase.
+The page is a state machine with 6 phases. The customer never leaves this page - the UI changes based on phase.
 
 ```
 select → locating → searching → accepted → arrived → verified
@@ -122,14 +122,14 @@ select → locating → searching → accepted → arrived → verified
 
 ### Phase: `searching`
 - An `sos_requests` row is inserted into Supabase with status `pending`
-- `/api/sos/request` is called — this finds all `portal_garages` within 10 km using the Haversine formula and returns them
+- `/api/sos/request` is called - this finds all `portal_garages` within 10 km using the Haversine formula and returns them
 - Nearby garages are listed on screen with a "Notify" WhatsApp button each
-- A **Supabase Realtime subscription** is opened on the `sos_requests` row — waiting for status to change
+- A **Supabase Realtime subscription** is opened on the `sos_requests` row - waiting for status to change
 
 ### Phase: `accepted`
 - Triggered automatically when Realtime fires (status changed to `accepted`)
-- The `sos_assignments` row is loaded — this has the mechanic's name, garage, phone
-- A second Realtime subscription opens on `sos_assignments` — watching for `mechanic_lat`/`mechanic_lng` changes
+- The `sos_assignments` row is loaded - this has the mechanic's name, garage, phone
+- A second Realtime subscription opens on `sos_assignments` - watching for `mechanic_lat`/`mechanic_lng` changes
 - Full-screen map renders with:
   - Red pulsing dot = customer's location (static)
   - Blue wrench icon = mechanic's location (live, moves every 5s)
@@ -144,12 +144,12 @@ select → locating → searching → accepted → arrived → verified
 
 ### Phase: `verified`
 - Triggered automatically when OTP is confirmed (status changed to `verified`)
-- Shows job summary — issue, mechanic, garage
+- Shows job summary - issue, mechanic, garage
 - Customer goes back to home
 
 ---
 
-## 4. SOS Flow — Mechanic Side
+## 4. SOS Flow - Mechanic Side
 
 **File:** `app/sos/mechanic/[requestId]/page.js`
 
@@ -167,7 +167,7 @@ loading → view → accepted → arrived → verified
 ### Phase: `loading`
 - Fetches the `sos_requests` row from Supabase
 
-### Phase: `view` (standalone acceptance — if mechanic accepts directly without portal)
+### Phase: `view` (standalone acceptance - if mechanic accepts directly without portal)
 - Shows a map with the customer's pin
 - Mechanic fills in: name, garage name, phone
 - Taps "Accept & Go" → calls `/api/sos/accept` → starts GPS sharing
@@ -176,7 +176,7 @@ loading → view → accepted → arrived → verified
 - If the portal already accepted the job, status is `accepted` when mechanic opens the link
 - The page checks for an existing `sos_assignments` row
 - If found → pre-fills mechanic name from the assignment → jumps straight to `accepted` phase
-- GPS starts sharing immediately — no form needed
+- GPS starts sharing immediately - no form needed
 
 ### Phase: `accepted`
 - Full-screen map shows mechanic's own position (blue) and customer's position (red)
@@ -194,7 +194,7 @@ loading → view → accepted → arrived → verified
 - Mechanic's status in `portal_mechanics` is reset to `available`
 
 ### Phase: `taken`
-- If someone else already accepted this SOS — mechanic sees "Already Accepted" screen
+- If someone else already accepted this SOS - mechanic sees "Already Accepted" screen
 
 ---
 
@@ -213,7 +213,7 @@ The portal is isolated from the main app. It has its own:
 - 2-step form: Step 1 = email + password, Step 2 = garage details
 - Uses a server-side API route `/api/portal/register` with the Supabase Service Role Key
 - Why server-side? Supabase RLS blocks client-side inserts until the session is fully active
-- Creates user via `auth.admin.createUser({ email_confirm: true })` — auto-confirms only this user, doesn't affect global email confirmation settings
+- Creates user via `auth.admin.createUser({ email_confirm: true })` - auto-confirms only this user, doesn't affect global email confirmation settings
 
 **Login** (`/portal/login`):
 - Standard email + password via `supabase.auth.signInWithPassword()`
@@ -235,13 +235,13 @@ The portal is isolated from the main app. It has its own:
 - Red SOS alert banner if any pending requests are nearby (links to SOS page)
 - Stats: SOS handled today (real data), Bookings (placeholder), Revenue (placeholder), Rating (placeholder)
 - Active SOS list (pending/accepted/arrived) filtered by 15 km distance from garage
-- Supabase Realtime subscription — plays a 3-beep sound + vibration when a new SOS request comes in
+- Supabase Realtime subscription - plays a 3-beep sound + vibration when a new SOS request comes in
 
 ### SOS Alerts (`/portal/sos`)
 Three sections:
-1. **Incoming** — pending requests within 15 km, shows issue type, distance, time. "Accept & Dispatch" button
-2. **Active Jobs** — requests this garage accepted, shows en-route or arrived status. "Live Track" / "Verify OTP" button
-3. **Completed Today** — verified jobs
+1. **Incoming** - pending requests within 15 km, shows issue type, distance, time. "Accept & Dispatch" button
+2. **Active Jobs** - requests this garage accepted, shows en-route or arrived status. "Live Track" / "Verify OTP" button
+3. **Completed Today** - verified jobs
 
 **Dispatch flow:**
 - Tap "Accept & Dispatch" → opens a mechanic selection modal
@@ -256,11 +256,11 @@ Three sections:
 - Add, edit, remove mechanics
 - Fields: name, phone, specialization
 - Delete requires an inline confirmation (no accidental deletes)
-- Status badge (Available / Busy / Offline) — tap to cycle through
+- Status badge (Available / Busy / Offline) - tap to cycle through
 
 ### Profile (`/portal/profile`)
 - Edit garage name, phone, address, city
-- **Set Garage Location** — "Use My Location" button captures GPS coordinates via `navigator.geolocation`
+- **Set Garage Location** - "Use My Location" button captures GPS coordinates via `navigator.geolocation`
   - These coordinates are used to calculate distance from SOS requests
   - Without this set, distance-based filtering won't work
 - Working hours: open time, close time, days closed
@@ -300,17 +300,17 @@ POST /api/sos/location ──────► UPDATE sos_assignments
 
 **Key details:**
 - Realtime is powered by Supabase's `postgres_changes` feature (Postgres logical replication under the hood)
-- No polling — the customer's browser receives a push notification from Supabase the moment the DB row changes
-- The mechanic's GPS is watched by `navigator.geolocation.watchPosition()` — fires when position changes meaningfully
+- No polling - the customer's browser receives a push notification from Supabase the moment the DB row changes
+- The mechanic's GPS is watched by `navigator.geolocation.watchPosition()` - fires when position changes meaningfully
 - A `setInterval` every 5 seconds ensures the server always has a fresh position even if the device doesn't move
-- The Leaflet map moves the mechanic's marker using `marker.setLatLng()` — no map re-render, just the pin moves
+- The Leaflet map moves the mechanic's marker using `marker.setLatLng()` - no map re-render, just the pin moves
 - ETA = `distance_km / 25 km_per_hour × 60 minutes` (rough city speed estimate)
 
 ---
 
 ## 7. API Routes
 
-All API routes use the **Supabase Service Role Key** — this bypasses Row Level Security (RLS). Never expose this key on the client side.
+All API routes use the **Supabase Service Role Key** - this bypasses Row Level Security (RLS). Never expose this key on the client side.
 
 | Route                     | Method | What it does                                                              |
 |---------------------------|--------|---------------------------------------------------------------------------|
@@ -377,11 +377,11 @@ lib/
 
 | Layer          | Technology                                                                 |
 |----------------|----------------------------------------------------------------------------|
-| Framework      | Next.js 14 (App Router, JavaScript — not TypeScript)                       |
+| Framework      | Next.js 14 (App Router, JavaScript - not TypeScript)                       |
 | Database       | Supabase (PostgreSQL)                                                      |
 | Realtime       | Supabase Realtime (`postgres_changes` subscriptions)                       |
 | Auth           | Supabase Auth (email + password)                                           |
-| Map            | Leaflet.js (dynamically imported — SSR disabled)                           |
+| Map            | Leaflet.js (dynamically imported - SSR disabled)                           |
 | Map tiles      | Carto Voyager (free, no API key)                                           |
 | Geocoding      | OpenStreetMap Nominatim (free, no API key)                                 |
 | Styling        | Tailwind CSS                                                               |
@@ -414,23 +414,23 @@ lib/
 | Feature                        | Why it matters                                                            |
 |--------------------------------|---------------------------------------------------------------------------|
 | Web Push Notifications         | Portal tab doesn't need to be open to get SOS alerts                     |
-| Bookings table + booking flow  | Currently shows 0 — needs its own table and UI                           |
-| Ratings system                 | Currently shows "—" — needs a `reviews` table                            |
-| Mechanic route (road-following)| Currently shows a straight dashed line — needs a routing API (OSRM/ORS) |
+| Bookings table + booking flow  | Currently shows 0 - needs its own table and UI                           |
+| Ratings system                 | Currently shows "-" - needs a `reviews` table                            |
+| Mechanic route (road-following)| Currently shows a straight dashed line - needs a routing API (OSRM/ORS) |
 | Cancel from portal side        | Garages can't currently cancel a job they accepted                        |
 | SOS history for customers      | Customers can't see their past SOS requests                               |
 | Admin dashboard                | No way to see all SOS requests system-wide                                |
 
 ### How notifications currently work (no push yet)
 Right now, garages are notified via:
-1. **WhatsApp** — customer's searching screen has a "Notify" button that opens WhatsApp to the garage's number
-2. **Sound + vibration** — portal dashboard plays a beep and vibrates the device when a new SOS comes in via Realtime (only works if the portal tab is open)
+1. **WhatsApp** - customer's searching screen has a "Notify" button that opens WhatsApp to the garage's number
+2. **Sound + vibration** - portal dashboard plays a beep and vibrates the device when a new SOS comes in via Realtime (only works if the portal tab is open)
 
 For production, Web Push Notifications should be added so garages get alerted even when the browser tab is closed.
 
 ---
 
-## Quick Reference — Status Flow
+## Quick Reference - Status Flow
 
 ```
 sos_requests.status:
@@ -446,4 +446,4 @@ sos_requests.status:
 
 ---
 
-*Last updated: March 2026 — GarageDekho internal documentation*
+*Last updated: March 2026 - GarageDekho internal documentation*

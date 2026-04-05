@@ -15,8 +15,8 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: { default: "GarageDekho", template: "%s — GarageDekho" },
-  description: "Hyperlocal automotive service marketplace — find & book garages near you",
+  title: { default: "GarageDekho", template: "%s - GarageDekho" },
+  description: "Find and book trusted car garages near you. Oil changes, repairs, tyres, and 24/7 SOS.",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,

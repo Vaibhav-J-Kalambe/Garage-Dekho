@@ -24,7 +24,7 @@ export default {
         "inverse-primary":            "#adc6ff",
         "surface-tint":               "#005bc1",
 
-        // Secondary (violet-indigo — premium features)
+        // Secondary (violet-indigo - premium features)
         "secondary":                  "#4c4aca",
         "on-secondary":               "#ffffff",
         "secondary-container":        "#6664e4",
@@ -34,7 +34,7 @@ export default {
         "on-secondary-fixed":         "#0c006a",
         "on-secondary-fixed-variant": "#3631b4",
 
-        // Tertiary (warm red — alerts, warnings)
+        // Tertiary (warm red - alerts, warnings)
         "tertiary":                   "#a33200",
         "on-tertiary":                "#ffffff",
         "tertiary-container":         "#cc4204",
@@ -44,7 +44,7 @@ export default {
         "on-tertiary-fixed":          "#390c00",
         "on-tertiary-fixed-variant":  "#832600",
 
-        // Surfaces — layered depth system (no borders, depth via bg shifts)
+        // Surfaces - layered depth system (no borders, depth via bg shifts)
         "background":                 "#f9f9fe",
         "surface":                    "#f9f9fe",
         "surface-bright":             "#f9f9fe",
@@ -82,7 +82,7 @@ export default {
         "brandOrange":                "#FF6B00",
       },
       borderRadius: {
-        "DEFAULT": "0.5rem",   // 8px — minimum per design system
+        "DEFAULT": "0.5rem",   // 8px - minimum per design system
         "lg":      "0.75rem",  // 12px
         "xl":      "1rem",     // 16px
         "2xl":     "1.25rem",  // 20px
@@ -90,7 +90,7 @@ export default {
         "full":    "9999px",
       },
       boxShadow: {
-        // Ambient shadows — diffuse, tinted (per design system)
+        // Ambient shadows - diffuse, tinted (per design system)
         "card":       "0 4px 24px rgba(0, 86, 183, 0.04)",
         "card-hover": "0 8px 32px rgba(0, 86, 183, 0.08)",
         "nav":        "0 -4px 24px rgba(0, 0, 0, 0.04)",

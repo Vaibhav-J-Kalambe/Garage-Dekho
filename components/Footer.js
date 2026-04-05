@@ -49,7 +49,7 @@ const TRUST_BADGES = [
         <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
       </svg>
     ),
-    label: "15-min Response",
+    label: "24/7 SOS Available",
   },
   {
     icon: (
@@ -98,17 +98,9 @@ export default function Footer() {
             GarageDekho
           </Link>
           <p className="mt-3 text-[13px] leading-relaxed text-[#424656]">
-            India&apos;s hyperlocal automotive service marketplace. Find verified garages, book services, and get 24/7 roadside help.
+            Book car service at trusted garages near you. Oil changes, repairs, tyres, and 24/7 roadside SOS.
           </p>
 
-          {/* Live badge */}
-          <div className="mt-4 flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-            </span>
-            <span className="text-[12px] font-semibold text-[#424656]">500+ partner garages live</span>
-          </div>
 
           {/* Social links */}
           <div className="mt-5 flex items-center gap-3">
