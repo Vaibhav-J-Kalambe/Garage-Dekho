@@ -121,7 +121,7 @@ export default function BottomNav() {
                     <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-[#ba1a1a] ring-2 ring-white" aria-hidden="true" />
                   )}
                 </div>
-                <span className={`text-[9px] font-bold uppercase tracking-widest ${active ? "text-[#ba1a1a]" : "text-[#424656]"}`}>
+                <span className={`text-[10px] font-semibold ${active ? "text-[#ba1a1a]" : "text-[#424656]"}`}>
                   {label}
                 </span>
               </Link>
@@ -143,7 +143,7 @@ export default function BottomNav() {
               }`}>
                 {active ? iconFilled : icon}
               </div>
-              <span className={`text-[9px] font-bold uppercase tracking-widest ${
+              <span className={`text-[10px] font-semibold ${
                 active ? "text-[#0056b7]" : "text-[#727687]"
               }`}>
                 {label}

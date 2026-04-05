@@ -315,7 +315,6 @@ export default function BookingsPage() {
 
         {/* ── EDITORIAL HEADER ── */}
         <section className="mb-4 md:mb-8">
-          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656] mb-1">Dashboard</p>
           <h1 className="text-[2rem] md:text-[3.5rem] font-bold tracking-tight text-[#1a1c1f] leading-[1.1] mb-1">
             My Bookings
           </h1>

@@ -91,7 +91,7 @@ function GarageRow({ garage, active, onClick }) {
         <div className="mt-1 flex items-center gap-2">
           <div className="flex items-center gap-0.5">
             <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-            <span className="text-xs font-semibold text-[#1a1c1f]">{garage.rating}</span>
+            <span className="text-xs font-semibold text-[#1a1c1f]">{garage.rating || "New"}</span>
           </div>
           <span className="text-[#c2c6d8]">·</span>
           <span className={`text-[11px] font-semibold ${garage.isOpen ? "text-green-500" : "text-[#424656]"}`}>
@@ -104,7 +104,7 @@ function GarageRow({ garage, active, onClick }) {
         <Link
           href={`/garage/${garage.id}`}
           onClick={(e) => e.stopPropagation()}
-          className="rounded-full bg-[#0056b7] px-4 py-2 text-xs font-bold text-white transition hover:opacity-90 active:scale-95 min-h-[36px] flex items-center"
+          className="rounded-full bg-[#0056b7] px-4 py-2 text-xs font-bold text-white transition hover:opacity-90 active:scale-95 min-h-[44px] flex items-center"
         >
           View
         </Link>

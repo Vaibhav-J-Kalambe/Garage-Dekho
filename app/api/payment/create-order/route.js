@@ -1,8 +1,16 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+const COMMISSION_PCT = Number(process.env.COMMISSION_PCT || 15);
 
 export async function POST(request) {
   try {
-    const { amount, receipt } = await request.json();
+    const { amount, receipt, garage_id, garage_name } = await request.json();
 
     if (!amount || amount <= 0) {
       return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
@@ -38,6 +46,26 @@ export async function POST(request) {
         { status: res.status }
       );
     }
+
+    // Calculate commission split
+    const amountPaise      = Math.round(amount);
+    const commissionAmount = Math.round(amountPaise * COMMISSION_PCT / 100);
+    const garageAmount     = amountPaise - commissionAmount;
+
+    // Save pending payment record
+    const { error: dbErr } = await supabaseAdmin.from("payments").insert({
+      garage_id:         garage_id  || null,
+      garage_name:       garage_name || null,
+      razorpay_order_id: order.id,
+      amount_total:      amountPaise,
+      amount_commission: commissionAmount,
+      amount_garage:     garageAmount,
+      commission_pct:    COMMISSION_PCT,
+      status:            "pending",
+      payout_status:     "pending",
+    });
+
+    if (dbErr) console.error("[create-order] DB insert error:", dbErr.message);
 
     return NextResponse.json(order);
   } catch (err) {

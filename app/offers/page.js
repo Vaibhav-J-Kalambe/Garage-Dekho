@@ -180,7 +180,7 @@ function OfferCard({ offer }) {
   const [from] = offer.gradient;
 
   return (
-    <div className="bg-white rounded-3xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10 flex flex-col transition hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] active:scale-[0.98]">
+    <div className="h-full bg-white rounded-3xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10 flex flex-col transition hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] active:scale-[0.98]">
       {/* Tag + urgency */}
       <div className="flex items-center gap-2 flex-wrap mb-3">
         <span
@@ -299,10 +299,11 @@ export default function OffersPage() {
                 All Offers
               </p>
             )}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 items-stretch">
               {(showFeatured ? rest : filtered).map((offer, i) => (
                 <div
                   key={offer.id}
+                  className="h-full"
                   style={{ animationDelay: `${i * 60}ms` }}
                 >
                   <OfferCard offer={offer} />

@@ -46,7 +46,10 @@ export default function AdminPage() {
     if (typeof window === "undefined") return false;
     return sessionStorage.getItem("admin_authed") === "1" && !!sessionStorage.getItem("admin_pw");
   });
-  const [tab, setTab]             = useState("applications"); // "applications" | "add"
+  const [tab, setTab]             = useState("applications"); // "applications" | "portal" | "add"
+  const [portalGarages,    setPortalGarages]    = useState([]);
+  const [portalLoading,    setPortalLoading]    = useState(false);
+  const [portalActioning,  setPortalActioning]  = useState(null);
   const [form, setForm]           = useState(EMPTY_FORM);
   const [services, setServices]   = useState([{ name: "", price: "", duration: "" }]);
   const [submitting, setSubmitting] = useState(false);
@@ -62,7 +65,32 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (authed && tab === "applications") fetchApplications();
+    if (authed && tab === "portal") fetchPortalGarages();
   }, [authed, tab]);
+
+  async function fetchPortalGarages() {
+    setPortalLoading(true);
+    const { data } = await supabase
+      .from("portal_garages")
+      .select("id, garage_name, phone, address, city, status, created_at")
+      .order("created_at", { ascending: false });
+    setPortalGarages(data ?? []);
+    setPortalLoading(false);
+  }
+
+  async function approvePortalGarage(id) {
+    setPortalActioning(id);
+    await supabase.from("portal_garages").update({ status: "approved" }).eq("id", id);
+    setPortalGarages((prev) => prev.map((g) => g.id === id ? { ...g, status: "approved" } : g));
+    setPortalActioning(null);
+  }
+
+  async function rejectPortalGarage(id) {
+    setPortalActioning(id);
+    await supabase.from("portal_garages").update({ status: "rejected" }).eq("id", id);
+    setPortalGarages((prev) => prev.map((g) => g.id === id ? { ...g, status: "rejected" } : g));
+    setPortalActioning(null);
+  }
 
   async function fetchApplications() {
     setAppsLoading(true);
@@ -230,6 +258,18 @@ export default function AdminPage() {
             )}
           </button>
           <button
+            onClick={() => setTab("portal")}
+            className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition ${tab === "portal" ? "bg-primary text-white" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
+          >
+            <ClipboardList className="h-3.5 w-3.5" />
+            Portal Requests
+            {portalGarages.filter(g => g.status === "pending").length > 0 && (
+              <span className="rounded-full bg-amber-500 px-1.5 py-0.5 text-[10px] font-black text-white">
+                {portalGarages.filter(g => g.status === "pending").length}
+              </span>
+            )}
+          </button>
+          <button
             onClick={() => setTab("add")}
             className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition ${tab === "add" ? "bg-primary text-white" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
           >
@@ -368,6 +408,61 @@ export default function AdminPage() {
                 )}
               </div>
             ))}
+          </div>
+        )}
+
+        {/* ── PORTAL REQUESTS TAB ── */}
+        {tab === "portal" && (
+          <div className="space-y-3">
+            <p className="text-xs text-slate-400">Garages that self-registered via the portal. Approve to give them dashboard access.</p>
+            {portalLoading ? (
+              <p className="text-sm text-slate-400">Loading…</p>
+            ) : portalGarages.length === 0 ? (
+              <p className="text-sm text-slate-400">No portal registrations yet.</p>
+            ) : (
+              portalGarages.map((g) => (
+                <div key={g.id} className="rounded-2xl bg-white p-5 shadow-card border border-slate-100">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="text-sm font-black text-slate-800">{g.garage_name}</p>
+                        <span className={`text-[10px] font-bold rounded-full px-2 py-0.5 ${
+                          g.status === "approved" ? "bg-green-100 text-green-700" :
+                          g.status === "rejected" ? "bg-red-100 text-red-500" :
+                          "bg-amber-100 text-amber-700"
+                        }`}>{g.status}</span>
+                      </div>
+                      {g.phone   && <p className="text-xs text-slate-500">{g.phone}</p>}
+                      {g.address && <p className="text-xs text-slate-400">{g.address}{g.city ? `, ${g.city}` : ""}</p>}
+                      <p className="text-[11px] text-slate-300 mt-1">{new Date(g.created_at).toLocaleString("en-IN")}</p>
+                    </div>
+                    {g.status === "pending" && (
+                      <div className="flex gap-2 shrink-0">
+                        <button
+                          onClick={() => approvePortalGarage(g.id)}
+                          disabled={portalActioning === g.id}
+                          className="flex items-center gap-1 rounded-xl bg-green-500 px-3 py-2 text-xs font-black text-white hover:bg-green-600 disabled:opacity-60"
+                        >
+                          <Check className="h-3.5 w-3.5" /> Approve
+                        </button>
+                        <button
+                          onClick={() => rejectPortalGarage(g.id)}
+                          disabled={portalActioning === g.id}
+                          className="flex items-center gap-1 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-black text-red-500 hover:bg-red-100 disabled:opacity-60"
+                        >
+                          <X className="h-3.5 w-3.5" /> Reject
+                        </button>
+                      </div>
+                    )}
+                    {g.status === "approved" && (
+                      <p className="text-xs font-bold text-green-600 flex items-center gap-1 shrink-0">
+                        <CheckCircle2 className="h-4 w-4" /> Live
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         )}
 

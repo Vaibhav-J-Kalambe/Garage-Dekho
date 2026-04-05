@@ -8,7 +8,19 @@ const supabaseAdmin = createClient(
 
 export async function POST(request) {
   try {
-    const { email, password, existingId, garageName, phone, address, city } = await request.json();
+    const {
+      email, password, existingId,
+      // Basic Info
+      ownerName, garageName, speciality, experience, about, vehicleTypes,
+      // Location
+      address, city, pincode, lat, lng,
+      // Services
+      services,
+      // Hours & Contact
+      openTime, closeTime, closedDays, phone, whatsapp, garageEmail,
+      // Payout
+      upiId, bankName, bankAccount, bankIfsc,
+    } = await request.json();
 
     if (!garageName) {
       return NextResponse.json({ error: "Garage name is required" }, { status: 400 });
@@ -40,14 +52,35 @@ export async function POST(request) {
 
     // Insert portal_garages using service role (bypasses RLS)
     const { error: garageErr } = await supabaseAdmin.from("portal_garages").insert({
-      user_id:     userId,
-      garage_name: garageName.trim(),
-      phone:       phone?.trim() || null,
-      address:     address?.trim() || null,
-      city:        city?.trim() || null,
+      user_id:              userId,
+      garage_name:          garageName.trim(),
+      owner_name:           ownerName?.trim() || null,
+      speciality:           speciality?.trim() || null,
+      experience:           experience || null,
+      about:                about?.trim() || null,
+      vehicle_types:        vehicleTypes || [],
+      phone:                phone?.trim() || null,
+      whatsapp:             whatsapp?.trim() || null,
+      garage_email:         garageEmail?.trim() || null,
+      address:              address?.trim() || null,
+      city:                 city?.trim() || null,
+      pincode:              pincode?.trim() || null,
+      lat:                  lat || null,
+      lng:                  lng || null,
+      services:             services || [],
+      working_hours:        { open: openTime || "09:00", close: closeTime || "21:00", closed_days: closedDays || [] },
+      upi_id:               upiId?.trim() || null,
+      bank_account_name:    bankName?.trim() || null,
+      bank_account_number:  bankAccount?.trim() || null,
+      bank_ifsc:            bankIfsc?.trim() || null,
+      status:               "pending",
     });
 
     if (garageErr) {
+      // Already has a garage — just redirect them to dashboard/pending
+      if (garageErr.code === "23505") {
+        return NextResponse.json({ ok: true, existing: true });
+      }
       // Only delete the user if we just created them
       if (!existingId) await supabaseAdmin.auth.admin.deleteUser(userId).catch(() => {});
       return NextResponse.json({ error: garageErr.message }, { status: 400 });

@@ -55,8 +55,13 @@ export default function PortalDashboard() {
 
   async function fetchDashboard() {
     setLoading(true);
-    await Promise.all([fetchActiveSos(), fetchStats()]);
-    setLoading(false);
+    try {
+      await Promise.all([fetchActiveSos(), fetchStats()]);
+    } catch (e) {
+      console.error("[dashboard] fetch error:", e);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function fetchActiveSos() {
@@ -78,8 +83,8 @@ export default function PortalDashboard() {
     today.setHours(0, 0, 0, 0);
     const { data: sosData } = await supabase
       .from("sos_assignments")
-      .select("id, garage_id, garage_name")
-      .or(`garage_id.eq.${garage?.id},garage_name.eq.${garage?.garage_name}`)
+      .select("id, garage_id")
+      .eq("garage_id", garage?.id)
       .gte("created_at", today.toISOString());
     setStats({ bookings: 0, revenue: 0, sos: sosData?.length ?? 0, rating: "—" });
   }

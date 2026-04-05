@@ -247,8 +247,10 @@ export default function BookingModal({ garage, preselectedService, onClose, onSu
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount:  amount * 100, // paise
-          receipt: "bkg_" + Date.now(),
+          amount:      amount * 100, // paise
+          receipt:     "bkg_" + Date.now(),
+          garage_id:   garage.id,
+          garage_name: garage.name,
         }),
       });
       const order = await orderRes.json();

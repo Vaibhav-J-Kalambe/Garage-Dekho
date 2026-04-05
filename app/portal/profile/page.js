@@ -53,6 +53,16 @@ export default function PortalProfilePage() {
   const [closedDays, setClosedDays] = useState(["Sunday"]);
   const [services,   setServices]   = useState([]);
 
+  // Payout details
+  const [upiId,       setUpiId]       = useState("");
+  const [bankName,    setBankName]    = useState("");
+  const [bankAccount, setBankAccount] = useState("");
+  const [bankIfsc,    setBankIfsc]    = useState("");
+  const [payoutSaving, setPayoutSaving] = useState(false);
+  const [payoutSaved,  setPayoutSaved]  = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting,      setDeleting]      = useState(false);
+
   useEffect(() => {
     if (!garage) return;
     setGarageName(garage.garage_name || "");
@@ -64,7 +74,13 @@ export default function PortalProfilePage() {
     setOpenTime(garage.working_hours?.open  || "09:00");
     setCloseTime(garage.working_hours?.close || "21:00");
     setClosedDays(garage.working_hours?.closed_days || ["Sunday"]);
-    setServices(garage.services || []);
+    // Normalise services to string array regardless of stored format (objects or strings)
+    const raw = garage.services || [];
+    setServices(raw.map((s) => (typeof s === "string" ? s : s.name)).filter(Boolean));
+    setUpiId(garage.upi_id || "");
+    setBankName(garage.bank_account_name || "");
+    setBankAccount(garage.bank_account_number || "");
+    setBankIfsc(garage.bank_ifsc || "");
   }, [garage]);
 
   function captureLocation() {
@@ -103,6 +119,27 @@ export default function PortalProfilePage() {
     setSaved(true);
     setEditing(false);
     setTimeout(() => setSaved(false), 3000);
+  }
+
+  async function handlePayoutSave() {
+    setPayoutSaving(true);
+    await supabase.from("portal_garages").update({
+      upi_id:              upiId.trim() || null,
+      bank_account_name:   bankName.trim() || null,
+      bank_account_number: bankAccount.trim() || null,
+      bank_ifsc:           bankIfsc.trim().toUpperCase() || null,
+      payout_enabled:      !!(upiId.trim() || bankAccount.trim()),
+    }).eq("id", garage.id);
+    await refreshGarage();
+    setPayoutSaving(false);
+    setPayoutSaved(true);
+    setTimeout(() => setPayoutSaved(false), 3000);
+  }
+
+  async function handleDeleteGarage() {
+    setDeleting(true);
+    await supabase.from("portal_garages").delete().eq("id", garage.id);
+    await signOut();
   }
 
   if (!garage) {
@@ -308,6 +345,85 @@ export default function PortalProfilePage() {
             </div>
           </Card>
 
+          {/* ── Payout Details ── */}
+          <Card title="Payout Details">
+            <p className="text-xs text-[#727687] -mt-1 mb-2">
+              Add your UPI ID or bank account so GarageDekho can transfer your earnings after each booking.
+            </p>
+
+            {/* UPI */}
+            <div>
+              <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-[#727687]">UPI ID <span className="normal-case font-normal">(Recommended)</span></p>
+              <input
+                type="text"
+                value={upiId}
+                onChange={(e) => setUpiId(e.target.value)}
+                placeholder="yourname@upi"
+                style={{ fontSize: 16 }}
+                className="w-full rounded-xl border border-[#c2c6d8]/40 bg-[#f9f9fe] px-4 py-3 text-sm text-[#1a1c1f] outline-none focus:border-[#0056b7] focus:ring-1 focus:ring-[#0056b7]/20"
+              />
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-px bg-[#c2c6d8]/30" />
+              <span className="text-xs text-[#727687]">or Bank Account</span>
+              <div className="flex-1 h-px bg-[#c2c6d8]/30" />
+            </div>
+
+            {/* Bank details */}
+            <div className="space-y-3">
+              <div>
+                <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-[#727687]">Account Holder Name</p>
+                <input
+                  type="text"
+                  value={bankName}
+                  onChange={(e) => setBankName(e.target.value)}
+                  placeholder="Name as per bank"
+                  style={{ fontSize: 16 }}
+                  className="w-full rounded-xl border border-[#c2c6d8]/40 bg-[#f9f9fe] px-4 py-3 text-sm text-[#1a1c1f] outline-none focus:border-[#0056b7] focus:ring-1 focus:ring-[#0056b7]/20"
+                />
+              </div>
+              <div>
+                <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-[#727687]">Account Number</p>
+                <input
+                  type="text"
+                  value={bankAccount}
+                  onChange={(e) => setBankAccount(e.target.value)}
+                  placeholder="Bank account number"
+                  style={{ fontSize: 16 }}
+                  className="w-full rounded-xl border border-[#c2c6d8]/40 bg-[#f9f9fe] px-4 py-3 text-sm text-[#1a1c1f] outline-none focus:border-[#0056b7] focus:ring-1 focus:ring-[#0056b7]/20"
+                />
+              </div>
+              <div>
+                <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-[#727687]">IFSC Code</p>
+                <input
+                  type="text"
+                  value={bankIfsc}
+                  onChange={(e) => setBankIfsc(e.target.value.toUpperCase())}
+                  placeholder="e.g. SBIN0001234"
+                  style={{ fontSize: 16 }}
+                  className="w-full rounded-xl border border-[#c2c6d8]/40 bg-[#f9f9fe] px-4 py-3 text-sm font-mono text-[#1a1c1f] outline-none focus:border-[#0056b7] focus:ring-1 focus:ring-[#0056b7]/20"
+                />
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handlePayoutSave}
+              disabled={payoutSaving}
+              className="w-full rounded-xl bg-[#0056b7] py-3 text-sm font-bold text-white transition hover:brightness-110 active:scale-95 disabled:opacity-60 mt-1"
+            >
+              {payoutSaving ? "Saving…" : payoutSaved ? "✓ Saved!" : "Save Payout Details"}
+            </button>
+
+            {(garage.upi_id || garage.bank_account_number) && (
+              <div className="flex items-center gap-2 rounded-xl bg-green-50 px-4 py-3">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <p className="text-xs font-semibold text-green-700">Payout details saved — you&apos;re all set to receive payments</p>
+              </div>
+            )}
+          </Card>
+
           {/* ── Services ── */}
           <Card title="Services Offered">
             <div className="grid grid-cols-2 gap-2">
@@ -341,6 +457,49 @@ export default function PortalProfilePage() {
               <p className="py-4 text-center text-sm text-[#727687]">No services added. Tap Edit Profile to add.</p>
             )}
           </Card>
+
+          {/* ── Danger Zone ── */}
+          <div className="overflow-hidden rounded-2xl bg-white shadow-card border border-red-100">
+            <div className="border-b border-red-100 px-5 py-3.5">
+              <p className="text-sm font-black text-red-500">Danger Zone</p>
+            </div>
+            <div className="p-5 space-y-3">
+              <p className="text-xs text-[#727687] leading-relaxed">
+                Deleting your garage will permanently remove it from GarageDekho. All your profile data will be lost. This cannot be undone.
+              </p>
+              {!confirmDelete ? (
+                <button
+                  type="button"
+                  onClick={() => setConfirmDelete(true)}
+                  className="rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-bold text-red-500 transition hover:bg-red-100 active:scale-95"
+                >
+                  Delete My Garage
+                </button>
+              ) : (
+                <div className="rounded-xl bg-red-50 border border-red-200 p-4 space-y-3">
+                  <p className="text-sm font-bold text-red-600">Are you sure? This is permanent.</p>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={handleDeleteGarage}
+                      disabled={deleting}
+                      className="flex-1 rounded-xl bg-red-500 py-2.5 text-sm font-black text-white hover:bg-red-600 disabled:opacity-60 active:scale-95"
+                    >
+                      {deleting ? "Deleting…" : "Yes, Delete Everything"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmDelete(false)}
+                      className="flex-1 rounded-xl bg-white border border-[#e8e8f0] py-2.5 text-sm font-semibold text-[#424656] hover:bg-[#f3f3f8] active:scale-95"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

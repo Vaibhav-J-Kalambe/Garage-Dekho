@@ -79,6 +79,15 @@ export function PortalAuthProvider({ children }) {
 
     setGarage(data);
     setLoading(false);
+
+    // Pending garages go to waiting screen, not dashboard
+    if (data.status === "pending") {
+      if (pathname !== "/portal/pending" && pathname !== "/portal/login") {
+        router.replace("/portal/pending");
+      }
+    } else if (pathname === "/portal/pending") {
+      router.replace("/portal/dashboard");
+    }
   }
 
   async function refreshGarage() {
