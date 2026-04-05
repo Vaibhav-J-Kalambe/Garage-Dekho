@@ -18,7 +18,7 @@ const NAV_COLS = [
   {
     heading: "For Garages",
     links: [
-      { label: "List Your Garage",  href: "/partner"         },
+      { label: "List Your Garage",  href: "/portal/register" },
       { label: "Partner Login",     href: "/portal/login"    },
       { label: "Partner Register",  href: "/portal/register" },
     ],

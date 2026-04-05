@@ -651,7 +651,7 @@ export default function HomePage() {
               className="flex items-center justify-center gap-2 rounded-2xl py-3.5 text-sm font-bold text-on-primary bg-gradient-to-b from-primary to-primary-container transition-[filter] duration-150 hover:brightness-110 active:scale-95"
             >
               <WrenchIcon size={15} />
-              Join as Partner — It&apos;s Free
+              Join as Partner - It&apos;s Free
             </Link>
           </div>
         </section>
