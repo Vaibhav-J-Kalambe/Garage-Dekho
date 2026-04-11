@@ -376,7 +376,7 @@ export default function HomePage() {
             <div className="mt-4 md:mt-0">
               <form onSubmit={handleSearch} aria-label="Search garages" className="flex items-center gap-2 w-full">
                 <div
-                  className="bg-white rounded-2xl flex items-center gap-3 px-4 shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[#c2c6d8]/10 flex-1 min-w-0"
+                  className="bg-white dark:bg-[#1e1e22] rounded-2xl flex items-center gap-3 px-4 shadow-[0_4px_24px_rgba(0,0,0,0.06)] dark:shadow-none border border-[#c2c6d8]/10 dark:border-white/5 flex-1 min-w-0"
                 >
                   <SearchIcon size={16} className="text-on-surface-variant shrink-0" aria-hidden="true" />
                   <input
@@ -422,7 +422,7 @@ export default function HomePage() {
             {/* Book Again card (or empty state) */}
             {!lastBookingLoading && lastBooking && lastBooking.status === "completed" ? (
               <Link href={`/garage/${lastBooking.garage_id}`} aria-label={`Book again at ${lastBooking.garage_name}`}>
-                <div className="bg-white rounded-2xl p-4 shadow-[0_4px_24px_rgba(0,0,0,0.05)] border border-[#c2c6d8]/10 flex items-center gap-4 h-full transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] active:scale-[0.99]">
+                <div className="bg-white dark:bg-[#1e1e22] rounded-2xl p-4 shadow-[0_4px_24px_rgba(0,0,0,0.05)] dark:shadow-none border border-[#c2c6d8]/10 dark:border-white/5 flex items-center gap-4 h-full transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] active:scale-[0.99]">
                   <div className="flex items-center justify-center rounded-2xl shrink-0 w-11 h-11 bg-primary-fixed">
                     <RotateCcwIcon size={18} className="text-primary" />
                   </div>
@@ -436,7 +436,7 @@ export default function HomePage() {
               </Link>
             ) : (
               <Link href="/near-me" aria-label="Find a garage near you">
-                <div className="bg-white rounded-2xl p-5 shadow-[0_4px_24px_rgba(0,0,0,0.05)] border border-[#c2c6d8]/10 flex items-center gap-4 transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] active:scale-[0.99]">
+                <div className="bg-white dark:bg-[#1e1e22] rounded-2xl p-5 shadow-[0_4px_24px_rgba(0,0,0,0.05)] dark:shadow-none border border-[#c2c6d8]/10 dark:border-white/5 flex items-center gap-4 transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] active:scale-[0.99]">
                   <div className="flex items-center justify-center rounded-2xl shrink-0 w-11 h-11 bg-primary-fixed">
                     <RotateCcwIcon size={18} className="text-primary" />
                   </div>
@@ -536,7 +536,7 @@ export default function HomePage() {
               {personalizedGarages.map((garage, i) => (
                 <Link key={garage.id} href={`/garage/${garage.id}`} aria-label={`Book ${garage.name}`}>
                   <div
-                    className="bg-white rounded-2xl p-5 flex items-center gap-4 shadow-[0_2px_12px_rgba(0,0,0,0.05)] border border-[#c2c6d8]/10 transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:scale-[0.99]"
+                    className="bg-white dark:bg-[#1e1e22] rounded-2xl p-5 flex items-center gap-4 shadow-[0_2px_12px_rgba(0,0,0,0.05)] dark:shadow-none border border-[#c2c6d8]/10 dark:border-white/5 transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:scale-[0.99]"
                   >
                     {/* Garage photo */}
                     <div className="relative shrink-0 rounded-xl overflow-hidden w-[68px] h-[68px]">
@@ -551,7 +551,7 @@ export default function HomePage() {
                       {garage.isOpen && (
                         <span
                           aria-label="Open now"
-                          className="absolute bottom-1 right-1 w-2 h-2 rounded-full border-2 border-white bg-green-500"
+                          className="absolute bottom-1 right-1 w-2 h-2 rounded-full border-2 border-white dark:border-[#1e1e22] bg-green-500"
                         />
                       )}
                     </div>
@@ -620,7 +620,7 @@ export default function HomePage() {
               ))}
             </div>
           )}
-          <Link href="/near-me" className="md:hidden mt-3 flex items-center justify-center gap-2 rounded-2xl py-3 text-sm font-bold border border-primary/30 text-primary transition hover:bg-primary-fixed/40 active:scale-[0.98]">
+          <Link href="/near-me" className="md:hidden mt-3 flex items-center justify-center gap-2 rounded-2xl py-3 text-sm font-bold border border-primary/30 dark:border-primary/20 text-primary transition hover:bg-primary-fixed/40 active:scale-[0.98]">
             See all garages near you
           </Link>
         </section>
@@ -629,7 +629,7 @@ export default function HomePage() {
 
         {/* ── FOR GARAGE OWNERS ── */}
         <section className="mb-4">
-          <div className="bg-[#eef3ff] rounded-3xl p-6 border border-primary-fixed">
+          <div className="bg-[#eef3ff] dark:bg-[#111d2e] rounded-3xl p-6 border border-primary-fixed dark:border-[#1a2f52]">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-outline mb-2">For Garage Owners</p>
             <h2 className="text-xl md:text-3xl font-bold tracking-[-0.02em] text-on-surface mb-2">List Your Garage</h2>
             <p className="text-sm text-outline leading-relaxed mb-6">Zero listing fee. Reach thousands of customers. Get real-time SOS job requests.</p>

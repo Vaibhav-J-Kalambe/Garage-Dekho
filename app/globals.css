@@ -6,6 +6,125 @@
 @tailwind utilities;
 
 /* ─────────────────────────────────────────────
+   DESIGN TOKEN CSS VARIABLES (light / dark)
+───────────────────────────────────────────── */
+:root {
+  color-scheme: light;
+  /* Primary */
+  --color-primary:                    0 86 183;
+  --color-primary-container:          0 109 230;
+  --color-on-primary:                 255 255 255;
+  --color-on-primary-container:       247 247 255;
+  --color-primary-fixed:              216 226 255;
+  --color-primary-fixed-dim:          173 198 255;
+  --color-on-primary-fixed:           0 26 65;
+  --color-on-primary-fixed-variant:   0 68 147;
+  --color-inverse-primary:            173 198 255;
+  --color-surface-tint:               0 91 193;
+  /* Secondary */
+  --color-secondary:                  76 74 202;
+  --color-on-secondary:               255 255 255;
+  --color-secondary-container:        102 100 228;
+  --color-on-secondary-container:     255 251 255;
+  --color-secondary-fixed:            226 223 255;
+  --color-secondary-fixed-dim:        194 193 255;
+  --color-on-secondary-fixed:         12 0 106;
+  --color-on-secondary-fixed-variant: 54 49 180;
+  /* Tertiary */
+  --color-tertiary:                   163 50 0;
+  --color-on-tertiary:                255 255 255;
+  --color-tertiary-container:         204 66 4;
+  --color-on-tertiary-container:      255 246 244;
+  --color-tertiary-fixed:             255 219 208;
+  --color-tertiary-fixed-dim:         255 181 157;
+  --color-on-tertiary-fixed:          57 12 0;
+  --color-on-tertiary-fixed-variant:  131 38 0;
+  /* Surfaces */
+  --color-background:                 249 249 254;
+  --color-surface:                    249 249 254;
+  --color-surface-bright:             249 249 254;
+  --color-surface-dim:                217 218 222;
+  --color-surface-container-lowest:   255 255 255;
+  --color-surface-container-low:      243 243 248;
+  --color-surface-container:          237 237 242;
+  --color-surface-container-high:     232 232 237;
+  --color-surface-container-highest:  226 226 231;
+  --color-surface-variant:            226 226 231;
+  --color-inverse-surface:            46 48 52;
+  --color-inverse-on-surface:         240 240 245;
+  /* Text */
+  --color-on-surface:                 26 28 31;
+  --color-on-surface-variant:         66 70 86;
+  --color-on-background:              26 28 31;
+  /* Outline */
+  --color-outline:                    114 118 135;
+  --color-outline-variant:            194 198 216;
+  /* Error */
+  --color-error:                      186 26 26;
+  --color-on-error:                   255 255 255;
+  --color-error-container:            255 218 214;
+  --color-on-error-container:         147 0 10;
+}
+
+.dark {
+  color-scheme: dark;
+  /* Primary */
+  --color-primary:                    77 145 255;
+  --color-primary-container:          0 86 183;
+  --color-on-primary:                 0 26 65;
+  --color-on-primary-container:       216 226 255;
+  --color-primary-fixed:              26 47 82;
+  --color-primary-fixed-dim:          13 30 58;
+  --color-on-primary-fixed:           173 198 255;
+  --color-on-primary-fixed-variant:   77 145 255;
+  --color-inverse-primary:            0 86 183;
+  --color-surface-tint:               77 145 255;
+  /* Secondary */
+  --color-secondary:                  194 193 255;
+  --color-on-secondary:               24 12 118;
+  --color-secondary-container:        54 49 180;
+  --color-on-secondary-container:     255 251 255;
+  --color-secondary-fixed:            26 16 96;
+  --color-secondary-fixed-dim:        43 38 160;
+  --color-on-secondary-fixed:         226 223 255;
+  --color-on-secondary-fixed-variant: 194 193 255;
+  /* Tertiary */
+  --color-tertiary:                   255 181 157;
+  --color-on-tertiary:                89 20 0;
+  --color-tertiary-container:         131 38 0;
+  --color-on-tertiary-container:      255 246 244;
+  --color-tertiary-fixed:             61 14 0;
+  --color-tertiary-fixed-dim:         99 29 0;
+  --color-on-tertiary-fixed:          255 219 208;
+  --color-on-tertiary-fixed-variant:  255 181 157;
+  /* Surfaces */
+  --color-background:                 17 17 19;
+  --color-surface:                    17 17 19;
+  --color-surface-bright:             55 55 59;
+  --color-surface-dim:                17 17 19;
+  --color-surface-container-lowest:   12 12 14;
+  --color-surface-container-low:      26 26 30;
+  --color-surface-container:          30 30 34;
+  --color-surface-container-high:     40 40 44;
+  --color-surface-container-highest:  51 51 56;
+  --color-surface-variant:            68 70 84;
+  --color-inverse-surface:            228 226 230;
+  --color-inverse-on-surface:         46 48 52;
+  /* Text */
+  --color-on-surface:                 228 226 230;
+  --color-on-surface-variant:         199 197 208;
+  --color-on-background:              228 226 230;
+  /* Outline */
+  --color-outline:                    145 143 154;
+  --color-outline-variant:            68 70 84;
+  /* Error */
+  --color-error:                      255 180 171;
+  --color-on-error:                   105 0 5;
+  --color-error-container:            147 0 10;
+  --color-on-error-container:         255 218 214;
+}
+
+/* ─────────────────────────────────────────────
    BASE RESETS & FONT
 ───────────────────────────────────────────── */
 html {
@@ -17,6 +136,12 @@ html {
 body {
   height: 100%;
   overflow-x: hidden;
+}
+
+/* ── Dark mode body background ── */
+.dark body {
+  background: #111113;
+  color: rgb(228 226 230);
 }
 
 /* ── Custom scrollbar (always visible, like Notion) ── */
