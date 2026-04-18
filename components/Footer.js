@@ -75,12 +75,12 @@ export default function Footer() {
 
   return (
     <footer
-      className="hidden md:block bg-[#f9f9fe] dark:bg-[#1a1a1e] shadow-[0_-1px_4px_rgba(0,0,0,0.04)] dark:shadow-[0_-1px_4px_rgba(0,0,0,0.2)] mt-16"
+      className="bg-[#f9f9fe] dark:bg-[#1a1a1e] shadow-[0_-1px_4px_rgba(0,0,0,0.04)] dark:shadow-[0_-1px_4px_rgba(0,0,0,0.2)] mt-16 pb-28 md:pb-0"
       aria-label="Site footer"
     >
       {/* Trust bar */}
       <div className="border-b border-[#f3f3f8] dark:border-white/5 bg-[#f9f9fe] dark:bg-[#111113]">
-        <div className="mx-auto flex max-w-screen-xl items-center justify-center gap-10 px-6 py-3.5">
+        <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-center gap-4 md:gap-10 px-4 md:px-6 py-3.5">
           {TRUST_BADGES.map(({ icon, label }) => (
             <div key={label} className="flex items-center gap-2 text-[#424656] dark:text-[#c7c5d0]">
               <span className="text-[#0056b7] dark:text-[#4d91ff]">{icon}</span>
@@ -91,7 +91,7 @@ export default function Footer() {
       </div>
 
       {/* Main footer grid */}
-      <div className="mx-auto grid max-w-screen-xl grid-cols-4 gap-8 px-6 py-12">
+      <div className="mx-auto grid max-w-screen-xl grid-cols-2 md:grid-cols-4 gap-8 px-4 md:px-6 py-10 md:py-12">
         {/* Brand column */}
         <div>
           <Link href="/" className="text-[1.1rem] font-black tracking-tight text-[#0056b7] dark:text-[#4d91ff]">
@@ -200,7 +200,7 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-[#f3f3f8] dark:border-white/5">
-        <div className="mx-auto flex max-w-screen-xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-screen-xl flex-col md:flex-row items-center gap-2 md:justify-between px-4 md:px-6 py-4 text-center md:text-left">
           <p className="text-[12px] text-[#727687] dark:text-[#918f9a]">
             © {new Date().getFullYear()} GarageDekho Technologies Pvt. Ltd. All rights reserved.
           </p>
