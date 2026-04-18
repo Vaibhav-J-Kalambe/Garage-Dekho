@@ -60,8 +60,15 @@ function createUserDot() {
 function FlyToController({ coords }) {
   const map = useMap();
   useEffect(() => {
-    if (coords) {
+    if (!coords) return;
+    try {
+      const container = map.getContainer();
+      // Skip if the map container is hidden / has no dimensions
+      if (!container || container.offsetWidth === 0 || container.offsetHeight === 0) return;
+      map.invalidateSize();
       map.flyTo(coords, 15, { duration: 1.5, easeLinearity: 0.3 });
+    } catch {
+      // Map not ready — silently ignore
     }
   }, [coords, map]);
   return null;

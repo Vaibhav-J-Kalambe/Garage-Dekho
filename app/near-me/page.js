@@ -161,6 +161,7 @@ function NearMeContent() {
   const [showSort,     setShowSort]     = useState(false);
   const [compareList,  setCompareList]  = useState([]);
   const [mobileView,   setMobileView]   = useState("list"); // "list" | "map"
+  const [isDesktop,    setIsDesktop]    = useState(false);
   const { showToast } = useToast();
 
   function toggleCompare(garage) {
@@ -175,6 +176,13 @@ function NearMeContent() {
     const ids = compareList.map((g) => g.id).join(",");
     router.push(`/compare?ids=${ids}`);
   }
+
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     const CACHE_KEY = "gd_garages_v1";
@@ -363,51 +371,35 @@ function NearMeContent() {
       {/* ── Main content ── */}
       <div className="relative flex flex-1 overflow-hidden flex-col md:flex-row">
 
-        {/* MAP CONTROLS — reused for both mobile and desktop map */}
-        {(() => {
-          const mapUI = (
-            <>
-              <MapView
-                garages={filtered.filter(g => g.lat != null && g.lng != null)}
-                activeGarage={activeGarage}
-                onSelectGarage={toggleGarage}
-                userCoords={userCoords ?? undefined}
-              />
-              {locating && (
-                <div className="absolute inset-0 z-[1000] flex flex-col items-center justify-center gap-2 bg-white/40 backdrop-blur-[2px]">
-                  <Loader2 className="h-8 w-8 animate-spin text-[#0056b7]" />
-                  <p className="rounded-xl bg-white px-4 py-2 text-xs font-bold text-[#1a1c1f] shadow-[0_4px_16px_rgba(0,0,0,0.12)]">Getting your location...</p>
-                </div>
-              )}
-              <button
-                type="button"
-                aria-label="Center on my location"
-                onClick={handleLocateMe}
-                disabled={locating}
-                className="absolute top-3 right-3 z-[1000] flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition hover:bg-[#f3f3f8] active:scale-95 disabled:opacity-60"
-              >
-                {locating
-                  ? <Loader2 className="h-4 w-4 animate-spin text-[#0056b7]" />
-                  : <Navigation className="h-4 w-4 text-[#0056b7]" />
-                }
-              </button>
-            </>
-          );
-          return (
-            <>
-              {/* Mobile: only mount MapView when map tab is active */}
-              {mobileView === "map" && (
-                <div className="relative flex flex-1 overflow-hidden md:hidden">
-                  {mapUI}
-                </div>
-              )}
-              {/* Desktop: always mounted — 70% width */}
-              <div className="relative hidden md:flex md:flex-[7] overflow-hidden">
-                {mapUI}
+        {/* MAP — only ONE instance ever mounted at a time */}
+        {(isDesktop || mobileView === "map") && (
+          <div className={`relative overflow-hidden flex-1 ${isDesktop ? "hidden md:flex md:flex-[7]" : "flex"}`}>
+            <MapView
+              garages={filtered.filter(g => g.lat != null && g.lng != null)}
+              activeGarage={activeGarage}
+              onSelectGarage={toggleGarage}
+              userCoords={userCoords ?? undefined}
+            />
+            {locating && (
+              <div className="absolute inset-0 z-[1000] flex flex-col items-center justify-center gap-2 bg-white/40 backdrop-blur-[2px]">
+                <Loader2 className="h-8 w-8 animate-spin text-[#0056b7]" />
+                <p className="rounded-xl bg-white px-4 py-2 text-xs font-bold text-[#1a1c1f] shadow-[0_4px_16px_rgba(0,0,0,0.12)]">Getting your location...</p>
               </div>
-            </>
-          );
-        })()}
+            )}
+            <button
+              type="button"
+              aria-label="Center on my location"
+              onClick={handleLocateMe}
+              disabled={locating}
+              className="absolute top-3 right-3 z-[1000] flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition hover:bg-[#f3f3f8] active:scale-95 disabled:opacity-60"
+            >
+              {locating
+                ? <Loader2 className="h-4 w-4 animate-spin text-[#0056b7]" />
+                : <Navigation className="h-4 w-4 text-[#0056b7]" />
+              }
+            </button>
+          </div>
+        )}
 
         {/* LIST */}
         <div className={`flex flex-col overflow-hidden ${mobileView === "list" ? "flex-1" : "hidden"} md:flex md:flex-[3] md:shrink-0 md:border-l md:border-[#f3f3f8] dark:md:border-white/5`}>
