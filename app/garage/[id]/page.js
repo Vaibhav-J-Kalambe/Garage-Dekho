@@ -177,7 +177,7 @@ export default function GarageDetailPage({ params }) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
 
         {/* Floating header - back + share + save */}
-        <div className="absolute left-0 right-0 top-0 flex items-center justify-between px-4 pt-12">
+        <div className="absolute left-0 right-0 top-0 flex items-center justify-between px-4 pt-6 md:pt-8">
           <button
             type="button"
             aria-label="Back"
