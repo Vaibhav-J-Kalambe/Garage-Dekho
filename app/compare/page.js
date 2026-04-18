@@ -6,7 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowLeft, Star, CheckCircle2, Wrench, ChevronRight,
-  TrendingUp, MapPin, Zap, Car, Bike, GitCompare, Trophy, ThumbsUp, MoveRight,
+  TrendingUp, MapPin, Zap, Car, Bike, GitCompare, MoveRight,
+  Award, Navigation, MessageSquare, Clock, BarChart2, Lightbulb,
 } from "lucide-react";
 import Header from "../../components/Header";
 import { getAllGarages } from "../../lib/garages";
@@ -128,11 +129,11 @@ function buildSummary(garages) {
   const nearest  = [...garages].filter(g => g.distance).sort((a, b) => (parseFloat(a.distance) || 99) - (parseFloat(b.distance) || 99));
   const reviewed = [...garages].filter(g => g.reviews > 0).sort((a, b) => (b.reviews || 0) - (a.reviews || 0));
   const open     = garages.filter(g => g.isOpen);
-  if (rated.length)    summary.push({ icon: Trophy,       color: "amber", label: "Best Rated",    name: rated[0].name,    detail: `${rated[0].rating} ★` });
-  if (nearest.length)  summary.push({ icon: MapPin,       color: "blue",  label: "Nearest",       name: nearest[0].name,  detail: nearest[0].distance });
-  if (reviewed.length) summary.push({ icon: ThumbsUp,     color: "green", label: "Most Reviewed", name: reviewed[0].name, detail: `${reviewed[0].reviews} reviews` });
-  if (open.length === 1) summary.push({ icon: CheckCircle2, color: "green", label: "Open Now",    name: open[0].name,     detail: "Only one open right now" });
-  if (open.length > 1)   summary.push({ icon: CheckCircle2, color: "green", label: "Open Now",   name: `${open.length} garages`, detail: "All open right now" });
+  if (rated.length)    summary.push({ icon: Award,          color: "amber", label: "Best Rated",    name: rated[0].name,    detail: `${rated[0].rating} ★` });
+  if (nearest.length)  summary.push({ icon: Navigation,    color: "blue",  label: "Nearest",       name: nearest[0].name,  detail: nearest[0].distance });
+  if (reviewed.length) summary.push({ icon: MessageSquare, color: "green", label: "Most Reviewed", name: reviewed[0].name, detail: `${reviewed[0].reviews} reviews` });
+  if (open.length === 1) summary.push({ icon: Clock,       color: "green", label: "Open Now",      name: open[0].name,     detail: "Only one open right now" });
+  if (open.length > 1)   summary.push({ icon: Clock,       color: "green", label: "Open Now",      name: `${open.length} garages`, detail: "All open right now" });
   return summary;
 }
 
@@ -358,7 +359,7 @@ function CompareContent() {
         {summary.length > 0 && (
           <div className="rounded-2xl bg-white dark:bg-[#1e1e22] border border-transparent dark:border-white/5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-4 md:p-6">
             <h2 className="text-base font-black text-[#1a1c1f] dark:text-[#e4e2e6] mb-4 flex items-center gap-2">
-              <Trophy className="h-4 w-4 text-amber-500" /> Comparison Summary
+              <BarChart2 className="h-4 w-4 text-[#0056b7]" /> Comparison Summary
             </h2>
             <div className={`grid gap-3 ${summary.length >= 3 ? "grid-cols-2 md:grid-cols-4" : "grid-cols-2"}`}>
               {summary.map(({ icon: Icon, color, label, name, detail }) => (
@@ -405,7 +406,7 @@ function CompareContent() {
               }
               return (
                 <div className="mt-4 rounded-xl bg-[#d8e2ff]/40 dark:bg-[#1a2f52]/40 border border-[#0056b7]/10 dark:border-[#4d91ff]/10 p-3 flex items-start gap-3">
-                  <ThumbsUp className="h-4 w-4 text-[#0056b7] dark:text-[#4d91ff] shrink-0 mt-0.5" />
+                  <Lightbulb className="h-4 w-4 text-[#0056b7] dark:text-[#4d91ff] shrink-0 mt-0.5" />
                   <div>
                     <p className="text-[12px] font-black text-[#0056b7] dark:text-[#4d91ff]">Our Recommendation</p>
                     <p className="text-[13px] text-[#1a1c1f] dark:text-[#e4e2e6] mt-0.5">
