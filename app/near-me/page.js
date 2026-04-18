@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import {
   Search, SlidersHorizontal, Star, CheckCircle2,
   Navigation, X, Bike, Car, Zap, Wrench,
-  Loader2, GitCompare,
+  Loader2, GitCompare, List, Map,
 } from "lucide-react";
 import Header from "../../components/Header";
 import { getAllGarages } from "../../lib/garages";
@@ -55,7 +55,6 @@ function getPuneNeighbourhood(lat, lng) {
   if (lat >= 18.49 && lat <= 18.52 && lng >= 73.85 && lng <= 73.88) return "Swargate";
   if (lat >= 18.56 && lat <= 18.60 && lng >= 73.88 && lng <= 73.92) return "Viman Nagar";
   if (lat >= 18.50 && lat <= 18.55 && lng >= 73.80 && lng <= 73.86) return "Kothrud";
-  // Broader Pune bbox
   if (lat >= 18.40 && lat <= 18.65 && lng >= 73.70 && lng <= 74.00) return "Pune";
   return null;
 }
@@ -84,7 +83,6 @@ function GarageRow({ garage, active, onClick, inCompare, onToggleCompare, compar
               <Wrench className="h-5 w-5 text-[#c2c6d8]" />
             </div>
         }
-        {/* Open dot */}
         <span className={`absolute bottom-1 right-1 h-2 w-2 rounded-full border-[1.5px] border-white dark:border-[#1e1e22] ${garage.isOpen ? "bg-green-500" : "bg-[#c2c6d8]"}`} />
       </div>
 
@@ -133,7 +131,7 @@ function GarageRow({ garage, active, onClick, inCompare, onToggleCompare, compar
               : "bg-[#0056b7]/10 dark:bg-[#0056b7]/20 text-[#0056b7] dark:text-[#4d91ff] hover:bg-[#0056b7] hover:text-white"
           }`}
         >
-          {inCompare ? "✓ Added" : "Compare"}
+          {inCompare ? "Added" : "Compare"}
         </button>
       </div>
     </div>
@@ -141,25 +139,26 @@ function GarageRow({ garage, active, onClick, inCompare, onToggleCompare, compar
 }
 
 const SORT_OPTIONS = [
-  { label: "Nearest",   value: "nearest"  },
-  { label: "Top Rated", value: "rating"   },
-  { label: "Open Now",  value: "open"     },
+  { label: "Nearest",   value: "nearest" },
+  { label: "Top Rated", value: "rating"  },
+  { label: "Open Now",  value: "open"    },
 ];
 
 function NearMeContent() {
-  const searchParams  = useSearchParams();
-  const router        = useRouter();
-  const [garages,       setGarages]       = useState([]);
-  const [activeGarage,  setActiveGarage]  = useState(null);
-  const [distFilter,    setDistFilter]    = useState("All");
-  const [typeFilter,    setTypeFilter]    = useState(searchParams.get("type") || "all");
-  const [search,        setSearch]        = useState(searchParams.get("q") || "");
-  const [listExpanded,  setListExpanded]  = useState(false);
-  const [locating,      setLocating]      = useState(false);
-  const [userCoords,    setUserCoords]    = useState(null);
-  const [sortBy,        setSortBy]        = useState("nearest");
-  const [showSort,      setShowSort]      = useState(false);
-  const [compareList,   setCompareList]   = useState([]);
+  const searchParams = useSearchParams();
+  const router       = useRouter();
+
+  const [garages,      setGarages]      = useState([]);
+  const [activeGarage, setActiveGarage] = useState(null);
+  const [distFilter,   setDistFilter]   = useState("All");
+  const [typeFilter,   setTypeFilter]   = useState(searchParams.get("type") || "all");
+  const [search,       setSearch]       = useState(searchParams.get("q") || "");
+  const [locating,     setLocating]     = useState(false);
+  const [userCoords,   setUserCoords]   = useState(null);
+  const [sortBy,       setSortBy]       = useState("nearest");
+  const [showSort,     setShowSort]     = useState(false);
+  const [compareList,  setCompareList]  = useState([]);
+  const [mobileView,   setMobileView]   = useState("list"); // "list" | "map"
   const { showToast } = useToast();
 
   function toggleCompare(garage) {
@@ -176,7 +175,6 @@ function NearMeContent() {
   }
 
   useEffect(() => {
-    // Share the same 5-min sessionStorage cache as the home page
     const CACHE_KEY = "gd_garages_v1";
     const CACHE_TTL = 5 * 60 * 1000;
     try {
@@ -192,7 +190,6 @@ function NearMeContent() {
     }).catch(console.error);
   }, []);
 
-  /* When userCoords is available, compute real distance for each garage */
   const garagesWithDist = useMemo(() => garages.map((g) => {
     if (userCoords && g.lat && g.lng) {
       const km = haversine(userCoords[0], userCoords[1], g.lat, g.lng);
@@ -209,44 +206,37 @@ function NearMeContent() {
       const dist = g._realDist;
       const matchDist =
         distFilter === "All" ||
-        (distFilter === "< 1 km" && dist < 1)  ||
-        (distFilter === "< 2 km" && dist < 2)  ||
+        (distFilter === "< 1 km" && dist < 1) ||
+        (distFilter === "< 2 km" && dist < 2) ||
         (distFilter === "< 5 km" && dist < 5);
       const matchOpen = sortBy !== "open" || g.isOpen;
       return matchType && matchSearch && matchDist && matchOpen;
     })
     .sort((a, b) => {
-      if (sortBy === "rating")  return (b.rating || 0) - (a.rating || 0);
-      if (sortBy === "open")    return (b.isOpen ? 1 : 0) - (a.isOpen ? 1 : 0);
-      return (a._realDist || 0) - (b._realDist || 0); // nearest
-    }), [garagesWithDist, typeFilter, search, distFilter, sortBy, userCoords]);
+      if (sortBy === "rating") return (b.rating || 0) - (a.rating || 0);
+      if (sortBy === "open")   return (b.isOpen ? 1 : 0) - (a.isOpen ? 1 : 0);
+      return (a._realDist || 0) - (b._realDist || 0);
+    }), [garagesWithDist, typeFilter, search, distFilter, sortBy]);
 
   function toggleGarage(id) {
     setActiveGarage((prev) => (prev === id ? null : id));
   }
 
   function handleLocateMe() {
-    if (!navigator.geolocation) {
-      setToast("Geolocation is not supported by your browser.");
-      return;
-    }
+    if (!navigator.geolocation) return;
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
-        const coords = [latitude, longitude];
-        setUserCoords(coords);
+        setUserCoords([latitude, longitude]);
         const area = getPuneNeighbourhood(latitude, longitude);
-        showToast(area
-          ? `Showing garages near ${area}`
-          : `Location found! Showing nearby garages`
-        );
+        showToast(area ? `Showing garages near ${area}` : "Location found! Showing nearby garages");
         setLocating(false);
       },
       (err) => {
         setLocating(false);
         if (err.code === err.PERMISSION_DENIED) {
-          showToast("Location denied. Enable permissions in browser settings to see nearby garages.");
+          showToast("Location denied. Enable permissions in browser settings.");
         } else {
           showToast("Could not fetch location. Please try again.");
         }
@@ -259,11 +249,11 @@ function NearMeContent() {
     <div className="flex h-dvh flex-col overflow-hidden bg-surface">
       <Header />
 
-      {/* ── Search + filters ── */}
+      {/* ── Filters bar ── */}
       <div className="shrink-0 bg-[#ffffff] dark:bg-[#111113] px-4 pt-[84px] pb-3 md:px-8 border-b border-transparent dark:border-white/5">
         <div className="mx-auto max-w-full space-y-3">
 
-          {/* Search bar */}
+          {/* Search */}
           <div className="flex items-center gap-2 rounded-2xl border border-[#c2c6d8]/40 dark:border-white/10 bg-[#ffffff] dark:bg-transparent px-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none transition-[border-color,box-shadow] duration-150 focus-within:border-[#0056b7] dark:focus-within:border-[#4d91ff] focus-within:shadow-[0_0_0_3px_rgba(0,86,183,0.08)] min-h-[48px]">
             <Search className="h-4 w-4 shrink-0 text-[#424656] dark:text-[#c7c5d0]" />
             <input
@@ -272,7 +262,7 @@ function NearMeContent() {
               autoComplete="off"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search garages near you…"
+              placeholder="Search garages near you..."
               style={{ fontSize: 16 }}
               className="flex-1 bg-transparent dark:!bg-transparent text-[#1a1c1f] dark:text-[#e4e2e6] placeholder:text-[#c2c6d8] dark:placeholder:text-[#444654] focus:outline-none"
             />
@@ -287,11 +277,12 @@ function NearMeContent() {
           <div className="overflow-x-auto flex gap-2 pb-0.5 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
             <span className="shrink-0 self-center text-[11px] font-bold text-[#727687] dark:text-[#918f9a]">Compare:</span>
             {[
-              { label: "Top Rated", mode: "top-rated" },
-              { label: "Nearest",   mode: "nearest"   },
-              { label: "Best Cars", mode: "cars"       },
-              { label: "Best Bikes",mode: "bikes"      },
-              { label: "Best EV",   mode: "ev"         },
+              { label: "Overall",    mode: "overall"   },
+              { label: "Top Rated",  mode: "top-rated" },
+              { label: "Nearest",    mode: "nearest"   },
+              { label: "Best Cars",  mode: "cars"      },
+              { label: "Best Bikes", mode: "bikes"     },
+              { label: "Best EV",    mode: "ev"        },
             ].map(({ label, mode }) => (
               <Link
                 key={mode}
@@ -304,10 +295,8 @@ function NearMeContent() {
             ))}
           </div>
 
-          {/* Filter bar */}
+          {/* Vehicle type + distance filters */}
           <div role="group" aria-label="Filter garages" className="overflow-x-auto flex gap-2 pb-0.5 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
-
-            {/* Vehicle type chips */}
             {TYPE_FILTERS.map(({ label, value, icon: Icon }) => (
               <button
                 key={value}
@@ -317,18 +306,14 @@ function NearMeContent() {
                 className={`flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition-[background-color,color] duration-150 active:scale-95 ${
                   typeFilter === value
                     ? "bg-[#0056b7] text-white"
-                    : "bg-[#f3f3f8] text-[#424656] hover:bg-[#ededf2]"
+                    : "bg-[#f3f3f8] dark:bg-[#2a2a2e] text-[#424656] dark:text-[#938f99] hover:bg-[#ededf2] dark:hover:bg-[#333338]"
                 }`}
               >
                 <Icon className="h-3 w-3" />
                 {label}
               </button>
             ))}
-
-            {/* Divider */}
             <div className="h-5 w-px shrink-0 bg-[#c2c6d8]/40 mx-1 self-center" />
-
-            {/* Distance chips */}
             {DISTANCE_FILTERS.map((d) => {
               const needsGps = d !== "All";
               const disabled = needsGps && !userCoords;
@@ -341,13 +326,12 @@ function NearMeContent() {
                     if (disabled) { showToast("Tap 'Locate Me' on the map to enable distance filters"); return; }
                     setDistFilter(d);
                   }}
-                  title={disabled ? "Enable location to use this filter" : undefined}
                   className={`shrink-0 rounded-full px-4 py-2 text-xs font-bold transition-[background-color,color] duration-150 active:scale-95 ${
                     distFilter === d
                       ? "bg-[#0056b7] text-white"
                       : disabled
-                        ? "bg-[#f3f3f8] text-[#424656] cursor-not-allowed opacity-50"
-                        : "bg-[#f3f3f8] text-[#424656] hover:bg-[#ededf2]"
+                        ? "bg-[#f3f3f8] dark:bg-[#2a2a2e] text-[#424656] dark:text-[#938f99] cursor-not-allowed opacity-50"
+                        : "bg-[#f3f3f8] dark:bg-[#2a2a2e] text-[#424656] dark:text-[#938f99] hover:bg-[#ededf2] dark:hover:bg-[#333338]"
                   }`}
                 >
                   {d}
@@ -355,32 +339,53 @@ function NearMeContent() {
               );
             })}
           </div>
+
+          {/* Map / List toggle — mobile only */}
+          <div className="flex gap-1 bg-[#f3f3f8] dark:bg-[#2a2a2e] rounded-xl p-1 md:hidden">
+            <button
+              type="button"
+              onClick={() => setMobileView("list")}
+              className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-bold transition-all duration-150 ${
+                mobileView === "list"
+                  ? "bg-white dark:bg-[#1e1e22] text-[#0056b7] shadow-sm"
+                  : "text-[#727687] dark:text-[#938f99]"
+              }`}
+            >
+              <List className="h-3.5 w-3.5" /> List
+            </button>
+            <button
+              type="button"
+              onClick={() => setMobileView("map")}
+              className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-bold transition-all duration-150 ${
+                mobileView === "map"
+                  ? "bg-white dark:bg-[#1e1e22] text-[#0056b7] shadow-sm"
+                  : "text-[#727687] dark:text-[#938f99]"
+              }`}
+            >
+              <Map className="h-3.5 w-3.5" /> Map
+            </button>
+          </div>
+
         </div>
       </div>
 
-      {/* ── Map + List - fills remaining height ── */}
+      {/* ── Main content ── */}
       <div className="relative flex flex-1 overflow-hidden flex-col md:flex-row">
 
-        {/* ── MAP - fills all remaining space ── */}
-        <div className="relative flex-1 overflow-hidden">
+        {/* MAP */}
+        <div className={`relative overflow-hidden flex-1 ${mobileView === "map" ? "flex" : "hidden"} md:flex`}>
           <MapView
             garages={filtered}
             activeGarage={activeGarage}
             onSelectGarage={toggleGarage}
             userCoords={userCoords ?? undefined}
           />
-
-          {/* Loading overlay */}
           {locating && (
             <div className="absolute inset-0 z-[1000] flex flex-col items-center justify-center gap-2 bg-white/40 backdrop-blur-[2px]">
               <Loader2 className="h-8 w-8 animate-spin text-[#0056b7]" />
-              <p className="rounded-xl bg-white px-4 py-2 text-xs font-bold text-[#1a1c1f] shadow-[0_4px_16px_rgba(0,0,0,0.12)]">
-                Getting your location…
-              </p>
+              <p className="rounded-xl bg-white px-4 py-2 text-xs font-bold text-[#1a1c1f] shadow-[0_4px_16px_rgba(0,0,0,0.12)]">Getting your location...</p>
             </div>
           )}
-
-          {/* Locate Me FAB */}
           <button
             type="button"
             aria-label="Center on my location"
@@ -389,35 +394,17 @@ function NearMeContent() {
             className="absolute top-3 right-3 z-[1000] flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition hover:bg-[#f3f3f8] active:scale-95 disabled:opacity-60"
           >
             {locating
-              ? <Loader2  className="h-4 w-4 animate-spin text-[#0056b7]" />
+              ? <Loader2 className="h-4 w-4 animate-spin text-[#0056b7]" />
               : <Navigation className="h-4 w-4 text-[#0056b7]" />
             }
           </button>
         </div>
 
-        {/* ── GARAGE LIST ── */}
-        {/* Mobile: bottom sheet that slides up */}
-        <div
-          className={`
-            absolute bottom-0 left-0 right-0 z-[500] flex flex-col overflow-hidden rounded-t-3xl bg-white dark:bg-[#1a1a1e] shadow-[0_-4px_24px_rgba(0,0,0,0.10)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.4)] transition-[height] duration-300
-            md:relative md:bottom-auto md:left-auto md:right-auto md:z-auto md:w-[22rem] md:shrink-0 md:rounded-none md:border-l md:border-[#f3f3f8] dark:md:border-white/5 md:shadow-none
-            ${listExpanded ? "h-[75vh]" : "h-[58vh]"}
-            md:h-full
-          `}
-        >
-          {/* Pull handle - mobile only */}
-          <button
-            type="button"
-            aria-label={listExpanded ? "Collapse garage list" : "Expand garage list"}
-            aria-expanded={listExpanded}
-            onClick={() => setListExpanded((e) => !e)}
-            className="flex w-full shrink-0 items-center justify-center py-2.5 md:hidden"
-          >
-            <div className="h-1 w-10 rounded-full bg-[#c2c6d8]/60 dark:bg-white/20" />
-          </button>
+        {/* LIST */}
+        <div className={`flex flex-col overflow-hidden ${mobileView === "list" ? "flex-1" : "hidden"} md:flex md:w-[22rem] md:shrink-0 md:border-l md:border-[#f3f3f8] dark:md:border-white/5`}>
+          <div className="overflow-y-auto flex-1 px-3 md:px-4 pt-3 pb-[max(90px,calc(env(safe-area-inset-bottom)+90px))]">
 
-          <div className="overflow-y-auto flex-1 px-3 md:px-4 pt-1 pb-[max(90px,calc(env(safe-area-inset-bottom)+90px))]">
-            {/* Count header + sort */}
+            {/* Count + sort */}
             <div className="mb-3 flex items-center justify-between">
               <div>
                 <p className="text-sm font-black tracking-tight text-[#1a1c1f] dark:text-[#e4e2e6]">
@@ -431,7 +418,7 @@ function NearMeContent() {
                 className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold transition-[background-color,color] duration-150 active:scale-95 ${
                   showSort
                     ? "bg-[#0056b7] text-white"
-                    : "bg-[#f3f3f8] text-[#424656] hover:bg-[#ededf2]"
+                    : "bg-[#f3f3f8] dark:bg-[#2a2a2e] text-[#424656] dark:text-[#938f99] hover:bg-[#ededf2]"
                 }`}
               >
                 <SlidersHorizontal className="h-3 w-3" />
@@ -440,7 +427,7 @@ function NearMeContent() {
             </div>
 
             {showSort && (
-              <div className="mb-3 flex gap-1.5 animate-slide-up rounded-2xl bg-[#f3f3f8] p-1">
+              <div className="mb-3 flex gap-1.5 rounded-2xl bg-[#f3f3f8] dark:bg-[#2a2a2e] p-1">
                 {SORT_OPTIONS.map(({ label, value }) => (
                   <button
                     key={value}
@@ -449,7 +436,7 @@ function NearMeContent() {
                     className={`flex-1 rounded-xl px-2 py-2 text-xs font-bold transition-[background-color,color] duration-150 active:scale-95 ${
                       sortBy === value
                         ? "bg-[#0056b7] text-white shadow-sm"
-                        : "text-[#424656] hover:text-[#1a1c1f]"
+                        : "text-[#424656] dark:text-[#938f99] hover:text-[#1a1c1f]"
                     }`}
                   >
                     {label}
@@ -484,7 +471,6 @@ function NearMeContent() {
       {compareList.length > 0 && (
         <div className="fixed bottom-[80px] md:bottom-6 left-1/2 -translate-x-1/2 z-[600] w-[calc(100%-32px)] max-w-md">
           <div className="flex items-center gap-2 rounded-2xl bg-[#0056b7] px-3 py-2.5 shadow-[0_8px_32px_rgba(0,86,183,0.35)]">
-            {/* Garage pills */}
             <div className="flex flex-1 items-center gap-1.5 overflow-hidden">
               {compareList.map((g) => (
                 <div key={g.id} className="flex items-center gap-1 rounded-xl bg-white/15 px-2 py-1 min-w-0">
@@ -505,7 +491,6 @@ function NearMeContent() {
                 </span>
               )}
             </div>
-            {/* Compare button */}
             <button
               type="button"
               onClick={startCompare}

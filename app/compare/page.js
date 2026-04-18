@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowLeft, Star, CheckCircle2, Wrench, ChevronRight,
-  TrendingUp, MapPin, Zap, Car, Bike, GitCompare, MoveRight,
+  TrendingUp, MapPin, Zap, Car, Bike, GitCompare, MoveRight, LayoutGrid,
   Award, Navigation, MessageSquare, Clock, BarChart2, Lightbulb,
 } from "lucide-react";
 import Header from "../../components/Header";
@@ -42,6 +42,13 @@ function autoSelect(all, { ids, mode }) {
   const anchors = ids.map((id) => all.find((g) => String(g.id) === String(id))).filter(Boolean);
   const pool    = all.filter((g) => !anchors.find((a) => a.id === g.id));
 
+  if (mode === "overall") {
+    const scored = [...all].sort((a, b) => {
+      const score = (g) => (g.rating || 0) * 2 + (g.isOpen ? 1 : 0) - (parseFloat(g.distance) || 10) * 0.1;
+      return score(b) - score(a);
+    }).slice(0, 3);
+    return { garages: scored, title: "Overall Best Garages", subtitle: "Best garages ranked by rating, availability and distance" };
+  }
   if (mode === "top-rated") {
     const top = [...all].sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 3);
     return { garages: top, title: "Top Rated Garages", subtitle: "Comparing the highest-rated garages near you" };
@@ -138,6 +145,7 @@ function buildSummary(garages) {
 }
 
 const MODES = [
+  { label: "Overall",    mode: "overall",   icon: LayoutGrid },
   { label: "Top Rated",  mode: "top-rated", icon: TrendingUp },
   { label: "Nearest",    mode: "nearest",   icon: MapPin     },
   { label: "Best Cars",  mode: "cars",      icon: Car        },
@@ -158,6 +166,24 @@ const ROWS = [
   { label: "Address",       key: "address"     },
 ];
 
+/* ── Rows shown per mode ── */
+// "overall" → null means show all rows
+const MODE_ROWS = {
+  "overall":   null,
+  "top-rated": ["rating", "reviews", "isOpen", "distance", "waitTime"],
+  "nearest":   ["distance", "isOpen", "waitTime", "rating", "address"],
+  "cars":      ["vehicleType", "speciality", "rating", "isOpen", "distance", "services"],
+  "bikes":     ["vehicleType", "speciality", "rating", "isOpen", "distance", "services"],
+  "ev":        ["vehicleType", "speciality", "rating", "isOpen", "distance", "services"],
+};
+
+function getVisibleRows(mode, extraRows) {
+  const all  = [...ROWS, ...extraRows];
+  const keys = MODE_ROWS[mode];
+  const rows = keys ? keys.map(k => all.find(r => r.key === k)).filter(Boolean) : all;
+  return { rows };
+}
+
 /* ── Layout constants ── */
 const LABEL_W  = "86px";   // sticky label column
 const COL_W    = "150px";  // min width per garage column
@@ -171,7 +197,7 @@ function CompareContent() {
   const [title,      setTitle]      = useState("Garage Comparison");
   const [subtitle,   setSubtitle]   = useState("");
   const [loading,    setLoading]    = useState(true);
-  const [activeMode, setActiveMode] = useState(searchParams.get("mode") || "");
+  const [activeMode, setActiveMode] = useState(searchParams.get("mode") || "overall");
   const [userCoords, setUserCoords] = useState(null);
   const [canScroll,  setCanScroll]  = useState(false);
 
@@ -238,10 +264,8 @@ function CompareContent() {
   };
   const tableMinW = `calc(${LABEL_W} + ${n} * ${COL_W})`;
 
-  const allRows = [
-    ...ROWS,
-    ...(enriched.some(g => g.services?.length) ? [{ label: "Services", key: "services" }] : []),
-  ];
+  const extraRows = enriched.some(g => g.services?.length) ? [{ label: "Services", key: "services" }] : [];
+  const { rows: allRows } = getVisibleRows(activeMode, extraRows);
 
   return (
     <div className="min-h-screen bg-surface pb-28 md:pb-12">
@@ -329,26 +353,26 @@ function CompareContent() {
 
               {/* ── Table rows ── */}
               {allRows.map(({ label, key }, idx) => (
-                <div key={key} style={gridStyle}
-                  className={idx !== 0 ? "border-t border-[#f3f3f8] dark:border-white/5" : ""}>
-                  {/* Sticky label */}
-                  <div className="sticky left-0 z-10 flex items-center px-3 py-3 bg-[#f9f9fe] dark:bg-[#17171a] border-r border-[#f3f3f8] dark:border-white/5">
-                    <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[#727687] dark:text-[#918f9a] leading-tight break-words">{label}</span>
-                  </div>
-                  {/* Values */}
-                  {enriched.map((g) => (
-                    <div key={g.id} className="flex items-start px-3 py-3 border-l border-[#f3f3f8] dark:border-white/5">
-                      {key === "services"
-                        ? <div className="flex flex-wrap gap-1">
-                            {(g.services || []).slice(0, 3).map((s) => <Badge key={s.name || s} blue>{s.name || s}</Badge>)}
-                            {(g.services || []).length > 3 && <Badge gray>+{g.services.length - 3}</Badge>}
-                            {!(g.services || []).length && <span className="text-[#c2c6d8]">-</span>}
-                          </div>
-                        : renderCell(key, g[key], enriched.map((gg) => gg[key]))
-                      }
+                  <div key={key} style={gridStyle}
+                    className={idx !== 0 ? "border-t border-[#f3f3f8] dark:border-white/5" : ""}>
+                    {/* Sticky label */}
+                    <div className="sticky left-0 z-10 flex items-center px-3 py-3 bg-[#f9f9fe] dark:bg-[#17171a] border-r border-[#f3f3f8] dark:border-white/5">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.06em] leading-tight break-words text-[#727687] dark:text-[#918f9a]">{label}</span>
                     </div>
-                  ))}
-                </div>
+                    {/* Values */}
+                    {enriched.map((g) => (
+                      <div key={g.id} className="flex items-start px-3 py-3 border-l border-[#f3f3f8] dark:border-white/5">
+                        {key === "services"
+                          ? <div className="flex flex-wrap gap-1">
+                              {(g.services || []).slice(0, 3).map((s) => <Badge key={s.name || s} blue>{s.name || s}</Badge>)}
+                              {(g.services || []).length > 3 && <Badge gray>+{g.services.length - 3}</Badge>}
+                              {!(g.services || []).length && <span className="text-[#c2c6d8]">-</span>}
+                            </div>
+                          : renderCell(key, g[key], enriched.map((gg) => gg[key]))
+                        }
+                      </div>
+                    ))}
+                  </div>
               ))}
 
             </div>
@@ -382,7 +406,13 @@ function CompareContent() {
             {/* Recommendation — changes with active mode */}
             {enriched.length >= 2 && (() => {
               let best, reason;
-              if (activeMode === "nearest") {
+              if (activeMode === "overall") {
+                best   = [...enriched].sort((a, b) => {
+                  const score = (g) => (g.rating || 0) * 2 + (g.isOpen ? 1 : 0) - (parseFloat(g.distance) || 10) * 0.1;
+                  return score(b) - score(a);
+                })[0];
+                reason = `best overall - rated ${best.rating || "N/A"} star${best.isOpen ? ", open right now" : ""}${best.distance ? ` and ${best.distance} away` : ""}`;
+              } else if (activeMode === "nearest") {
                 best   = [...enriched].sort((a, b) => (parseFloat(a.distance) || 99) - (parseFloat(b.distance) || 99))[0];
                 reason = `closest to you${best.distance ? ` at ${best.distance}` : ""}${best.isOpen ? " and open right now" : ""}`;
               } else if (activeMode === "top-rated") {
@@ -398,11 +428,8 @@ function CompareContent() {
                 best   = [...enriched].sort((a, b) => (b.rating || 0) - (a.rating || 0))[0];
                 reason = `top pick for EVs${best.rating ? ` with ${best.rating} ★` : ""}${best.distance ? `, ${best.distance} away` : ""}`;
               } else {
-                best   = [...enriched].sort((a, b) => {
-                  const score = (g) => (g.rating || 0) * 2 + (g.isOpen ? 1 : 0) - (parseFloat(g.distance) || 10) * 0.1;
-                  return score(b) - score(a);
-                })[0];
-                reason = `best overall score - rated ${best.rating || "N/A"} star${best.isOpen ? ", open right now" : ""}${best.distance ? ` and only ${best.distance} away` : ""}`;
+                best   = [...enriched].sort((a, b) => (b.rating || 0) - (a.rating || 0))[0];
+                reason = `highest rated${best.rating ? ` at ${best.rating} star` : ""}${best.isOpen ? ", open right now" : ""}`;
               }
               return (
                 <div className="mt-4 rounded-xl bg-[#d8e2ff]/40 dark:bg-[#1a2f52]/40 border border-[#0056b7]/10 dark:border-[#4d91ff]/10 p-3 flex items-start gap-3">
