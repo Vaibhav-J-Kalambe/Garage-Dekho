@@ -470,7 +470,7 @@ function NearMeContent() {
 
       {/* ── Sticky Compare Bar ── */}
       {compareList.length > 0 && (
-        <div className="fixed bottom-[80px] md:bottom-6 left-1/2 -translate-x-1/2 z-[600] w-[calc(100%-32px)] max-w-md">
+        <div className="fixed bottom-[calc(72px+env(safe-area-inset-bottom,0px)+12px)] md:bottom-6 left-1/2 -translate-x-1/2 z-[600] w-[calc(100%-32px)] max-w-md">
           <div className="flex items-center gap-2 rounded-2xl bg-[#0056b7] px-3 py-2.5 shadow-[0_8px_32px_rgba(0,86,183,0.35)]">
             <div className="flex flex-1 items-center gap-1.5 overflow-hidden">
               {compareList.map((g) => (
