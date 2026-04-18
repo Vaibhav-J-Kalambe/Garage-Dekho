@@ -331,11 +331,10 @@ export default function BookingsPage() {
               ].map(({ label, value }) => (
                 <div
                   key={label}
-                  className="flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold text-[#424656]"
-                  style={{ backgroundColor: "#f3f3f8" }}
+                  className="flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold text-[#424656] dark:text-[#938f99] bg-[#f3f3f8] dark:bg-[#2a2a2e]"
                 >
                   <span>{label}</span>
-                  <span className="font-black text-[#1a1c1f]">{value}</span>
+                  <span className="font-black text-[#1a1c1f] dark:text-[#e4e2e6]">{value}</span>
                 </div>
               ))}
             </div>
@@ -346,8 +345,7 @@ export default function BookingsPage() {
         <div
           role="tablist"
           aria-label="Booking history"
-          className="flex p-1.5 rounded-xl mb-4 md:mb-8 w-fit"
-          style={{ backgroundColor: "#f3f3f8" }}
+          className="flex p-1.5 rounded-xl mb-4 md:mb-8 w-fit bg-[#f3f3f8] dark:bg-[#2a2a2e]"
         >
           {[
             { key: "upcoming", label: "Upcoming", count: upcoming.length },
@@ -361,8 +359,8 @@ export default function BookingsPage() {
               onClick={() => setTab(key)}
               className={`relative flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-bold capitalize transition-all duration-150 ${
                 tab === key
-                  ? "bg-white shadow-sm text-[#1a1c1f]"
-                  : "text-[#424656] hover:text-[#1a1c1f]"
+                  ? "bg-white dark:bg-[#1e1e22] shadow-sm text-[#1a1c1f] dark:text-[#e4e2e6]"
+                  : "text-[#424656] dark:text-[#938f99] hover:text-[#1a1c1f] dark:hover:text-[#e4e2e6]"
               }`}
             >
               {label}

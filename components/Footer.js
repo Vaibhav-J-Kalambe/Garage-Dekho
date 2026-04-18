@@ -75,7 +75,7 @@ export default function Footer() {
 
   return (
     <footer
-      className="hidden md:block bg-white dark:bg-[#1a1a1e] border-t border-[#f3f3f8] dark:border-white/5 mt-16"
+      className="hidden md:block bg-[#f9f9fe] dark:bg-[#1a1a1e] shadow-[0_-1px_4px_rgba(0,0,0,0.04)] dark:shadow-[0_-1px_4px_rgba(0,0,0,0.2)] mt-16"
       aria-label="Site footer"
     >
       {/* Trust bar */}

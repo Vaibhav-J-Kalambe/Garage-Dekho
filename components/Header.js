@@ -37,10 +37,10 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed left-0 right-2 top-0 z-50 transition-[background-color,box-shadow] duration-200 ${
+        className={`fixed left-0 right-2 top-0 z-50 shadow-[0_1px_4px_rgba(0,0,0,0.04)] dark:shadow-[0_1px_4px_rgba(0,0,0,0.2)] transition-[background-color] duration-200 ${
           scrolled
-            ? "bg-white dark:bg-[#1a1a1e] shadow-[0_1px_0_rgba(0,0,0,0.06)] dark:shadow-[0_1px_0_rgba(255,255,255,0.06)]"
-            : "bg-white/95 dark:bg-[#111113]/95"
+            ? "bg-[#f9f9fe] dark:bg-[#1a1a1e]"
+            : "bg-[#f9f9fe] dark:bg-[#111113]"
         }`}
       >
         <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4 py-3 md:px-6 md:py-4">
@@ -120,7 +120,7 @@ export default function Header() {
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-[#424656] dark:text-[#c7c5d0]">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
               </svg>
-              <span aria-hidden="true" className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-[#ba1a1a] ring-2 ring-white dark:ring-[#1a1a1e]" />
+              <span aria-hidden="true" className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-[#ba1a1a] ring-2 ring-[#f9f9fe] dark:ring-[#1a1a1e]" />
             </Link>
 
             {/* Profile avatar */}
