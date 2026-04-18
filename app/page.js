@@ -386,7 +386,7 @@ export default function HomePage() {
                     placeholder="Search garage, service…"
                     aria-label="Search garages"
                     inputMode="search"
-                    className="flex-1 bg-transparent text-[16px] text-on-surface outline-none border-none py-3.5 focus-visible:outline-none"
+                    className="flex-1 bg-transparent dark:!bg-transparent text-[16px] text-on-surface outline-none border-none py-3.5 focus-visible:outline-none"
                   />
                 </div>
                 <button
