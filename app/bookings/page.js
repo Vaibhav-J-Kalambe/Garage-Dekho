@@ -71,7 +71,7 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
   const StatusIcon = status.icon;
 
   return (
-    <div className="rounded-2xl bg-white p-4 shadow-card transition-shadow duration-150 hover:shadow-card-hover hover:-translate-y-0.5 animate-slide-up">
+    <div className="rounded-2xl bg-[#ffffff] dark:bg-[#1e1e22] p-4 shadow-card dark:shadow-none border border-transparent dark:border-white/5 transition-shadow duration-150 hover:shadow-card-hover hover:-translate-y-0.5 animate-slide-up">
 
       {/* Top row */}
       <div className="flex items-center gap-3">
@@ -88,7 +88,7 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
           return (
             <div className="relative h-14 w-14 shrink-0">
               <svg className="absolute inset-0 -rotate-90" width="56" height="56" viewBox="0 0 56 56">
-                <circle cx="28" cy="28" r={r} fill="none" stroke="#f3f3f8" strokeWidth="3" />
+                <circle cx="28" cy="28" r={r} fill="none" stroke="currentColor" strokeWidth="3" className="text-[#f3f3f8] dark:text-[#2a2a2e]" />
                 {ring.pct > 0 && (
                   <circle cx="28" cy="28" r={r} fill="none" stroke={ring.color} strokeWidth="3"
                     strokeDasharray={circ} strokeDashoffset={circ * (1 - ring.pct)}
@@ -222,7 +222,7 @@ function CancelConfirmModal({ onConfirm, onCancel }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative w-full max-w-sm rounded-t-3xl bg-white p-6 shadow-2xl md:rounded-3xl">
+      <div className="relative w-full max-w-sm rounded-t-3xl bg-[#ffffff] dark:bg-[#1e1e22] p-6 shadow-2xl md:rounded-3xl">
         <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-50">
           <AlertTriangle className="h-6 w-6 text-red-500" />
         </div>
@@ -428,8 +428,7 @@ export default function BookingsPage() {
               ) : (
                 /* Next appointment placeholder */
                 <div
-                  className="rounded-3xl p-6 flex flex-col gap-3 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10"
-                  style={{ backgroundColor: "#ffffff" }}
+                  className="rounded-3xl p-6 flex flex-col gap-3 shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-none border border-[#c2c6d8]/10 dark:border-white/5 bg-[#ffffff] dark:bg-[#1e1e22]"
                 >
                   <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#424656]">Next Appointment</p>
                   <p className="text-sm text-[#424656]">No other appointments scheduled.</p>
