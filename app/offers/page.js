@@ -238,7 +238,7 @@ export default function OffersPage() {
   const showFeatured = active === "all" && !!featured;
 
   return (
-    <div className="min-h-screen bg-[#f9f9fe]">
+    <div className="min-h-screen bg-surface">
       <Header />
 
       <div style={{ paddingTop: 64 }}>

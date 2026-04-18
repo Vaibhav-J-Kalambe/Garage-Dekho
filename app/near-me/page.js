@@ -214,7 +214,7 @@ function NearMeContent() {
   }
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-white">
+    <div className="flex h-dvh flex-col overflow-hidden bg-surface">
       <Header />
 
       {/* ── Search + filters ── */}

@@ -197,7 +197,7 @@ export default function ProfilePage() {
     "w-full bg-white border border-[#c2c6d8]/20 rounded-2xl px-4 py-3 text-sm text-[#1a1c1f] placeholder:text-[#c2c6d8] focus:border-[#0056b7] focus:outline-none focus:ring-2 focus:ring-[#0056b7]/20 transition min-h-[44px]";
 
   return (
-    <div className="min-h-screen bg-[#f9f9fe]">
+    <div className="min-h-screen bg-surface">
       <Header />
 
       {/* Hidden file input */}

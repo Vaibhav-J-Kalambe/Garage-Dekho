@@ -151,7 +151,7 @@ export default function GarageDetailPage({ params }) {
 
   if (!garage) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#f9f9fe]">
+      <div className="flex min-h-screen items-center justify-center bg-surface">
         <div className="text-center">
           <p className="text-[#424656]">Garage not found.</p>
           <Link href="/" className="mt-3 block text-sm font-semibold text-[#0056b7]">
@@ -163,7 +163,7 @@ export default function GarageDetailPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#f9f9fe]">
+    <div className="min-h-screen bg-surface">
 
       {/* ── Hero Image ── */}
       <div className="relative h-64 w-full overflow-hidden md:h-80">

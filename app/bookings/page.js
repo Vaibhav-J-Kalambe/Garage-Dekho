@@ -304,13 +304,12 @@ export default function BookingsPage() {
   const shown    = tab === "upcoming" ? upcoming : past;
 
   return (
-    <div style={{ backgroundColor: "#f9f9fe", minHeight: "100vh" }}>
+    <div className="min-h-screen bg-surface">
       <Header />
 
       <main
-        style={{ paddingTop: 64 }}
         aria-label="My bookings"
-        className="mx-auto max-w-screen-xl px-4 md:px-6 pb-28 md:pb-8 pt-4 md:pt-8"
+        className="mx-auto max-w-screen-xl px-4 md:px-6 pb-28 md:pb-8 pt-16 md:pt-20"
       >
 
         {/* ── EDITORIAL HEADER ── */}

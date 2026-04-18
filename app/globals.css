@@ -138,10 +138,38 @@ body {
   overflow-x: hidden;
 }
 
-/* ── Dark mode body background ── */
+/* ── Dark mode global overrides ── */
 .dark body {
   background: #111113;
   color: rgb(228 226 230);
+}
+
+/* Cards and containers that use hardcoded whites/light greys */
+.dark .bg-white { background-color: rgb(var(--color-surface-container-lowest)) !important; }
+.dark .bg-\[\#f9f9fe\] { background-color: rgb(var(--color-surface)) !important; }
+.dark .bg-\[\#f3f3f8\] { background-color: rgb(var(--color-surface-container)) !important; }
+.dark .bg-\[\#ededf2\] { background-color: rgb(var(--color-surface-container-high)) !important; }
+.dark .bg-\[\#e8e8ed\] { background-color: rgb(var(--color-surface-container-high)) !important; }
+.dark .bg-\[\#e8e8f0\] { background-color: rgb(var(--color-surface-container-high)) !important; }
+
+/* Hardcoded text colours */
+.dark .text-\[\#1a1c1f\] { color: rgb(var(--color-on-surface)) !important; }
+.dark .text-\[\#424656\] { color: rgb(var(--color-on-surface-variant)) !important; }
+.dark .text-\[\#727687\] { color: rgb(var(--color-outline)) !important; }
+
+/* Borders */
+.dark .border-\[\#f3f3f8\] { border-color: rgb(var(--color-surface-container-high)) !important; }
+.dark .border-\[\#c2c6d8\] { border-color: rgb(var(--color-outline-variant)) !important; }
+.dark .divide-\[\#f3f3f8\] > * + * { border-color: rgb(var(--color-surface-container-high)) !important; }
+
+/* Input backgrounds */
+.dark input, .dark textarea, .dark select {
+  background-color: rgb(var(--color-surface-container));
+  color: rgb(var(--color-on-surface));
+  border-color: rgb(var(--color-outline-variant));
+}
+.dark input::placeholder, .dark textarea::placeholder {
+  color: rgb(var(--color-outline));
 }
 
 /* ── Custom scrollbar (always visible, like Notion) ── */
