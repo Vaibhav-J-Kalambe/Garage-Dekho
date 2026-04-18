@@ -524,7 +524,16 @@ export default function GarageDetailPage({ params }) {
           {/* ── Similar Garages ── */}
           {similarGarages.length > 0 && (
             <div className="flex flex-col gap-3 mt-1 md:hidden">
-              <h3 className="text-sm font-black text-[#1a1c1f]">Similar Garages Nearby</h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-black text-[#1a1c1f] dark:text-[#e4e2e6]">Similar Garages Nearby</h3>
+                <Link
+                  href={`/compare?ids=${garage.id},${similarGarages.slice(0,2).map(g=>g.id).join(",")}`}
+                  className="flex items-center gap-1 rounded-full bg-[#d8e2ff] dark:bg-[#1a2f52] px-3 py-1.5 text-[11px] font-bold text-[#0056b7] dark:text-[#4d91ff] hover:bg-[#c2d0f5] transition-colors active:scale-95"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8h3M3 8h12M21 16h-3M3 16h12M5 8V5M19 16v3"/></svg>
+                  Compare
+                </Link>
+              </div>
               {similarGarages.map((sg) => (
                 <Link key={sg.id} href={`/garage/${sg.id}`}
                   className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10 transition-shadow duration-150 hover:shadow-[0_4px_24px_rgba(0,0,0,0.08)] active:scale-[0.99]">
@@ -594,7 +603,16 @@ export default function GarageDetailPage({ params }) {
             {/* Similar garages - desktop sidebar */}
             {similarGarages.length > 0 && (
               <div className="flex flex-col gap-3">
-                <h3 className="text-sm font-black text-[#1a1c1f]">Similar Garages Nearby</h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-black text-[#1a1c1f] dark:text-[#e4e2e6]">Similar Garages Nearby</h3>
+                  <Link
+                    href={`/compare?ids=${garage.id},${similarGarages.slice(0,2).map(g=>g.id).join(",")}`}
+                    className="flex items-center gap-1 rounded-full bg-[#d8e2ff] dark:bg-[#1a2f52] px-3 py-1.5 text-[11px] font-bold text-[#0056b7] dark:text-[#4d91ff] hover:bg-[#c2d0f5] transition-colors active:scale-95"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8h3M3 8h12M21 16h-3M3 16h12M5 8V5M19 16v3"/></svg>
+                    Compare All
+                  </Link>
+                </div>
                 {similarGarages.map((sg) => (
                   <Link key={sg.id} href={`/garage/${sg.id}`}
                     className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-[#c2c6d8]/10 transition-shadow duration-150 hover:shadow-[0_4px_24px_rgba(0,0,0,0.08)] active:scale-[0.99]">

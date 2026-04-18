@@ -5,10 +5,11 @@ import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Search, SlidersHorizontal, Star, CheckCircle2,
   Navigation, X, Bike, Car, Zap, Wrench,
-  ChevronUp, ChevronDown, Loader2,
+  Loader2, GitCompare,
 } from "lucide-react";
 import Header from "../../components/Header";
 import { getAllGarages } from "../../lib/garages";
@@ -60,56 +61,82 @@ function getPuneNeighbourhood(lat, lng) {
 }
 
 /* ── Garage list row ── */
-function GarageRow({ garage, active, onClick }) {
+function GarageRow({ garage, active, onClick, inCompare, onToggleCompare, compareDisabled }) {
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
-      className={`flex w-full items-center gap-3 rounded-2xl p-4 text-left transition-[transform,box-shadow,background-color] duration-150 active:scale-[0.98] bg-white ${
-        active
+      onKeyDown={(e) => e.key === "Enter" && onClick()}
+      className={`flex w-full items-center gap-3 rounded-2xl p-3 text-left cursor-pointer bg-white dark:bg-[#1e1e22] transition-all duration-150 active:scale-[0.98] ${
+        inCompare
+          ? "ring-2 ring-[#0056b7] shadow-[0_0_0_4px_rgba(0,86,183,0.08)]"
+          : active
           ? "ring-2 ring-[#0056b7]/40"
-          : "hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]"
+          : "hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_4px_16px_rgba(0,0,0,0.3)]"
       }`}
     >
-      <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-[#f3f3f8]">
+      {/* Thumbnail */}
+      <div className="relative h-[52px] w-[52px] shrink-0 overflow-hidden rounded-xl bg-[#f3f3f8] dark:bg-[#2a2a2e]">
         {garage.image
-          ? <Image src={garage.image} alt={garage.name} fill className={`object-cover ${!garage.isOpen ? "opacity-70 grayscale-[25%]" : ""}`} sizes="56px" />
+          ? <Image src={garage.image} alt={garage.name} fill className={`object-cover ${!garage.isOpen ? "opacity-60 grayscale-[30%]" : ""}`} sizes="52px" />
           : <div className="flex h-full w-full items-center justify-center">
-              <Wrench className="h-6 w-6 text-[#c2c6d8]" />
+              <Wrench className="h-5 w-5 text-[#c2c6d8]" />
             </div>
         }
-        {garage.isOpen && (
-          <span className="absolute bottom-1 right-1 h-2 w-2 rounded-full border-2 border-white bg-green-500" />
-        )}
+        {/* Open dot */}
+        <span className={`absolute bottom-1 right-1 h-2 w-2 rounded-full border-[1.5px] border-white dark:border-[#1e1e22] ${garage.isOpen ? "bg-green-500" : "bg-[#c2c6d8]"}`} />
       </div>
+
+      {/* Info */}
       <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-1">
-          <p className="truncate text-sm font-bold text-[#1a1c1f]">{garage.name}</p>
+        <div className="flex items-center gap-1 mb-0.5">
+          <p className="truncate text-[13px] font-bold text-[#1a1c1f] dark:text-[#e4e2e6] leading-tight">{garage.name}</p>
           {garage.verified && <CheckCircle2 className="h-3 w-3 shrink-0 text-[#0056b7]" />}
         </div>
-        <p className="text-[11px] text-[#424656]">{garage.speciality}</p>
-        <div className="mt-1 flex items-center gap-2">
+        <p className="truncate text-[11px] text-[#727687] dark:text-[#938f99] mb-1">{garage.speciality}</p>
+        <div className="flex items-center gap-1.5">
           <div className="flex items-center gap-0.5">
             <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-            <span className="text-xs font-semibold text-[#1a1c1f]">{garage.rating || "New"}</span>
+            <span className="text-[11px] font-bold text-[#1a1c1f] dark:text-[#e4e2e6]">{garage.rating || "New"}</span>
           </div>
-          <span className="text-[#c2c6d8]">·</span>
-          <span className={`text-[11px] font-semibold ${garage.isOpen ? "text-green-500" : "text-[#424656]"}`}>
-            {garage.isOpen ? `Open · ${garage.waitTime}` : "Closed"}
+          <span className="text-[#c2c6d8] dark:text-[#444654] text-[10px]">•</span>
+          <span className={`text-[11px] font-semibold ${garage.isOpen ? "text-green-600 dark:text-green-400" : "text-[#727687] dark:text-[#938f99]"}`}>
+            {garage.isOpen ? "Open" : "Closed"}
           </span>
+          {garage.isOpen && garage.waitTime && (
+            <>
+              <span className="text-[#c2c6d8] dark:text-[#444654] text-[10px]">•</span>
+              <span className="text-[11px] text-[#727687] dark:text-[#938f99]">{garage.waitTime}</span>
+            </>
+          )}
         </div>
       </div>
-      <div className="flex shrink-0 flex-col items-end gap-1">
-        <span className="text-xs font-black text-[#0056b7]">{garage.distance}</span>
+
+      {/* Right actions */}
+      <div className="flex shrink-0 flex-col items-end gap-2" onClick={(e) => e.stopPropagation()}>
+        <span className="text-xs font-black text-[#0056b7] dark:text-[#4d91ff]">{garage.distance}</span>
         <Link
           href={`/garage/${garage.id}`}
           onClick={(e) => e.stopPropagation()}
-          className="rounded-full bg-[#0056b7] px-4 py-2 text-xs font-bold text-white transition hover:opacity-90 active:scale-95 min-h-[44px] flex items-center"
+          className="w-[72px] rounded-full bg-[#0056b7] py-1.5 text-center text-[12px] font-bold text-white hover:opacity-90 active:scale-95 transition-all"
         >
           View
         </Link>
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); onToggleCompare(garage); }}
+          disabled={compareDisabled && !inCompare}
+          className={`w-[72px] rounded-full py-1.5 text-center text-[12px] font-bold transition-all active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed ${
+            inCompare
+              ? "bg-[#0056b7] text-white"
+              : "bg-[#0056b7]/10 dark:bg-[#0056b7]/20 text-[#0056b7] dark:text-[#4d91ff] hover:bg-[#0056b7] hover:text-white"
+          }`}
+        >
+          {inCompare ? "✓ Added" : "Compare"}
+        </button>
       </div>
-    </button>
+    </div>
   );
 }
 
@@ -121,6 +148,7 @@ const SORT_OPTIONS = [
 
 function NearMeContent() {
   const searchParams  = useSearchParams();
+  const router        = useRouter();
   const [garages,       setGarages]       = useState([]);
   const [activeGarage,  setActiveGarage]  = useState(null);
   const [distFilter,    setDistFilter]    = useState("All");
@@ -131,7 +159,21 @@ function NearMeContent() {
   const [userCoords,    setUserCoords]    = useState(null);
   const [sortBy,        setSortBy]        = useState("nearest");
   const [showSort,      setShowSort]      = useState(false);
+  const [compareList,   setCompareList]   = useState([]);
   const { showToast } = useToast();
+
+  function toggleCompare(garage) {
+    setCompareList((prev) => {
+      if (prev.find((g) => g.id === garage.id)) return prev.filter((g) => g.id !== garage.id);
+      if (prev.length >= 3) { showToast("You can compare up to 3 garages"); return prev; }
+      return [...prev, garage];
+    });
+  }
+
+  function startCompare() {
+    const ids = compareList.map((g) => g.id).join(",");
+    router.push(`/compare?ids=${ids}`);
+  }
 
   useEffect(() => {
     // Share the same 5-min sessionStorage cache as the home page
@@ -241,6 +283,27 @@ function NearMeContent() {
             )}
           </div>
 
+          {/* Quick compare shortcuts */}
+          <div className="overflow-x-auto flex gap-2 pb-0.5 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
+            <span className="shrink-0 self-center text-[11px] font-bold text-[#727687] dark:text-[#918f9a]">Compare:</span>
+            {[
+              { label: "Top Rated", mode: "top-rated" },
+              { label: "Nearest",   mode: "nearest"   },
+              { label: "Best Cars", mode: "cars"       },
+              { label: "Best Bikes",mode: "bikes"      },
+              { label: "Best EV",   mode: "ev"         },
+            ].map(({ label, mode }) => (
+              <Link
+                key={mode}
+                href={`/compare?mode=${mode}`}
+                className="shrink-0 flex items-center gap-1 rounded-full bg-[#f3f3f8] dark:bg-[#2a2a2e] px-3 py-1.5 text-[11px] font-bold text-[#424656] dark:text-[#938f99] hover:bg-[#d8e2ff] dark:hover:bg-[#1a2f52] hover:text-[#0056b7] dark:hover:text-[#4d91ff] transition-colors active:scale-95"
+              >
+                <GitCompare className="h-3 w-3" />
+                {label}
+              </Link>
+            ))}
+          </div>
+
           {/* Filter bar */}
           <div role="group" aria-label="Filter garages" className="overflow-x-auto flex gap-2 pb-0.5 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
 
@@ -336,9 +399,9 @@ function NearMeContent() {
         {/* Mobile: bottom sheet that slides up */}
         <div
           className={`
-            absolute bottom-0 left-0 right-0 z-[500] flex flex-col overflow-hidden rounded-t-3xl bg-white shadow-[0_-4px_24px_rgba(0,0,0,0.10)] transition-[height] duration-300
-            md:relative md:bottom-auto md:left-auto md:right-auto md:z-auto md:w-[22rem] md:shrink-0 md:rounded-none md:border-l md:border-[#f3f3f8] md:shadow-[-4px_0_20px_rgba(0,0,0,0.05)]
-            ${listExpanded ? "h-[65vh]" : "h-[36vh]"}
+            absolute bottom-0 left-0 right-0 z-[500] flex flex-col overflow-hidden rounded-t-3xl bg-white dark:bg-[#1a1a1e] shadow-[0_-4px_24px_rgba(0,0,0,0.10)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.4)] transition-[height] duration-300
+            md:relative md:bottom-auto md:left-auto md:right-auto md:z-auto md:w-[22rem] md:shrink-0 md:rounded-none md:border-l md:border-[#f3f3f8] dark:md:border-white/5 md:shadow-none
+            ${listExpanded ? "h-[75vh]" : "h-[58vh]"}
             md:h-full
           `}
         >
@@ -348,25 +411,19 @@ function NearMeContent() {
             aria-label={listExpanded ? "Collapse garage list" : "Expand garage list"}
             aria-expanded={listExpanded}
             onClick={() => setListExpanded((e) => !e)}
-            className="flex w-full shrink-0 flex-col items-center gap-1.5 border-b border-[#f3f3f8] py-3 md:hidden"
+            className="flex w-full shrink-0 items-center justify-center py-2.5 md:hidden"
           >
-            <div className="h-1 w-10 rounded-full bg-[#c2c6d8]/50" />
-            <div className="flex items-center gap-1 text-[11px] font-bold text-[#424656]">
-              {listExpanded
-                ? <><ChevronDown className="h-3 w-3" /> Collapse</>
-                : <><ChevronUp className="h-3 w-3" /> Show garages</>
-              }
-            </div>
+            <div className="h-1 w-10 rounded-full bg-[#c2c6d8]/60 dark:bg-white/20" />
           </button>
 
-          <div className="overflow-y-auto flex-1 p-3 md:p-4" style={{ paddingBottom: "max(90px, calc(env(safe-area-inset-bottom) + 90px))" }}>
+          <div className="overflow-y-auto flex-1 px-3 md:px-4 pt-1 pb-[max(90px,calc(env(safe-area-inset-bottom)+90px))]">
             {/* Count header + sort */}
             <div className="mb-3 flex items-center justify-between">
               <div>
-                <p className="text-sm font-black tracking-tight text-[#1a1c1f]">
-                  {filtered.length} Garage{filtered.length !== 1 ? "s" : ""}
+                <p className="text-sm font-black tracking-tight text-[#1a1c1f] dark:text-[#e4e2e6]">
+                  {filtered.length} Garage{filtered.length !== 1 ? "s" : ""} found
                 </p>
-                <p className="text-[11px] text-[#424656] font-medium">near your location</p>
+                <p className="text-[11px] text-[#424656] dark:text-[#938f99] font-medium">near your location</p>
               </div>
               <button
                 type="button"
@@ -411,6 +468,9 @@ function NearMeContent() {
                     garage={garage}
                     active={activeGarage === garage.id}
                     onClick={() => toggleGarage(garage.id)}
+                    inCompare={!!compareList.find((g) => g.id === garage.id)}
+                    onToggleCompare={toggleCompare}
+                    compareDisabled={compareList.length >= 3}
                   />
                 ))}
               </div>
@@ -419,6 +479,45 @@ function NearMeContent() {
         </div>
 
       </div>
+
+      {/* ── Sticky Compare Bar ── */}
+      {compareList.length > 0 && (
+        <div className="fixed bottom-[80px] md:bottom-6 left-1/2 -translate-x-1/2 z-[600] w-[calc(100%-32px)] max-w-md">
+          <div className="flex items-center gap-2 rounded-2xl bg-[#0056b7] px-3 py-2.5 shadow-[0_8px_32px_rgba(0,86,183,0.35)]">
+            {/* Garage pills */}
+            <div className="flex flex-1 items-center gap-1.5 overflow-hidden">
+              {compareList.map((g) => (
+                <div key={g.id} className="flex items-center gap-1 rounded-xl bg-white/15 px-2 py-1 min-w-0">
+                  <span className="truncate text-[11px] font-bold text-white max-w-[72px]">{g.name}</span>
+                  <button
+                    type="button"
+                    aria-label={`Remove ${g.name}`}
+                    onClick={() => toggleCompare(g)}
+                    className="shrink-0 rounded-full p-0.5 hover:bg-white/20 transition-colors"
+                  >
+                    <X className="h-3 w-3 text-white/80" />
+                  </button>
+                </div>
+              ))}
+              {compareList.length < 3 && (
+                <span className="shrink-0 text-[11px] text-white/60">
+                  {compareList.length === 1 ? "+ add 1 more" : ""}
+                </span>
+              )}
+            </div>
+            {/* Compare button */}
+            <button
+              type="button"
+              onClick={startCompare}
+              disabled={compareList.length < 2}
+              className="shrink-0 flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-[12px] font-black text-[#0056b7] transition-all duration-150 hover:bg-[#f0f4ff] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <GitCompare className="h-3.5 w-3.5" />
+              Compare
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
