@@ -22,7 +22,7 @@ const MENU = [
   {
     section: "Account",
     items: [
-      { label: "Edit Profile",       icon: Edit3,         href: "/profile/edit",           iconBg: "bg-[#d8e2ff]",     iconColor: "text-[#0056b7]",  comingSoon: true  },
+      { label: "Edit Profile",       icon: Edit3,         href: "/profile/edit",           iconBg: "bg-[#d8e2ff]",     iconColor: "text-[#0056b7]"  },
       { label: "Saved Garages",      icon: Heart,         href: "/profile/saved",          iconBg: "bg-[#ffdad6]",     iconColor: "text-[#ba1a1a]"                       },
       { label: "My Bookings",        icon: CalendarCheck, href: "/bookings",               iconBg: "bg-[#d8e2ff]",     iconColor: "text-[#4c4aca]"                       },
       { label: "My Reviews",         icon: Star,          href: "/profile/reviews",        iconBg: "bg-amber-50",      iconColor: "text-amber-500"                       },
@@ -31,15 +31,15 @@ const MENU = [
   {
     section: "Preferences",
     items: [
-      { label: "Notifications",      icon: Bell,          href: "/profile/notifications",  iconBg: "bg-orange-50",     iconColor: "text-orange-500", comingSoon: true  },
-      { label: "Saved Addresses",    icon: MapPin,        href: "/profile/addresses",      iconBg: "bg-green-50",      iconColor: "text-green-600",  comingSoon: true  },
-      { label: "Privacy & Security", icon: ShieldCheck,   href: "/profile/security",       iconBg: "bg-[#f3f3f8]",     iconColor: "text-[#424656]",  comingSoon: true  },
+      { label: "Notifications",      icon: Bell,          href: "/profile/notifications",  iconBg: "bg-orange-50",     iconColor: "text-orange-500" },
+      { label: "Saved Addresses",    icon: MapPin,        href: "/profile/addresses",      iconBg: "bg-green-50",      iconColor: "text-green-600"  },
+      { label: "Privacy & Security", icon: ShieldCheck,   href: "/profile/security",       iconBg: "bg-[#f3f3f8]",     iconColor: "text-[#424656]"  },
     ],
   },
   {
     section: "Support",
     items: [
-      { label: "Help & FAQ",         icon: HelpCircle,    href: "/profile/help",           iconBg: "bg-[#f3f3f8]",     iconColor: "text-[#c2c6d8]",  comingSoon: true  },
+      { label: "Help & FAQ",         icon: HelpCircle,    href: "/profile/help",           iconBg: "bg-[#f3f3f8]",     iconColor: "text-[#c2c6d8]"  },
     ],
   },
 ];
