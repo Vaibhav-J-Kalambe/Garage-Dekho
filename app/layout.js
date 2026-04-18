@@ -8,6 +8,7 @@ import { ToastProvider } from "../context/ToastContext";
 import Analytics from "../components/Analytics";
 import NavigationProgress from "../components/NavigationProgress";
 import { ThemeProvider } from "../components/ThemeProvider";
+import InstallBanner from "../components/InstallBanner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -62,6 +63,7 @@ export default function RootLayout({ children }) {
                 {children}
                 <Footer />
                 <BottomNav />
+                <InstallBanner />
               </ToastProvider>
             </LocationProvider>
           </AuthProvider>
