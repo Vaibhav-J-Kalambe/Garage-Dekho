@@ -100,7 +100,7 @@ export default function BottomNav() {
       style={{ paddingBottom: "max(8px, env(safe-area-inset-bottom))", paddingLeft: 12, paddingRight: 12 }}
     >
       {/* Floating pill nav bar */}
-      <div className="mx-auto flex max-w-md items-center justify-around rounded-[32px] bg-white/95 dark:bg-[#1a1a1e]/95 px-2 pt-1 pb-1 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-[#e8e8f0] dark:border-white/8">
+      <div className="mx-auto flex max-w-md items-center justify-around rounded-[32px] bg-white/95 dark:bg-[#1a1a1e]/95 px-2 pt-1 pb-1 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-[#e8e8f0] dark:border-transparent">
         {NAV_ITEMS.map(({ label, href, icon, iconFilled, isSOS, isHome }) => {
           const active = isHome ? pathname === "/" : pathname.startsWith(href);
 
