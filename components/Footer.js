@@ -75,15 +75,15 @@ export default function Footer() {
 
   return (
     <footer
-      className="hidden md:block bg-white border-t border-[#f3f3f8] mt-16"
+      className="hidden md:block bg-white dark:bg-[#1a1a1e] border-t border-[#f3f3f8] dark:border-white/5 mt-16"
       aria-label="Site footer"
     >
       {/* Trust bar */}
-      <div className="border-b border-[#f3f3f8] bg-[#f9f9fe]">
+      <div className="border-b border-[#f3f3f8] dark:border-white/5 bg-[#f9f9fe] dark:bg-[#111113]">
         <div className="mx-auto flex max-w-screen-xl items-center justify-center gap-10 px-6 py-3.5">
           {TRUST_BADGES.map(({ icon, label }) => (
-            <div key={label} className="flex items-center gap-2 text-[#424656]">
-              <span className="text-[#0056b7]">{icon}</span>
+            <div key={label} className="flex items-center gap-2 text-[#424656] dark:text-[#c7c5d0]">
+              <span className="text-[#0056b7] dark:text-[#4d91ff]">{icon}</span>
               <span className="text-[12px] font-semibold">{label}</span>
             </div>
           ))}
@@ -94,10 +94,10 @@ export default function Footer() {
       <div className="mx-auto grid max-w-screen-xl grid-cols-4 gap-8 px-6 py-12">
         {/* Brand column */}
         <div>
-          <Link href="/" className="text-[1.1rem] font-black tracking-tight text-[#0056b7]">
+          <Link href="/" className="text-[1.1rem] font-black tracking-tight text-[#0056b7] dark:text-[#4d91ff]">
             GarageDekho
           </Link>
-          <p className="mt-3 text-[13px] leading-relaxed text-[#424656]">
+          <p className="mt-3 text-[13px] leading-relaxed text-[#424656] dark:text-[#c7c5d0]">
             Book car service at trusted garages near you. Oil changes, repairs, tyres, and 24/7 roadside SOS.
           </p>
 
@@ -110,7 +110,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GarageDekho on Instagram"
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] transition-colors duration-150 hover:bg-[#d8e2ff] hover:text-[#0056b7]"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f3f3f8] dark:bg-[#1e1e22] text-[#424656] dark:text-[#c7c5d0] transition-colors duration-150 hover:bg-[#d8e2ff] dark:hover:bg-[#1a2f52] hover:text-[#0056b7] dark:hover:text-[#4d91ff]"
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
@@ -122,7 +122,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Contact on WhatsApp"
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] transition-colors duration-150 hover:bg-[#d8e2ff] hover:text-[#0056b7]"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f3f3f8] dark:bg-[#1e1e22] text-[#424656] dark:text-[#c7c5d0] transition-colors duration-150 hover:bg-[#d8e2ff] dark:hover:bg-[#1a2f52] hover:text-[#0056b7] dark:hover:text-[#4d91ff]"
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
@@ -134,7 +134,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GarageDekho on X"
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] transition-colors duration-150 hover:bg-[#d8e2ff] hover:text-[#0056b7]"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f3f3f8] dark:bg-[#1e1e22] text-[#424656] dark:text-[#c7c5d0] transition-colors duration-150 hover:bg-[#d8e2ff] dark:hover:bg-[#1a2f52] hover:text-[#0056b7] dark:hover:text-[#4d91ff]"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.261 5.632 5.903-5.632Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -149,27 +149,27 @@ export default function Footer() {
               <a
                 href="#"
                 aria-label="Download on the App Store"
-                className="flex items-center gap-1.5 rounded-xl border border-[#c2c6d8]/40 bg-[#f3f3f8] px-3 py-2 transition-colors duration-150 hover:bg-[#d8e2ff] hover:border-[#0056b7]/20"
+                className="flex items-center gap-1.5 rounded-xl border border-[#c2c6d8]/40 dark:border-white/10 bg-[#f3f3f8] dark:bg-[#1e1e22] px-3 py-2 transition-colors duration-150 hover:bg-[#d8e2ff] dark:hover:bg-[#1a2f52] hover:border-[#0056b7]/20"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="#1a1c1f" aria-hidden="true">
                   <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
                 </svg>
                 <div>
-                  <p className="text-[9px] text-[#727687] leading-none">Download on the</p>
-                  <p className="text-[11px] font-bold text-[#1a1c1f] leading-tight">App Store</p>
+                  <p className="text-[9px] text-[#727687] dark:text-[#918f9a] leading-none">Download on the</p>
+                  <p className="text-[11px] font-bold text-[#1a1c1f] dark:text-[#e4e2e6] leading-tight">App Store</p>
                 </div>
               </a>
               <a
                 href="#"
                 aria-label="Get it on Google Play"
-                className="flex items-center gap-1.5 rounded-xl border border-[#c2c6d8]/40 bg-[#f3f3f8] px-3 py-2 transition-colors duration-150 hover:bg-[#d8e2ff] hover:border-[#0056b7]/20"
+                className="flex items-center gap-1.5 rounded-xl border border-[#c2c6d8]/40 dark:border-white/10 bg-[#f3f3f8] dark:bg-[#1e1e22] px-3 py-2 transition-colors duration-150 hover:bg-[#d8e2ff] dark:hover:bg-[#1a2f52] hover:border-[#0056b7]/20"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M3 20.5v-17c0-.83 1-.83 1.5-.5l14 8.5c.5.3.5 1-.0 1.3L4.5 21c-.5.33-1.5.33-1.5-.5z" fill="#1a1c1f"/>
                 </svg>
                 <div>
-                  <p className="text-[9px] text-[#727687] leading-none">Get it on</p>
-                  <p className="text-[11px] font-bold text-[#1a1c1f] leading-tight">Google Play</p>
+                  <p className="text-[9px] text-[#727687] dark:text-[#918f9a] leading-none">Get it on</p>
+                  <p className="text-[11px] font-bold text-[#1a1c1f] dark:text-[#e4e2e6] leading-tight">Google Play</p>
                 </div>
               </a>
             </div>
@@ -179,7 +179,7 @@ export default function Footer() {
         {/* Nav columns */}
         {NAV_COLS.map(({ heading, links }) => (
           <div key={heading}>
-            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.12em] text-[#727687]">
+            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.12em] text-[#727687] dark:text-[#918f9a]">
               {heading}
             </p>
             <ul className="space-y-3">
@@ -187,7 +187,7 @@ export default function Footer() {
                 <li key={label}>
                   <Link
                     href={href}
-                    className="text-[13px] font-medium text-[#424656] transition-colors duration-150 hover:text-[#0056b7]"
+                    className="text-[13px] font-medium text-[#424656] dark:text-[#c7c5d0] transition-colors duration-150 hover:text-[#0056b7] dark:hover:text-[#4d91ff]"
                   >
                     {label}
                   </Link>
@@ -199,19 +199,19 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-[#f3f3f8]">
+      <div className="border-t border-[#f3f3f8] dark:border-white/5">
         <div className="mx-auto flex max-w-screen-xl items-center justify-between px-6 py-4">
-          <p className="text-[12px] text-[#727687]">
+          <p className="text-[12px] text-[#727687] dark:text-[#918f9a]">
             © {new Date().getFullYear()} GarageDekho Technologies Pvt. Ltd. All rights reserved.
           </p>
           <div className="flex items-center gap-5">
-            <Link href="/profile/help" className="text-[12px] text-[#727687] hover:text-[#424656] transition-colors duration-150">
+            <Link href="/profile/help" className="text-[12px] text-[#727687] dark:text-[#918f9a] hover:text-[#424656] dark:hover:text-[#c7c5d0] transition-colors duration-150">
               Help & Support
             </Link>
-            <span className="text-[#c2c6d8]">·</span>
-            <span className="text-[12px] text-[#727687] cursor-default">Privacy Policy</span>
-            <span className="text-[#c2c6d8]">·</span>
-            <span className="text-[12px] text-[#727687] cursor-default">Terms of Service</span>
+            <span className="text-[#c2c6d8] dark:text-[#444654]">·</span>
+            <span className="text-[12px] text-[#727687] dark:text-[#918f9a] cursor-default">Privacy Policy</span>
+            <span className="text-[#c2c6d8] dark:text-[#444654]">·</span>
+            <span className="text-[12px] text-[#727687] dark:text-[#918f9a] cursor-default">Terms of Service</span>
           </div>
         </div>
       </div>
