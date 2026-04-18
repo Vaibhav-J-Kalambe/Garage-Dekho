@@ -376,7 +376,7 @@ export default function HomePage() {
             <div className="mt-4 md:mt-0">
               <form onSubmit={handleSearch} aria-label="Search garages" className="flex items-center gap-2 w-full">
                 <div
-                  className="bg-white dark:bg-[#1e1e22] rounded-2xl flex items-center gap-3 px-4 shadow-[0_2px_12px_rgba(0,86,183,0.08)] dark:shadow-none border border-[#c2c6d8]/50 dark:border-white/5 focus-within:border-[#0056b7] dark:focus-within:border-[#4d91ff] focus-within:ring-2 focus-within:ring-[#0056b7]/15 dark:focus-within:ring-[#4d91ff]/15 transition-[border-color,box-shadow] duration-150 flex-1 min-w-0"
+                  className="bg-white dark:bg-transparent rounded-2xl flex items-center gap-3 px-4 shadow-[0_2px_12px_rgba(0,86,183,0.08)] dark:shadow-none border border-[#c2c6d8]/50 dark:border-white/10 focus-within:border-[#0056b7] dark:focus-within:border-[#4d91ff] focus-within:ring-2 focus-within:ring-[#0056b7]/15 dark:focus-within:ring-[#4d91ff]/15 transition-[border-color,box-shadow] duration-150 flex-1 min-w-0"
                 >
                   <SearchIcon size={16} className="text-on-surface-variant shrink-0" aria-hidden="true" />
                   <input
