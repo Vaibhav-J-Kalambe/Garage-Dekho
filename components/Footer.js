@@ -92,8 +92,8 @@ export default function Footer() {
 
       {/* Main footer grid */}
       <div className="mx-auto grid max-w-screen-xl grid-cols-2 md:grid-cols-4 gap-8 px-4 md:px-6 py-10 md:py-12">
-        {/* Brand column */}
-        <div>
+        {/* Brand column — full width on mobile */}
+        <div className="col-span-2 md:col-span-1">
           <Link href="/" className="text-[1.1rem] font-black tracking-tight text-[#0056b7] dark:text-[#4d91ff]">
             GarageDekho
           </Link>
@@ -145,7 +145,7 @@ export default function Footer() {
           {/* App download */}
           <div className="mt-5 flex flex-col gap-2">
             <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#727687]">Get the app</p>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <a
                 href="#"
                 aria-label="Download on the App Store"
@@ -204,7 +204,7 @@ export default function Footer() {
           <p className="text-[12px] text-[#727687] dark:text-[#918f9a]">
             © {new Date().getFullYear()} GarageDekho Technologies Pvt. Ltd. All rights reserved.
           </p>
-          <div className="flex items-center gap-5">
+          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5">
             <Link href="/profile/help" className="text-[12px] text-[#727687] dark:text-[#918f9a] hover:text-[#424656] dark:hover:text-[#c7c5d0] transition-colors duration-150">
               Help & Support
             </Link>
