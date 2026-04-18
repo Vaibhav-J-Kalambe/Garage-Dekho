@@ -358,8 +358,6 @@ export default function HomePage() {
               <div className="flex flex-wrap gap-2">
                 {[
                   { icon: <ShieldCheckIcon size={13} />, label: "Verified Experts" },
-                  { icon: <CircleCheckIcon size={13} />, label: "Fixed Pricing" },
-                  { icon: <ClockIcon size={13} />, label: "15-min Response" },
                 ].map(({ icon, label }) => (
                   <span
                     key={label}
