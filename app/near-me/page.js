@@ -227,7 +227,10 @@ function NearMeContent() {
   }
 
   function handleLocateMe() {
-    if (!navigator.geolocation) return;
+    if (!navigator.geolocation) {
+      showToast("Location not supported by your browser.");
+      return;
+    }
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -239,13 +242,19 @@ function NearMeContent() {
       },
       (err) => {
         setLocating(false);
-        if (err.code === err.PERMISSION_DENIED) {
-          showToast("Location denied. Enable permissions in browser settings.");
+        if (err.code === 1) {
+          showToast("Location permission denied. Enable it in browser settings.");
+        } else if (err.code === 3) {
+          showToast("Location timed out. Please try again.");
         } else {
-          showToast("Could not fetch location. Please try again.");
+          showToast("Could not get your location. Please try again.");
         }
       },
-      { timeout: 10000, enableHighAccuracy: true }
+      {
+        timeout: 10000,
+        maximumAge: 60000,      // use cached position up to 1 min old
+        enableHighAccuracy: false, // WiFi triangulation — works without GPS/mobile data
+      }
     );
   }
 
