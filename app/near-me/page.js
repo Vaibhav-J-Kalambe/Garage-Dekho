@@ -218,12 +218,12 @@ function NearMeContent() {
       <Header />
 
       {/* ── Search + filters ── */}
-      <div className="shrink-0 bg-white px-4 pt-[84px] pb-3 md:px-8">
+      <div className="shrink-0 bg-[#ffffff] dark:bg-[#111113] px-4 pt-[84px] pb-3 md:px-8 border-b border-transparent dark:border-white/5">
         <div className="mx-auto max-w-full space-y-3">
 
           {/* Search bar */}
-          <div className="flex items-center gap-2 rounded-2xl border border-[#c2c6d8]/20 bg-white px-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-[border-color,box-shadow] duration-150 focus-within:border-[#0056b7]/40 focus-within:shadow-[0_0_0_3px_rgba(0,86,183,0.08)] min-h-[48px]">
-            <Search className="h-4 w-4 shrink-0 text-[#424656]" />
+          <div className="flex items-center gap-2 rounded-2xl border border-[#c2c6d8]/40 dark:border-white/10 bg-[#ffffff] dark:bg-transparent px-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none transition-[border-color,box-shadow] duration-150 focus-within:border-[#0056b7] dark:focus-within:border-[#4d91ff] focus-within:shadow-[0_0_0_3px_rgba(0,86,183,0.08)] min-h-[48px]">
+            <Search className="h-4 w-4 shrink-0 text-[#424656] dark:text-[#c7c5d0]" />
             <input
               type="text"
               inputMode="search"
@@ -232,7 +232,7 @@ function NearMeContent() {
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search garages near you…"
               style={{ fontSize: 16 }}
-              className="flex-1 bg-transparent text-[#1a1c1f] placeholder:text-[#c2c6d8] focus:outline-none"
+              className="flex-1 bg-transparent dark:!bg-transparent text-[#1a1c1f] dark:text-[#e4e2e6] placeholder:text-[#c2c6d8] dark:placeholder:text-[#444654] focus:outline-none"
             />
             {search && (
               <button type="button" aria-label="Clear search" onClick={() => setSearch("")} className="transition-[transform] duration-150 active:scale-90">

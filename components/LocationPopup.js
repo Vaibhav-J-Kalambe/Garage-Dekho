@@ -239,8 +239,8 @@ export default function LocationPopup({ onClose }) {
                   border: "1.5px solid #d1d5db",
                   borderRadius: 12,
                   fontSize: 16, /* 16px prevents iOS Safari auto-zoom */
-                  color: "#111827",
-                  background: "#ffffff",
+                  color: "inherit",
+                  background: "transparent",
                   boxShadow: "none",
                   WebkitAppearance: "none",
                   appearance: "none",
