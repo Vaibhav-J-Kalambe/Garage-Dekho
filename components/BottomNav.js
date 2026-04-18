@@ -100,7 +100,7 @@ export default function BottomNav() {
       style={{ paddingBottom: "max(8px, env(safe-area-inset-bottom))", paddingLeft: 12, paddingRight: 12 }}
     >
       {/* Floating pill nav bar */}
-      <div className="mx-auto flex max-w-md items-center justify-around rounded-[32px] bg-white/95 px-2 pt-1 pb-1 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-[#e8e8f0]">
+      <div className="mx-auto flex max-w-md items-center justify-around rounded-[32px] bg-white/95 dark:bg-[#1a1a1e]/95 px-2 pt-1 pb-1 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-[#e8e8f0] dark:border-white/8">
         {NAV_ITEMS.map(({ label, href, icon, iconFilled, isSOS, isHome }) => {
           const active = isHome ? pathname === "/" : pathname.startsWith(href);
 
@@ -114,14 +114,14 @@ export default function BottomNav() {
                 className="relative flex flex-col items-center justify-center gap-0.5 px-3 py-1 active:scale-90 transition-transform duration-150"
               >
                 <div className={`relative flex h-[38px] w-[38px] items-center justify-center rounded-full transition-colors duration-150 ${
-                  active ? "bg-[#ba1a1a] text-white" : "bg-[#ffdad6] text-[#ba1a1a]"
+                  active ? "bg-[#ba1a1a] text-white" : "bg-[#ffdad6] dark:bg-[#4a1010] text-[#ba1a1a]"
                 }`}>
                   {active ? iconFilled : icon}
                   {!active && (
-                    <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-[#ba1a1a] ring-2 ring-white" aria-hidden="true" />
+                    <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-[#ba1a1a] ring-2 ring-white dark:ring-[#1a1a1e]" aria-hidden="true" />
                   )}
                 </div>
-                <span className={`text-[10px] font-semibold ${active ? "text-[#ba1a1a]" : "text-[#424656]"}`}>
+                <span className={`text-[10px] font-semibold ${active ? "text-[#ba1a1a]" : "text-[#424656] dark:text-[#938f99]"}`}>
                   {label}
                 </span>
               </Link>
@@ -138,13 +138,13 @@ export default function BottomNav() {
             >
               <div className={`flex h-[38px] w-[38px] items-center justify-center rounded-2xl transition-colors duration-150 ${
                 active
-                  ? "bg-[#d8e2ff]/60 text-[#0056b7]"
-                  : "text-[#727687] hover:text-[#424656]"
+                  ? "bg-[#d8e2ff]/60 dark:bg-[#1a2f52] text-[#0056b7] dark:text-[#4d91ff]"
+                  : "text-[#727687] dark:text-[#938f99] hover:text-[#424656] dark:hover:text-[#c7c5d0]"
               }`}>
                 {active ? iconFilled : icon}
               </div>
               <span className={`text-[10px] font-semibold ${
-                active ? "text-[#0056b7]" : "text-[#727687]"
+                active ? "text-[#0056b7] dark:text-[#4d91ff]" : "text-[#727687] dark:text-[#938f99]"
               }`}>
                 {label}
               </span>
