@@ -113,7 +113,9 @@ function GarageRow({ garage, active, onClick, inCompare, onToggleCompare, compar
 
       {/* Right actions */}
       <div className="flex shrink-0 flex-col items-end gap-2" onClick={(e) => e.stopPropagation()}>
-        <span className="text-xs font-black text-[#0056b7] dark:text-[#4d91ff]">{garage.distance}</span>
+        {garage.distance && (
+          <span className="text-xs font-black text-[#0056b7] dark:text-[#4d91ff]">{garage.distance}</span>
+        )}
         <Link
           href={`/garage/${garage.id}`}
           onClick={(e) => e.stopPropagation()}
@@ -190,7 +192,7 @@ function NearMeContent() {
     }).catch(console.error);
   }, []);
 
-  const garagesWithDist = useMemo(() => garages.map((g) => {
+  const garagesWithDist = useMemo(() => garages.filter(Boolean).map((g) => {
     if (userCoords && g.lat && g.lng) {
       const km = haversine(userCoords[0], userCoords[1], g.lat, g.lng);
       return { ...g, _realDist: km, distance: km < 1 ? `${(km * 1000).toFixed(0)} m` : `${km.toFixed(1)} km` };
@@ -200,9 +202,11 @@ function NearMeContent() {
 
   const filtered = useMemo(() => garagesWithDist
     .filter((g) => {
-      const matchType   = typeFilter === "all" || g.vehicleType.includes(typeFilter);
-      const matchSearch = g.name.toLowerCase().includes(search.toLowerCase()) ||
-                          g.speciality.toLowerCase().includes(search.toLowerCase());
+      if (!g) return false;
+      const vt          = Array.isArray(g.vehicleType) ? g.vehicleType : (g.vehicleType ? [g.vehicleType] : []);
+      const matchType   = typeFilter === "all" || vt.some(v => v.includes(typeFilter));
+      const matchSearch = (g.name || "").toLowerCase().includes(search.toLowerCase()) ||
+                          (g.speciality || "").toLowerCase().includes(search.toLowerCase());
       const dist = g._realDist;
       const matchDist =
         distFilter === "All" ||
@@ -271,28 +275,6 @@ function NearMeContent() {
                 <X className="h-4 w-4 text-[#424656] hover:text-[#1a1c1f]" />
               </button>
             )}
-          </div>
-
-          {/* Quick compare shortcuts */}
-          <div className="overflow-x-auto flex gap-2 pb-0.5 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
-            <span className="shrink-0 self-center text-[11px] font-bold text-[#727687] dark:text-[#918f9a]">Compare:</span>
-            {[
-              { label: "Overall",    mode: "overall"   },
-              { label: "Top Rated",  mode: "top-rated" },
-              { label: "Nearest",    mode: "nearest"   },
-              { label: "Best Cars",  mode: "cars"      },
-              { label: "Best Bikes", mode: "bikes"     },
-              { label: "Best EV",    mode: "ev"        },
-            ].map(({ label, mode }) => (
-              <Link
-                key={mode}
-                href={`/compare?mode=${mode}`}
-                className="shrink-0 flex items-center gap-1 rounded-full bg-[#f3f3f8] dark:bg-[#2a2a2e] px-3 py-1.5 text-[11px] font-bold text-[#424656] dark:text-[#938f99] hover:bg-[#d8e2ff] dark:hover:bg-[#1a2f52] hover:text-[#0056b7] dark:hover:text-[#4d91ff] transition-colors active:scale-95"
-              >
-                <GitCompare className="h-3 w-3" />
-                {label}
-              </Link>
-            ))}
           </div>
 
           {/* Vehicle type + distance filters */}
@@ -372,36 +354,54 @@ function NearMeContent() {
       {/* ── Main content ── */}
       <div className="relative flex flex-1 overflow-hidden flex-col md:flex-row">
 
-        {/* MAP */}
-        <div className={`relative overflow-hidden flex-1 ${mobileView === "map" ? "flex" : "hidden"} md:flex`}>
-          <MapView
-            garages={filtered}
-            activeGarage={activeGarage}
-            onSelectGarage={toggleGarage}
-            userCoords={userCoords ?? undefined}
-          />
-          {locating && (
-            <div className="absolute inset-0 z-[1000] flex flex-col items-center justify-center gap-2 bg-white/40 backdrop-blur-[2px]">
-              <Loader2 className="h-8 w-8 animate-spin text-[#0056b7]" />
-              <p className="rounded-xl bg-white px-4 py-2 text-xs font-bold text-[#1a1c1f] shadow-[0_4px_16px_rgba(0,0,0,0.12)]">Getting your location...</p>
-            </div>
-          )}
-          <button
-            type="button"
-            aria-label="Center on my location"
-            onClick={handleLocateMe}
-            disabled={locating}
-            className="absolute top-3 right-3 z-[1000] flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition hover:bg-[#f3f3f8] active:scale-95 disabled:opacity-60"
-          >
-            {locating
-              ? <Loader2 className="h-4 w-4 animate-spin text-[#0056b7]" />
-              : <Navigation className="h-4 w-4 text-[#0056b7]" />
-            }
-          </button>
-        </div>
+        {/* MAP CONTROLS — reused for both mobile and desktop map */}
+        {(() => {
+          const mapUI = (
+            <>
+              <MapView
+                garages={filtered.filter(g => g.lat != null && g.lng != null)}
+                activeGarage={activeGarage}
+                onSelectGarage={toggleGarage}
+                userCoords={userCoords ?? undefined}
+              />
+              {locating && (
+                <div className="absolute inset-0 z-[1000] flex flex-col items-center justify-center gap-2 bg-white/40 backdrop-blur-[2px]">
+                  <Loader2 className="h-8 w-8 animate-spin text-[#0056b7]" />
+                  <p className="rounded-xl bg-white px-4 py-2 text-xs font-bold text-[#1a1c1f] shadow-[0_4px_16px_rgba(0,0,0,0.12)]">Getting your location...</p>
+                </div>
+              )}
+              <button
+                type="button"
+                aria-label="Center on my location"
+                onClick={handleLocateMe}
+                disabled={locating}
+                className="absolute top-3 right-3 z-[1000] flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition hover:bg-[#f3f3f8] active:scale-95 disabled:opacity-60"
+              >
+                {locating
+                  ? <Loader2 className="h-4 w-4 animate-spin text-[#0056b7]" />
+                  : <Navigation className="h-4 w-4 text-[#0056b7]" />
+                }
+              </button>
+            </>
+          );
+          return (
+            <>
+              {/* Mobile: only mount MapView when map tab is active */}
+              {mobileView === "map" && (
+                <div className="relative flex flex-1 overflow-hidden md:hidden">
+                  {mapUI}
+                </div>
+              )}
+              {/* Desktop: always mounted — 70% width */}
+              <div className="relative hidden md:flex md:flex-[7] overflow-hidden">
+                {mapUI}
+              </div>
+            </>
+          );
+        })()}
 
         {/* LIST */}
-        <div className={`flex flex-col overflow-hidden ${mobileView === "list" ? "flex-1" : "hidden"} md:flex md:w-[22rem] md:shrink-0 md:border-l md:border-[#f3f3f8] dark:md:border-white/5`}>
+        <div className={`flex flex-col overflow-hidden ${mobileView === "list" ? "flex-1" : "hidden"} md:flex md:flex-[3] md:shrink-0 md:border-l md:border-[#f3f3f8] dark:md:border-white/5`}>
           <div className="overflow-y-auto flex-1 px-3 md:px-4 pt-3 pb-[max(90px,calc(env(safe-area-inset-bottom)+90px))]">
 
             {/* Count + sort */}
