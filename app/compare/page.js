@@ -82,7 +82,7 @@ function autoSelect(all, { ids, mode }) {
 /* ── Render table cell ── */
 function renderCell(key, value, allValues) {
   if (value === undefined || value === null || value === "") {
-    return <span className="text-[#c2c6d8] dark:text-[#444654]">—</span>;
+    return <span className="text-[#c2c6d8] dark:text-[#444654]">-</span>;
   }
   if (key === "rating") {
     const nums = allValues.map(Number).filter(Boolean);
@@ -342,7 +342,7 @@ function CompareContent() {
                         ? <div className="flex flex-wrap gap-1">
                             {(g.services || []).slice(0, 3).map((s) => <Badge key={s.name || s} blue>{s.name || s}</Badge>)}
                             {(g.services || []).length > 3 && <Badge gray>+{g.services.length - 3}</Badge>}
-                            {!(g.services || []).length && <span className="text-[#c2c6d8]">—</span>}
+                            {!(g.services || []).length && <span className="text-[#c2c6d8]">-</span>}
                           </div>
                         : renderCell(key, g[key], enriched.map((gg) => gg[key]))
                       }
@@ -402,7 +402,7 @@ function CompareContent() {
                   const score = (g) => (g.rating || 0) * 2 + (g.isOpen ? 1 : 0) - (parseFloat(g.distance) || 10) * 0.1;
                   return score(b) - score(a);
                 })[0];
-                reason = `best overall score — rated ${best.rating || "N/A"} ★${best.isOpen ? ", open right now" : ""}${best.distance ? ` and only ${best.distance} away` : ""}`;
+                reason = `best overall score - rated ${best.rating || "N/A"} star${best.isOpen ? ", open right now" : ""}${best.distance ? ` and only ${best.distance} away` : ""}`;
               }
               return (
                 <div className="mt-4 rounded-xl bg-[#d8e2ff]/40 dark:bg-[#1a2f52]/40 border border-[#0056b7]/10 dark:border-[#4d91ff]/10 p-3 flex items-start gap-3">
