@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
 
 const FEATURES = [
@@ -41,7 +40,6 @@ const FEATURES = [
 ];
 
 export default function PortalLoginPage() {
-  const router = useRouter();
   const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -53,26 +51,14 @@ export default function PortalLoginPage() {
     setLoading(true);
     setError(null);
 
-    const { data, error: authErr } = await supabase.auth.signInWithPassword({ email, password });
+    const { error: authErr } = await supabase.auth.signInWithPassword({ email, password });
 
     if (authErr) {
-      setError(authErr.message);
+      setError("Invalid email or password. Please try again.");
       setLoading(false);
       return;
     }
-
-    const { data: garage } = await supabase
-      .from("portal_garages")
-      .select("id")
-      .eq("user_id", data.user.id)
-      .single();
-
-    if (!garage) {
-      router.replace("/portal/register?complete=1");
-      return;
-    }
-
-    router.replace("/portal/dashboard");
+    // PortalAuthContext onAuthStateChange handles redirect automatically
   }
 
   return (
