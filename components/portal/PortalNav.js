@@ -14,9 +14,13 @@ const NAV = [
   { href: "/portal/profile",    label: "Profile",  icon: User            },
 ];
 
+const AUTH_PATHS = ["/portal/login", "/portal/register", "/portal/forgot-password", "/portal/reset-password", "/portal/pending"];
+
 export default function PortalNav() {
   const pathname   = usePathname();
   const { garage } = usePortalAuth();
+
+  if (AUTH_PATHS.some((p) => pathname.startsWith(p))) return null;
   const [pendingCount, setPendingCount] = useState(0);
 
   // All hooks must run unconditionally - hide via return below after hooks

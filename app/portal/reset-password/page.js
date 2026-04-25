@@ -61,7 +61,29 @@ function ResetForm() {
               </svg>
             </div>
             <h2 className="text-xl font-black text-[#1a1c1f] mb-2">Password updated!</h2>
-            <p className="text-sm text-[#727687]">Redirecting you to sign in…</p>
+            <p className="text-sm text-[#727687] mb-6">Your new password has been set successfully.</p>
+            <div className="w-full space-y-2.5 mb-6 text-left">
+              {[
+                { label: "Password reset",        done: true  },
+                { label: "Sign in with new password", done: false, active: true },
+                { label: "Manage your garage",    done: false },
+              ].map(({ label, done: d, active }) => (
+                <div key={label} className="flex items-center gap-3">
+                  <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${d ? "bg-green-500" : active ? "bg-[#0056b7] animate-pulse" : "bg-[#e8e8f0]"}`}>
+                    {d ? (
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    ) : (
+                      <div className={`h-2 w-2 rounded-full ${active ? "bg-white" : "bg-[#c2c6d8]"}`} />
+                    )}
+                  </div>
+                  <p className={`text-sm font-semibold ${d ? "text-green-600" : active ? "text-[#0056b7]" : "text-[#c2c6d8]"}`}>{label}</p>
+                </div>
+              ))}
+            </div>
+            <a href="/portal/login" className="w-full flex items-center justify-center rounded-xl bg-[#0056b7] py-3 text-sm font-bold text-white hover:brightness-110 active:scale-95 transition">
+              Sign In Now
+            </a>
+            <p className="mt-3 text-xs text-[#c2c6d8]">Redirecting automatically in a moment…</p>
           </div>
         ) : error && !ready ? (
           <div className="flex flex-col items-center text-center py-2">
