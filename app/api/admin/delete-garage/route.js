@@ -22,7 +22,10 @@ export async function POST(request) {
     .eq("id", garage_id)
     .single();
 
-  // Delete garage record
+  // Delete from public garages table (same UUID)
+  await supabaseAdmin.from("garages").delete().eq("id", garage_id).catch(() => {});
+
+  // Delete portal garage record
   const { error } = await supabaseAdmin
     .from("portal_garages")
     .delete()
@@ -30,7 +33,7 @@ export async function POST(request) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  // Also delete the auth user so they can't log in
+  // Delete the auth user so they can't log in
   if (garage?.user_id) {
     await supabaseAdmin.auth.admin.deleteUser(garage.user_id).catch(() => {});
   }
