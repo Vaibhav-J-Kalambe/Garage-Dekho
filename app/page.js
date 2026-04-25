@@ -357,11 +357,11 @@ export default function HomePage() {
               {/* Trust badges */}
               <div className="flex flex-wrap gap-2">
                 {[
-                  { icon: <ShieldCheckIcon size={13} />, label: "Verified Experts" },
+                  { icon: <ShieldCheckIcon size={16} />, label: "Verified Experts" },
                 ].map(({ icon, label }) => (
                   <span
                     key={label}
-                    className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold bg-primary-fixed text-primary"
+                    className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold bg-surface text-green-600"
                   >
                     {icon}
                     {label}
@@ -566,7 +566,7 @@ export default function HomePage() {
                       {/* Trust badge pills */}
                       <div className="flex flex-wrap gap-1 mt-1.5">
                         {garage.verified && (
-                          <span className="text-[10px] font-bold rounded-full px-2 py-0.5 text-primary bg-primary-fixed">
+                          <span className="text-[10px] font-bold rounded-full px-2 py-0.5 text-green-600 bg-surface">
                             Verified
                           </span>
                         )}
