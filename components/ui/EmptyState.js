@@ -141,7 +141,7 @@ export default function EmptyState({
       {action && (
         <Link
           href={action.href}
-          className="mt-5 inline-flex items-center justify-center rounded-full bg-primary px-6 py-2.5 text-sm font-bold text-white shadow-glow-primary transition hover:brightness-110 active:scale-95"
+          className="mt-5 inline-flex items-center justify-center rounded-full bg-primary px-6 py-2.5 text-sm font-bold text-white transition hover:brightness-110 active:scale-95"
         >
           {action.label}
         </Link>
