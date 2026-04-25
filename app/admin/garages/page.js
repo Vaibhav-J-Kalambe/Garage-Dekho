@@ -38,8 +38,10 @@ function Section({ title, icon: Icon, children }) {
   );
 }
 
-function GarageCard({ garage, onAction, acting }) {
-  const [expanded, setExpanded] = useState(false);
+function GarageCard({ garage, onAction, acting, onRemove }) {
+  const [expanded,  setExpanded]  = useState(false);
+  const [confirm,   setConfirm]   = useState(false);
+  const [removing,  setRemoving]  = useState(false);
   const st = statusStyle[garage.status] ?? statusStyle.pending;
   const wh = garage.working_hours || {};
   const closedDays = wh.closed_days || [];
@@ -91,6 +93,31 @@ function GarageCard({ garage, onAction, acting }) {
               Reject
             </button>
           </div>
+        )}
+
+        {/* Remove button for approved garages */}
+        {garage.status === "approved" && (
+          confirm ? (
+            <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3">
+              <p className="text-sm font-bold text-red-600 mb-2">Remove this garage? This cannot be undone.</p>
+              <div className="flex gap-2">
+                <button onClick={async () => { setRemoving(true); await onRemove(garage.id); setRemoving(false); }}
+                  disabled={removing}
+                  className="flex-1 rounded-xl bg-red-500 py-2 text-sm font-bold text-white hover:brightness-110 active:scale-95 transition disabled:opacity-60">
+                  {removing ? "Removing…" : "Yes, Remove"}
+                </button>
+                <button onClick={() => setConfirm(false)}
+                  className="flex-1 rounded-xl border border-[#e8e8f0] bg-white py-2 text-sm font-bold text-[#424656] hover:bg-[#f3f3f8] active:scale-95 transition">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button onClick={() => setConfirm(true)}
+              className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 py-2.5 text-sm font-bold text-red-500 hover:bg-red-100 active:scale-95 transition">
+              <XCircle className="h-4 w-4" /> Remove Garage
+            </button>
+          )
         )}
 
         {/* Expand toggle */}
@@ -239,6 +266,21 @@ export default function AdminGaragesPage() {
     setAuthed(true); setAuthErr("");
   }
 
+  async function handleRemove(garageId) {
+    const usedSecret = secret || sessionStorage.getItem("admin_secret") || "";
+    const res = await fetch("/api/admin/delete-garage", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-admin-secret": usedSecret },
+      body: JSON.stringify({ garage_id: garageId }),
+    });
+    if (res.ok) {
+      setGarages((prev) => prev.filter((g) => g.id !== garageId));
+    } else {
+      const j = await res.json();
+      if (j.error === "Unauthorized") { setAuthed(false); setAuthErr("Wrong secret. Please re-enter."); }
+    }
+  }
+
   async function handleAction(garageId, action) {
     setActing(garageId + action);
     const usedSecret = secret || sessionStorage.getItem("admin_secret") || "";
@@ -322,7 +364,7 @@ export default function AdminGaragesPage() {
           </div>
         ) : (
           garages.map((g) => (
-            <GarageCard key={g.id} garage={g} onAction={handleAction} acting={acting} />
+            <GarageCard key={g.id} garage={g} onAction={handleAction} acting={acting} onRemove={handleRemove} />
           ))
         )}
       </div>
