@@ -50,6 +50,7 @@ export default function PortalSosPage() {
   const [pendingSos,   setPendingSos]   = useState([]);
   const [activeSos,    setActiveSos]    = useState([]);
   const [completedSos, setCompletedSos] = useState([]);
+  const [cancelledSos, setCancelledSos] = useState([]);
   const [loading,      setLoading]      = useState(true);
 
   const [dispatching,  setDispatching]  = useState(null);
@@ -105,6 +106,7 @@ export default function PortalSosPage() {
     setPendingSos(all.filter((r) => r.status === "pending" && (!r.distance || r.distance <= 15)));
     setActiveSos(all.filter((r) => ["accepted", "arrived"].includes(r.status) && isMyJob(r)));
     setCompletedSos(all.filter((r) => r.status === "verified" && isMyJob(r)));
+    setCancelledSos(all.filter((r) => r.status === "cancelled" && (isMyJob(r) || (!r.distance || r.distance <= 15))));
     setLoading(false);
   }
 
@@ -480,6 +482,31 @@ export default function PortalSosPage() {
                           <p className="text-sm font-bold text-[#1a1c1f] truncate">{req.issue_type}</p>
                           <p className="text-xs text-[#727687]">{req.assignment?.mechanic_name} · Verified</p>
                         </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Cancelled today */}
+              {cancelledSos.length > 0 && (
+                <section>
+                  <p className="mb-3 text-xs font-black uppercase tracking-widest text-[#727687]">
+                    Cancelled Today ({cancelledSos.length})
+                  </p>
+                  <div className="space-y-2">
+                    {cancelledSos.map((req) => (
+                      <div key={req.id} className="flex items-center gap-3 rounded-2xl bg-white px-4 py-3 shadow-card border border-red-100">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-red-50">
+                          <IconClose size={16} className="text-red-400" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-[#1a1c1f] truncate">{ISSUE_ICONS[req.issue_type] || "⚠️"} {req.issue_type}</p>
+                          <p className="text-xs text-[#727687] truncate">{req.user_address || "Unknown location"} · {timeAgo(req.created_at)}</p>
+                        </div>
+                        <span className="shrink-0 rounded-full bg-red-50 border border-red-200 px-2.5 py-0.5 text-[10px] font-bold text-red-500">
+                          User cancelled
+                        </span>
                       </div>
                     ))}
                   </div>
