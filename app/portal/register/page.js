@@ -33,15 +33,17 @@ function RegisterForm() {
   const searchParams = useSearchParams();
   const isComplete   = searchParams.get("complete") === "1";
 
-  const [step, setStep] = useState(isComplete ? 2 : 1);
-  const [userId, setUserId] = useState(null);
+  const [step,      setStep]      = useState(isComplete ? 2 : 1);
+  const [submitted, setSubmitted] = useState(false);
+  const [userId,    setUserId]    = useState(null);
 
   // ── Step 1: Auth ──
-  const [email,    setEmail]    = useState("");
-  const [password, setPassword] = useState("");
-  const [showPass, setShowPass] = useState(false);
-  const [otp,      setOtp]      = useState("");
-  const [otpSent,  setOtpSent]  = useState(false);
+  const [email,       setEmail]       = useState("");
+  const [password,    setPassword]    = useState("");
+  const [showPass,    setShowPass]    = useState(false);
+  const [otpSent,     setOtpSent]     = useState(false);
+  const [otpToken,    setOtpToken]    = useState("");  // signed server token
+  const [otp,         setOtp]         = useState("");
   const [resendTimer, setResendTimer] = useState(0);
 
   // ── Step 2: Basic Info ──
@@ -104,21 +106,35 @@ function RegisterForm() {
   }
 
   async function handleSendOtp(e) {
-    e.preventDefault(); setLoading(true); setError(null);
-    const { error: err } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
-    if (err) { setError(err.message); setLoading(false); return; }
-    setOtpSent(true); setLoading(false); startResendTimer();
+    e?.preventDefault(); setLoading(true); setError(null);
+    if (!email || !password) { setError("Please fill in email and password."); setLoading(false); return; }
+    if (password.length < 6)  { setError("Password must be at least 6 characters."); setLoading(false); return; }
+    const res  = await fetch("/api/portal/send-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email.trim().toLowerCase() }),
+    });
+    const json = await res.json();
+    setLoading(false);
+    if (!res.ok) { setError(json.error || "Failed to send code."); return; }
+    setOtpToken(json.token);
+    setOtpSent(true);
+    startResendTimer();
   }
 
   async function handleVerifyOtp(e) {
     e.preventDefault(); setLoading(true); setError(null);
-    const { data, error: err } = await supabase.auth.verifyOtp({ email, token: otp, type: "email" });
-    if (err) { setError(err.message); setLoading(false); return; }
-    if (data.session?.user) {
-      await supabase.auth.updateUser({ password });
-      setUserId(data.session.user.id);
-    }
-    setLoading(false); setStep(2);
+    const res  = await fetch("/api/portal/verify-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email.trim().toLowerCase(), otp: otp.trim(), token: otpToken, password }),
+    });
+    const json = await res.json();
+    setLoading(false);
+    if (!res.ok) { setError(json.error || "Verification failed."); return; }
+    setUserId(json.userId);
+    await supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
+    setStep(2);
   }
 
   // ── Location detect ──
@@ -204,7 +220,8 @@ function RegisterForm() {
       if (!userId) {
         await supabase.auth.signInWithPassword({ email, password });
       }
-      router.replace("/portal/pending");
+      setSubmitted(true);
+      setLoading(false);
     } catch (err) {
       setError("Network error: " + err.message);
       setLoading(false);
@@ -290,6 +307,50 @@ function RegisterForm() {
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center overflow-y-auto px-4 py-6 sm:px-8 sm:py-10" style={{ paddingBottom: "max(24px, calc(env(safe-area-inset-bottom) + 24px))" }}>
           <div className="w-full max-w-sm my-auto rounded-2xl border border-slate-100 bg-white p-5 shadow-md sm:p-6">
 
+            {/* ── SUCCESS SCREEN ── */}
+            {submitted ? (
+              <div className="flex flex-col items-center text-center py-4 animate-slide-up">
+                <div className="relative mb-6 flex h-20 w-20 items-center justify-center">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-25" />
+                  <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-amber-50 border-2 border-amber-200">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v3l2 2"/>
+                    </svg>
+                  </div>
+                </div>
+                <h2 className="text-2xl font-black text-[#1a1c1f] mb-2">You&apos;re on the list!</h2>
+                <p className="text-sm text-[#727687] leading-relaxed mb-6 max-w-[260px]">
+                  The <span className="font-bold text-[#1a1c1f]">GarageDekho team</span> will review your garage and make it live within <span className="font-bold text-[#1a1c1f]">1–2 hours</span>.
+                </p>
+                <div className="w-full space-y-2.5 mb-6 text-left">
+                  {[
+                    { label: "Registration received", done: true },
+                    { label: "Details under review",  done: false, active: true },
+                    { label: "Garage goes live",       done: false },
+                  ].map(({ label, done, active }) => (
+                    <div key={label} className="flex items-center gap-3">
+                      <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${done ? "bg-green-500" : active ? "bg-amber-400 animate-pulse" : "bg-[#e8e8f0]"}`}>
+                        {done ? (
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        ) : (
+                          <div className={`h-2 w-2 rounded-full ${active ? "bg-white" : "bg-[#c2c6d8]"}`} />
+                        )}
+                      </div>
+                      <p className={`text-sm font-semibold ${done ? "text-green-600" : active ? "text-amber-600" : "text-[#c2c6d8]"}`}>{label}</p>
+                    </div>
+                  ))}
+                </div>
+                {garageName && (
+                  <div className="w-full rounded-2xl bg-[#f3f3f8] px-4 py-3 mb-4 text-left">
+                    <p className="text-xs text-[#727687]">Registered as</p>
+                    <p className="text-base font-black text-[#1a1c1f] mt-0.5">{garageName}</p>
+                    {city && <p className="text-xs text-[#727687] mt-0.5">{city}</p>}
+                  </div>
+                )}
+                <p className="text-xs text-[#c2c6d8]">We&apos;ll notify you by email once your garage is live.</p>
+              </div>
+            ) : (<>
+
             {/* Step indicator inside card */}
             <div className="flex items-center justify-between mb-1">
               <p className="text-xs font-bold uppercase tracking-widest text-[#0056b7]">Step {step} of {STEPS.length}</p>
@@ -299,7 +360,8 @@ function RegisterForm() {
                 ))}
               </div>
             </div>
-            <h2 className="text-[1.85rem] font-black tracking-tight text-slate-900 mb-6">{stepTitles[step]}</h2>
+
+            <h2 className="text-[1.85rem] font-black tracking-tight text-[#1a1c1f] mb-6">{stepTitles[step]}</h2>
 
             {error && (
               <div className="mb-4 flex items-start gap-2 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600 border border-red-100">
@@ -327,7 +389,7 @@ function RegisterForm() {
                   <form onSubmit={handleSendOtp} className="space-y-3">
                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email address" required style={{ fontSize: 16 }} className={inp} />
                     <div className="relative">
-                      <input type={showPass ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Set a password" required minLength={6} style={{ fontSize: 16 }} className={inp + " pr-12"} />
+                      <input type={showPass ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Set a password (min 6 chars)" required minLength={6} style={{ fontSize: 16 }} className={inp + " pr-12"} />
                       <button type="button" onClick={() => setShowPass(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#727687] hover:text-[#1a1c1f]">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{showPass ? <><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></> : <><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></>}</svg>
                       </button>
@@ -338,14 +400,22 @@ function RegisterForm() {
                   </form>
                 ) : (
                   <form onSubmit={handleVerifyOtp} className="space-y-3">
-                    <p className="text-sm text-[#727687]">Code sent to <span className="font-semibold text-[#1a1c1f]">{email}</span></p>
-                    <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="Enter 6-digit code" inputMode="numeric" maxLength={6} required style={{ fontSize: 16 }} className={inp + " text-center tracking-[0.3em] font-mono text-lg"} />
-                    <button type="submit" disabled={loading || !otp} className="w-full rounded-xl bg-[#0056b7] py-3 text-sm font-bold text-white hover:brightness-110 active:scale-95 disabled:opacity-50 transition">
-                      {loading ? "Verifying…" : "Verify & Continue"}
+                    <div className="rounded-xl bg-[#f3f3f8] px-4 py-3 flex items-center gap-2">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0056b7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                      <p className="text-xs text-[#424656]">Code sent to <span className="font-bold text-[#1a1c1f]">{email}</span></p>
+                    </div>
+                    <input type="text" value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))} placeholder="Enter 6-digit code" inputMode="numeric" maxLength={6} required style={{ fontSize: 20 }} className={inp + " text-center tracking-[0.4em] font-mono"} />
+                    <button type="submit" disabled={loading || otp.length !== 6} className="w-full rounded-xl bg-[#0056b7] py-3 text-sm font-bold text-white hover:brightness-110 active:scale-95 disabled:opacity-50 transition">
+                      {loading ? "Verifying…" : "Verify & Continue →"}
                     </button>
-                    <button type="button" onClick={resendTimer > 0 ? undefined : handleSendOtp} className={`w-full text-sm text-center ${resendTimer > 0 ? "text-[#c2c6d8]" : "text-[#0056b7] hover:underline"}`}>
-                      {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Resend code"}
-                    </button>
+                    <div className="flex items-center justify-between pt-1">
+                      <button type="button" onClick={() => { setOtpSent(false); setOtp(""); setOtpToken(""); }} className="text-xs text-[#727687] hover:text-[#1a1c1f] transition">
+                        ← Change email
+                      </button>
+                      <button type="button" disabled={resendTimer > 0} onClick={handleSendOtp} className={`text-xs transition ${resendTimer > 0 ? "text-[#c2c6d8]" : "text-[#0056b7] hover:underline"}`}>
+                        {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Resend code"}
+                      </button>
+                    </div>
                   </form>
                 )}
 
@@ -397,6 +467,10 @@ function RegisterForm() {
                   className="w-full rounded-xl bg-[#0056b7] py-3 text-sm font-bold text-white hover:brightness-110 active:scale-95 disabled:opacity-50 transition">
                   Continue →
                 </button>
+                <button type="button" onClick={() => setStep(s => s - 1)}
+                  className="w-full text-sm text-[#727687] hover:text-[#1a1c1f] transition text-center py-1">
+                  ← Back
+                </button>
               </div>
             )}
 
@@ -422,15 +496,13 @@ function RegisterForm() {
                     <input type="text" value={pincode} onChange={(e) => setPincode(e.target.value)} placeholder="400001" inputMode="numeric" maxLength={6} style={{ fontSize: 16 }} className={inp} />
                   </div>
                 </div>
-                {lat && lng && (
-                  <div className="flex items-center gap-2 rounded-xl bg-green-50 px-4 py-3 text-xs font-semibold text-green-700 border border-green-100">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    Location pinned: {lat.toFixed(4)}, {lng.toFixed(4)}
-                  </div>
-                )}
                 <button type="button" disabled={!address || !city} onClick={() => setStep(4)}
                   className="w-full rounded-xl bg-[#0056b7] py-3 text-sm font-bold text-white hover:brightness-110 active:scale-95 disabled:opacity-50 transition">
                   Continue →
+                </button>
+                <button type="button" onClick={() => setStep(s => s - 1)}
+                  className="w-full text-sm text-[#727687] hover:text-[#1a1c1f] transition text-center py-1">
+                  ← Back
                 </button>
               </div>
             )}
@@ -472,6 +544,10 @@ function RegisterForm() {
                 <button type="button" onClick={() => setStep(5)}
                   className="w-full rounded-xl bg-[#0056b7] py-3 text-sm font-bold text-white hover:brightness-110 active:scale-95 transition">
                   Continue →
+                </button>
+                <button type="button" onClick={() => setStep(s => s - 1)}
+                  className="w-full text-sm text-[#727687] hover:text-[#1a1c1f] transition text-center py-1">
+                  ← Back
                 </button>
               </div>
             )}
@@ -516,6 +592,10 @@ function RegisterForm() {
                   className="w-full rounded-xl bg-[#0056b7] py-3 text-sm font-bold text-white hover:brightness-110 active:scale-95 disabled:opacity-50 transition">
                   Continue →
                 </button>
+                <button type="button" onClick={() => setStep(s => s - 1)}
+                  className="w-full text-sm text-[#727687] hover:text-[#1a1c1f] transition text-center py-1">
+                  ← Back
+                </button>
               </div>
             )}
 
@@ -558,11 +638,14 @@ function RegisterForm() {
                   className="w-full rounded-xl bg-[#0056b7] py-3.5 text-sm font-bold text-white hover:brightness-110 active:scale-95 disabled:opacity-60 transition">
                   {loading ? "Submitting…" : "Submit & Go Live 🚀"}
                 </button>
-                <button type="button" onClick={() => setStep(5)} className="w-full text-sm text-[#727687] hover:text-[#1a1c1f] transition">
+                <button type="button" onClick={() => setStep(s => s - 1)}
+                  className="w-full text-sm text-[#727687] hover:text-[#1a1c1f] transition text-center py-1">
                   ← Back
                 </button>
               </form>
             )}
+
+            </>)} {/* end submitted ternary */}
 
           </div>
         </div>

@@ -160,7 +160,7 @@ export default function PortalLoginPage() {
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center overflow-y-auto px-4 py-6 sm:px-8 sm:py-10" style={{ paddingBottom: "max(24px, calc(env(safe-area-inset-bottom) + 24px))" }}>
           <div className="w-full max-w-sm rounded-2xl border border-slate-100 bg-white p-5 shadow-md sm:p-6">
 
-            <h2 className="text-[1.85rem] font-black tracking-tight text-slate-900">Welcome back</h2>
+            <h2 className="text-[1.85rem] font-black tracking-tight text-[#1a1c1f]">Welcome back</h2>
             <p className="mt-1.5 mb-8 text-sm text-slate-500">Sign in to manage your garage</p>
 
             <div aria-live="polite" aria-atomic="true">

@@ -14,6 +14,7 @@ import {
   AlertTriangle,
   Star,
   CalendarPlus,
+  KeyRound,
 } from "lucide-react";
 import Image from "next/image";
 import Header from "../../components/Header";
@@ -21,14 +22,16 @@ import { useAuth } from "../../components/AuthProvider";
 import { getUserBookings, cancelBooking } from "../../lib/bookings";
 import { hasReviewed } from "../../lib/reviews";
 import ReviewModal from "../../components/ReviewModal";
+import OTPCheckInModal from "../../components/OTPCheckInModal";
 import Skeleton from "../../components/ui/Skeleton";
 import EmptyState from "../../components/ui/EmptyState";
 import Badge from "../../components/ui/Badge";
 
 const STATUS = {
-  confirmed: { label: "Confirmed", variant: "info",    icon: CalendarCheck },
-  completed: { label: "Completed", variant: "success",  icon: CheckCircle2  },
-  cancelled: { label: "Cancelled", variant: "danger",   icon: XCircle       },
+  confirmed:  { label: "Confirmed",   variant: "info",    icon: CalendarCheck },
+  in_service: { label: "In Service",  variant: "warning", icon: KeyRound      },
+  completed:  { label: "Completed",   variant: "success", icon: CheckCircle2  },
+  cancelled:  { label: "Cancelled",   variant: "danger",  icon: XCircle       },
 };
 
 function formatDate(dateStr) {
@@ -65,7 +68,13 @@ function buildCalendarUrl(booking) {
   return `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}`;
 }
 
-function BookingCard({ booking, onCancel, onReview, reviewed }) {
+function isToday(dateStr) {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const d = new Date(dateStr + "T00:00:00");
+  return d.getTime() === today.getTime();
+}
+
+function BookingCard({ booking, onCancel, onReview, reviewed, onCheckIn }) {
   const router = useRouter();
   const status     = STATUS[booking.status] ?? STATUS.confirmed;
   const StatusIcon = status.icon;
@@ -161,6 +170,17 @@ function BookingCard({ booking, onCancel, onReview, reviewed }) {
         <div className="flex items-center gap-2">
           {booking.status === "confirmed" && (
             <>
+              {isToday(booking.date) && (
+                <button
+                  type="button"
+                  onClick={() => onCheckIn(booking)}
+                  className="flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-bold text-white transition hover:brightness-110 active:scale-95"
+                  style={{ backgroundColor: "#0056b7" }}
+                >
+                  <KeyRound className="h-3 w-3" />
+                  Check In
+                </button>
+              )}
               <a
                 href={buildCalendarUrl(booking)}
                 target="_blank"
@@ -258,6 +278,7 @@ export default function BookingsPage() {
   const [loading,       setLoading]       = useState(true);
   const [cancelTarget,  setCancelTarget]  = useState(null);
   const [reviewTarget,  setReviewTarget]  = useState(null);
+  const [otpTarget,     setOtpTarget]     = useState(null);
   const [reviewedIds,   setReviewedIds]   = useState(new Set());
 
   useEffect(() => {
@@ -407,6 +428,7 @@ export default function BookingsPage() {
                   booking={shown[0]}
                   onCancel={setCancelTarget}
                   onReview={setReviewTarget}
+                  onCheckIn={setOtpTarget}
                   reviewed={reviewedIds.has(shown[0].id)}
                 />
               </div>
@@ -420,6 +442,7 @@ export default function BookingsPage() {
                     booking={shown[1]}
                     onCancel={setCancelTarget}
                     onReview={setReviewTarget}
+                    onCheckIn={setOtpTarget}
                     reviewed={reviewedIds.has(shown[1].id)}
                   />
                 </div>
@@ -459,6 +482,7 @@ export default function BookingsPage() {
                             booking={booking}
                             onCancel={setCancelTarget}
                             onReview={setReviewTarget}
+                            onCheckIn={setOtpTarget}
                             reviewed={reviewedIds.has(booking.id)}
                           />
                         </div>
@@ -488,6 +512,7 @@ export default function BookingsPage() {
                             booking={booking}
                             onCancel={setCancelTarget}
                             onReview={setReviewTarget}
+                            onCheckIn={setOtpTarget}
                             reviewed={reviewedIds.has(booking.id)}
                           />
                         </div>
@@ -518,6 +543,18 @@ export default function BookingsPage() {
           onSuccess={() => {
             setReviewedIds((prev) => new Set([...prev, reviewTarget.id]));
             setReviewTarget(null);
+          }}
+        />
+      )}
+
+      {otpTarget && (
+        <OTPCheckInModal
+          booking={otpTarget}
+          onClose={() => setOtpTarget(null)}
+          onSuccess={() => {
+            setBookings((prev) =>
+              prev.map((b) => (b.id === otpTarget.id ? { ...b, status: "in_service" } : b))
+            );
           }}
         />
       )}

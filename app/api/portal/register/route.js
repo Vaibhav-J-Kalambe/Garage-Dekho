@@ -50,13 +50,12 @@ export async function POST(request) {
       userId = authData.user.id;
     }
 
-    // Insert portal_garages using service role (bypasses RLS)
-    const { error: garageErr } = await supabaseAdmin.from("portal_garages").insert({
+    const garageData = {
       user_id:              userId,
       garage_name:          garageName.trim(),
       owner_name:           ownerName?.trim() || null,
       speciality:           speciality?.trim() || null,
-      experience:           experience || null,
+      experience:           experience?.trim() || null,
       about:                about?.trim() || null,
       vehicle_types:        vehicleTypes || [],
       phone:                phone?.trim() || null,
@@ -74,14 +73,14 @@ export async function POST(request) {
       bank_account_number:  bankAccount?.trim() || null,
       bank_ifsc:            bankIfsc?.trim() || null,
       status:               "pending",
-    });
+    };
+
+    // Upsert — if garage already exists for this user, update it and reset to pending
+    const { error: garageErr } = await supabaseAdmin
+      .from("portal_garages")
+      .upsert(garageData, { onConflict: "user_id" });
 
     if (garageErr) {
-      // Already has a garage - just redirect them to dashboard/pending
-      if (garageErr.code === "23505") {
-        return NextResponse.json({ ok: true, existing: true });
-      }
-      // Only delete the user if we just created them
       if (!existingId) await supabaseAdmin.auth.admin.deleteUser(userId).catch(() => {});
       return NextResponse.json({ error: garageErr.message }, { status: 400 });
     }

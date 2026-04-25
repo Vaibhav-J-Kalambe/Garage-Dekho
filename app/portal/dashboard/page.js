@@ -33,9 +33,12 @@ function haversine(lat1, lng1, lat2, lng2) {
 
 export default function PortalDashboard() {
   const { garage, portalUser, signOut } = usePortalAuth();
-  const [stats,      setStats]      = useState({ bookings: 0, revenue: 0, sos: 0, rating: "-" });
-  const [activeSos,  setActiveSos]  = useState([]);
-  const [loading,    setLoading]    = useState(true);
+  const [stats,         setStats]         = useState({ bookings: 0, revenue: 0, sos: 0, rating: "-" });
+  const [activeSos,     setActiveSos]     = useState([]);
+  const [loading,       setLoading]       = useState(true);
+  const [todayBookings, setTodayBookings] = useState([]);
+  const [otpMap,        setOtpMap]        = useState({});
+  const [otpLoading,    setOtpLoading]    = useState({});
 
   useEffect(() => {
     if (!garage) return;
@@ -56,11 +59,40 @@ export default function PortalDashboard() {
   async function fetchDashboard() {
     setLoading(true);
     try {
-      await Promise.all([fetchActiveSos(), fetchStats()]);
+      await Promise.all([fetchActiveSos(), fetchStats(), fetchTodayBookings()]);
     } catch (e) {
       console.error("[dashboard] fetch error:", e);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function fetchTodayBookings() {
+    const todayStr = new Date().toISOString().split("T")[0];
+    const { data } = await supabase
+      .from("bookings")
+      .select("id, booking_date, booking_time, service_name, vehicle_type, status, service_otp, otp_expires_at, profiles(full_name, phone)")
+      .eq("garage_id", garage?.id)
+      .eq("booking_date", todayStr)
+      .eq("status", "confirmed")
+      .order("booking_time", { ascending: true });
+    setTodayBookings(data || []);
+  }
+
+  async function generateOtp(bookingId) {
+    setOtpLoading((prev) => ({ ...prev, [bookingId]: true }));
+    try {
+      const res  = await fetch("/api/booking/generate-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ booking_id: bookingId, garage_id: garage?.id }),
+      });
+      const json = await res.json();
+      if (res.ok) {
+        setOtpMap((prev) => ({ ...prev, [bookingId]: json.otp }));
+      }
+    } finally {
+      setOtpLoading((prev) => ({ ...prev, [bookingId]: false }));
     }
   }
 
@@ -207,6 +239,62 @@ export default function PortalDashboard() {
                         <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold capitalize ${statusColor}`}>{req.status}</span>
                       </div>
                     </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Today's Check-Ins */}
+          {todayBookings.length > 0 && (
+            <div className="rounded-2xl bg-white shadow-sm overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-[#c2c6d8]/30">
+                <p className="text-sm font-black text-[#1a1c1f]">Today&apos;s Check-Ins</p>
+                <span className="text-xs font-bold text-[#727687]">{todayBookings.length} booking{todayBookings.length > 1 ? "s" : ""}</span>
+              </div>
+              <div className="p-3 space-y-2">
+                {todayBookings.map((b) => {
+                  const otp = otpMap[b.id];
+                  return (
+                    <div key={b.id} className="rounded-xl border border-[#f0f0f0] p-3 space-y-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="text-sm font-bold text-[#1a1c1f] truncate">{b.profiles?.full_name || "Customer"}</p>
+                          <p className="text-xs text-[#727687]">{b.service_name} · {b.booking_time}</p>
+                        </div>
+                        <span className="shrink-0 rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-bold text-blue-600">
+                          {b.vehicle_type}
+                        </span>
+                      </div>
+                      {otp ? (
+                        <div className="flex items-center gap-3 rounded-xl bg-[#f0f6ff] px-4 py-3">
+                          <div className="flex-1">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-[#0056b7] mb-0.5">Check-In OTP</p>
+                            <p className="text-2xl font-black tracking-[0.3em] text-[#0056b7]">{otp}</p>
+                            <p className="text-[10px] text-[#727687] mt-0.5">Valid for 30 min · Share with customer</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => generateOtp(b.id)}
+                            className="shrink-0 rounded-xl border border-[#0056b7]/30 px-3 py-2 text-[11px] font-bold text-[#0056b7] transition hover:bg-[#0056b7]/5 active:scale-95"
+                          >
+                            Refresh
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => generateOtp(b.id)}
+                          disabled={otpLoading[b.id]}
+                          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0056b7] py-2.5 text-sm font-bold text-white transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
+                        >
+                          {otpLoading[b.id] ? (
+                            <span className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                          ) : null}
+                          Generate OTP
+                        </button>
+                      )}
+                    </div>
                   );
                 })}
               </div>
