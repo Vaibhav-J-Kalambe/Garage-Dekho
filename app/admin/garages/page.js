@@ -258,7 +258,7 @@ export default function AdminGaragesPage() {
 
   if (!authed) {
     return (
-      <div className="min-h-screen bg-[#f9f9fe] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#f9f9fe] flex items-center justify-center px-4" style={{ colorScheme: "light" }}>
         <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-card border border-[#f0f0f0]">
           <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[#d8e2ff]">
             <Building2 className="h-5 w-5 text-[#0056b7]" />
@@ -281,7 +281,7 @@ export default function AdminGaragesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f9f9fe] pb-16">
+    <div className="min-h-screen bg-[#f9f9fe] pb-16" style={{ colorScheme: "light" }}>
 
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white border-b border-[#f0f0f0] shadow-sm">
