@@ -26,11 +26,16 @@ export function PortalAuthProvider({ children }) {
       const { data: { session } } = await supabase.auth.getSession();
       if (!mounted) return;
 
+      const isAuthPage = ["/portal/login", "/portal/register", "/portal/forgot-password", "/portal/reset-password"].some(p => pathname.startsWith(p));
+
       if (!session?.user) {
         setLoading(false);
-        if (pathname !== "/portal/login" && pathname !== "/portal/register") {
-          router.replace("/portal/login");
-        }
+        if (!isAuthPage) router.replace("/portal/login");
+        return;
+      }
+
+      if (isAuthPage && pathname.startsWith("/portal/reset-password")) {
+        setLoading(false);
         return;
       }
 
@@ -69,9 +74,9 @@ export function PortalAuthProvider({ children }) {
     if (!mounted) return;
 
     if (!data) {
-      // Session exists but no garage record - registration was incomplete
       setLoading(false);
-      if (!pathname.startsWith("/portal/register") && pathname !== "/portal/login") {
+      const safe = ["/portal/register", "/portal/login", "/portal/forgot-password", "/portal/reset-password"];
+      if (!safe.some(p => pathname.startsWith(p))) {
         router.replace("/portal/register?complete=1");
       }
       return;
