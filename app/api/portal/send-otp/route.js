@@ -61,7 +61,7 @@ export async function POST(request) {
       method:  "POST",
       headers: { "Authorization": "Bearer " + apiKey, "Content-Type": "application/json" },
       body: JSON.stringify({
-        from:    "GarageDekho <onboarding@resend.dev>",
+        from:    "GarageDekho <noreply@garagedekho.in>",
         to:      [normalizedEmail],
         subject: "Your GarageDekho verification code: " + otp,
         html:    otpHtml(otp),
@@ -71,7 +71,7 @@ export async function POST(request) {
     if (!res.ok) {
       const err = await res.text();
       console.error("Resend error:", err);
-      return NextResponse.json({ error: "Resend: " + err }, { status: 500 });
+      return NextResponse.json({ error: "Failed to send verification email. Please try again." }, { status: 500 });
     }
 
     return NextResponse.json({ token });
