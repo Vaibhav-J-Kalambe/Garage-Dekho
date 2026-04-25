@@ -227,7 +227,7 @@ export default function AdminGaragesPage() {
     if (res.ok) {
       setGarages(json.garages || []);
     } else if (res.status === 401) {
-      setAuthed(false); setAuthErr("Wrong secret — please re-enter.");
+      setAuthed(false); setAuthErr("Wrong secret. Please re-enter.");
     }
     setLoading(false);
   }
@@ -251,7 +251,7 @@ export default function AdminGaragesPage() {
       setGarages((prev) => prev.filter((g) => g.id !== garageId));
     } else {
       const j = await res.json();
-      if (j.error === "Unauthorized") { setAuthed(false); setAuthErr("Wrong secret."); }
+      if (j.error === "Unauthorized") { setAuthed(false); setAuthErr("Wrong secret. Please re-enter."); }
     }
     setActing(null);
   }
