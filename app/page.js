@@ -361,7 +361,7 @@ export default function HomePage() {
                 ].map(({ icon, label }) => (
                   <span
                     key={label}
-                    className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold bg-surface text-green-600"
+                    className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-green-600"
                   >
                     {icon}
                     {label}
