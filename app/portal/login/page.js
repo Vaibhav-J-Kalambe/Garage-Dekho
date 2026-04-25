@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
 
 const FEATURES = [
@@ -40,6 +41,7 @@ const FEATURES = [
 ];
 
 export default function PortalLoginPage() {
+  const router = useRouter();
   const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -58,7 +60,9 @@ export default function PortalLoginPage() {
       setLoading(false);
       return;
     }
-    // PortalAuthContext onAuthStateChange handles redirect automatically
+
+    // Optimistic redirect — PortalAuthContext will correct to /pending if needed
+    router.replace("/portal/dashboard");
   }
 
   return (
