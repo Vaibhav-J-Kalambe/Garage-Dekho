@@ -203,13 +203,17 @@ export default function PortalLoginPage() {
                 </div>
               </div>
 
-              <button type="submit" disabled={loading} aria-busy={loading} className="mt-1 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-[#0056D2] text-sm font-bold text-white shadow-glow-primary transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-60">
+              <button type="submit" disabled={loading} aria-busy={loading} className="mt-1 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-[#0056D2] text-sm font-bold text-white transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-60">
                 {loading && <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10" strokeOpacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round"/></svg>}
                 {loading ? "Signing in…" : "Sign In"}
               </button>
             </form>
 
-            <p className="mt-6 text-center text-sm text-slate-500">
+            <p className="mt-4 text-center text-sm">
+              <Link href="/portal/forgot-password" className="font-semibold text-[#0056D2] hover:underline">Forgot password?</Link>
+            </p>
+
+            <p className="mt-4 text-center text-sm text-slate-500">
               New garage partner?{" "}
               <Link href="/portal/register" className="font-bold text-[#0056D2] transition-colors duration-150 hover:underline">Register here</Link>
             </p>

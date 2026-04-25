@@ -171,6 +171,22 @@ body {
 .dark input::placeholder, .dark textarea::placeholder {
   color: rgb(var(--color-outline));
 }
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px rgb(var(--color-surface-container)) inset !important;
+  -webkit-text-fill-color: rgb(var(--color-on-surface)) !important;
+  caret-color: rgb(var(--color-on-surface));
+}
+/* Slate utility overrides for dark mode (used on portal login) */
+.dark .bg-slate-50  { background-color: rgb(var(--color-surface-container)) !important; }
+.dark .bg-slate-100 { background-color: rgb(var(--color-surface-container)) !important; }
+.dark .text-slate-900 { color: rgb(var(--color-on-surface)) !important; }
+.dark .text-slate-500 { color: rgb(var(--color-outline)) !important; }
+.dark .text-slate-400 { color: rgb(var(--color-outline-variant)) !important; }
+.dark .border-slate-200 { border-color: rgb(var(--color-outline-variant)) !important; }
+.dark .border-slate-100 { border-color: rgb(var(--color-surface-container-high)) !important; }
+.dark .focus\:bg-white:focus { background-color: rgb(var(--color-surface-container)) !important; }
 
 /* ── Custom scrollbar (always visible, like Notion) ── */
 html {
@@ -259,8 +275,8 @@ button, a, [role="button"] {
   .shadow-nav        { box-shadow: 0 -1px 0 rgba(0,0,0,0.04), 0 -8px 24px rgba(0,0,0,0.06); }
 
   /* ── Glow shadows for CTAs ── */
-  .shadow-glow-primary { box-shadow: 0 4px 16px rgba(0, 86, 183, 0.38); }
-  .shadow-glow-accent  { box-shadow: 0 4px 16px rgba(255, 107, 0, 0.38); }
+  .shadow-glow-primary { box-shadow: none; }
+  .shadow-glow-accent  { box-shadow: none; }
 
   /* ── Glassmorphism ── */
   .glass {
