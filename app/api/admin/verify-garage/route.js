@@ -47,7 +47,7 @@ export async function POST(request) {
 
     if (pg) {
       const garageRow = {
-        id:              pg.id,   // same UUID — links the two tables
+        id:              pg.id,
         name:            pg.garage_name,
         lat:             pg.lat,
         lng:             pg.lng,
@@ -66,7 +66,6 @@ export async function POST(request) {
         reviews_list:    [],
         image:           null,
         wait_time:       null,
-        is_open:         false,
       };
 
       const { error: upsertErr } = await supabaseAdmin
@@ -75,6 +74,7 @@ export async function POST(request) {
 
       if (upsertErr) {
         console.error("Failed to upsert into garages:", upsertErr.message);
+        return NextResponse.json({ error: "Approved but failed to publish: " + upsertErr.message }, { status: 500 });
       }
     }
   }

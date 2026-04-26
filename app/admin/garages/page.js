@@ -95,6 +95,41 @@ function GarageCard({ garage, onAction, acting, onRemove }) {
           </div>
         )}
 
+        {/* Approve / Remove buttons for rejected garages */}
+        {garage.status === "rejected" && (
+          confirm ? (
+            <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3">
+              <p className="text-sm font-bold text-red-600 mb-0.5">Remove this garage permanently?</p>
+              <p className="text-xs text-red-400 mb-2">Deletes all data and the partner's account. Cannot be undone.</p>
+              <div className="flex gap-2">
+                <button onClick={async () => { setRemoving(true); await onRemove(garage.id); setRemoving(false); }}
+                  disabled={removing}
+                  className="flex-1 rounded-xl bg-red-500 py-2 text-sm font-bold text-white hover:brightness-110 active:scale-95 transition disabled:opacity-60">
+                  {removing ? "Removing…" : "Yes, Remove"}
+                </button>
+                <button onClick={() => setConfirm(false)}
+                  className="flex-1 rounded-xl border border-[#e8e8f0] bg-white py-2 text-sm font-bold text-[#424656] hover:bg-[#f3f3f8] active:scale-95 transition">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex gap-2 mt-4">
+              <button onClick={() => onAction(garage.id, "approved")} disabled={!!acting}
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-green-500 py-2.5 text-sm font-bold text-white hover:brightness-110 active:scale-95 transition disabled:opacity-60">
+                {acting === garage.id + "approved"
+                  ? <div className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                  : <CheckCircle2 className="h-4 w-4" />}
+                Approve & Go Live
+              </button>
+              <button onClick={() => setConfirm("remove")}
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 py-2.5 text-sm font-bold text-red-500 hover:bg-red-100 active:scale-95 transition">
+                <XCircle className="h-4 w-4" /> Remove
+              </button>
+            </div>
+          )
+        )}
+
         {/* Reject / Remove buttons for approved garages */}
         {garage.status === "approved" && (
           confirm ? (
