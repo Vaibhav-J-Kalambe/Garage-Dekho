@@ -54,7 +54,7 @@ export async function POST(request) {
         address:         pg.address,
         phone:           pg.phone,
         speciality:      pg.speciality  || null,
-        experience:      pg.experience  || null,
+        experience:      pg.experience ? String(pg.experience) : null,
         about:           pg.about       || null,
         verified:        true,
         vehicle_type:    pg.vehicle_types?.[0] || null,
