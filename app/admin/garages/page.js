@@ -332,19 +332,46 @@ function GarageCard({ garage, onAction, acting, onRemove }) {
   );
 }
 
+const SESSION_TTL   = 8 * 60 * 60 * 1000; // 8 hours
+const SESSION_KEY   = "admin_session";
+
+function loadSession() {
+  try {
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const { secret, loginAt } = JSON.parse(raw);
+    if (Date.now() - loginAt > SESSION_TTL) { sessionStorage.removeItem(SESSION_KEY); return null; }
+    return secret;
+  } catch { return null; }
+}
+
+function saveSession(secret) {
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify({ secret, loginAt: Date.now() }));
+}
+
 export default function AdminGaragesPage() {
-  const [tab,     setTab]     = useState("pending");
-  const [garages, setGarages] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [acting,  setActing]  = useState(null);
-  const [secret,  setSecret]  = useState("");
-  const [authed,  setAuthed]  = useState(false);
-  const [authErr, setAuthErr] = useState("");
+  const [tab,          setTab]          = useState("pending");
+  const [garages,      setGarages]      = useState([]);
+  const [loading,      setLoading]      = useState(true);
+  const [acting,       setActing]       = useState(null);
+  const [secret,       setSecret]       = useState("");
+  const [authed,       setAuthed]       = useState(false);
+  const [authErr,      setAuthErr]      = useState("");
+  const [authLoading,  setAuthLoading]  = useState(false);
+  const [attemptsLeft, setAttemptsLeft] = useState(5);
+  const [lockCountdown,setLockCountdown]= useState(0);
 
   useEffect(() => {
-    const saved = sessionStorage.getItem("admin_secret");
+    const saved = loadSession();
     if (saved) { setSecret(saved); setAuthed(true); }
   }, []);
+
+  // Countdown timer when locked out
+  useEffect(() => {
+    if (lockCountdown <= 0) return;
+    const t = setTimeout(() => setLockCountdown((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [lockCountdown]);
 
   useEffect(() => {
     if (authed) fetchGarages();
@@ -365,11 +392,36 @@ export default function AdminGaragesPage() {
     setLoading(false);
   }
 
-  function handleAuth(e) {
+  async function handleAuth(e) {
     e.preventDefault();
-    if (!secret.trim()) return;
-    sessionStorage.setItem("admin_secret", secret);
-    setAuthed(true); setAuthErr("");
+    if (!secret.trim() || authLoading || lockCountdown > 0) return;
+    setAuthLoading(true);
+    setAuthErr("");
+
+    const res = await fetch("/api/admin/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ secret }),
+    });
+    const j = await res.json();
+
+    if (res.ok) {
+      saveSession(secret);
+      setAuthed(true);
+    } else if (res.status === 429) {
+      setLockCountdown(j.lockedFor || 900);
+      setAttemptsLeft(0);
+      setAuthErr("Too many failed attempts.");
+    } else {
+      setAttemptsLeft(j.attemptsLeft ?? attemptsLeft - 1);
+      setAuthErr("Wrong password. " + (j.attemptsLeft > 0 ? `${j.attemptsLeft} attempt${j.attemptsLeft !== 1 ? "s" : ""} left.` : ""));
+    }
+    setAuthLoading(false);
+  }
+
+  function handleLogout() {
+    sessionStorage.removeItem(SESSION_KEY);
+    setAuthed(false); setSecret(""); setAuthErr("");
   }
 
   async function handleRemove(garageId) {
@@ -407,24 +459,58 @@ export default function AdminGaragesPage() {
   }
 
   if (!authed) {
+    const isLocked = lockCountdown > 0;
+    const mins = String(Math.floor(lockCountdown / 60)).padStart(2, "0");
+    const secs = String(lockCountdown % 60).padStart(2, "0");
+
     return (
       <div className="min-h-screen bg-[#f9f9fe] flex items-center justify-center px-4" style={{ colorScheme: "light" }}>
-        <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-card border border-[#f0f0f0]">
+        <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-sm border border-[#f0f0f0]">
           <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[#d8e2ff]">
             <Building2 className="h-5 w-5 text-[#0056b7]" />
           </div>
-          <h1 className="text-xl font-black text-[#1a1c1f] mb-1">Garage Verification</h1>
-          <p className="text-sm text-[#727687] mb-5">GarageDekho team only. Enter your admin secret.</p>
-          {authErr && <p className="mb-3 text-sm text-red-500 font-semibold">{authErr}</p>}
-          <form onSubmit={handleAuth} className="space-y-3">
-            <input type="password" value={secret} onChange={(e) => setSecret(e.target.value)}
-              placeholder="Admin secret" style={{ fontSize: 16 }}
-              className="w-full rounded-xl border border-[#e8e8f0] bg-[#f9f9fe] px-4 py-3 text-sm text-[#1a1c1f] outline-none focus:border-[#0056b7]" />
-            <button type="submit"
-              className="w-full rounded-xl bg-[#0056b7] py-3 text-sm font-bold text-white hover:brightness-110 active:scale-95 transition">
-              Enter
-            </button>
-          </form>
+          <h1 className="text-xl font-black text-[#1a1c1f] mb-1">Admin Access</h1>
+          <p className="text-sm text-[#727687] mb-5">GarageDekho team only. Unauthorised access is logged.</p>
+
+          {isLocked ? (
+            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-5 text-center">
+              <p className="text-sm font-bold text-red-600 mb-1">Access locked</p>
+              <p className="text-3xl font-black text-red-500 tabular-nums">{mins}:{secs}</p>
+              <p className="text-xs text-red-400 mt-1">Too many failed attempts. Try again after the timer.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleAuth} className="space-y-3">
+              {authErr && (
+                <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2.5">
+                  <p className="text-xs font-semibold text-red-600">{authErr}</p>
+                  {attemptsLeft > 0 && attemptsLeft < 5 && (
+                    <div className="mt-2 flex gap-1">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <div key={i} className={`h-1.5 flex-1 rounded-full ${i < attemptsLeft ? "bg-red-300" : "bg-red-500"}`} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              <input
+                type="password"
+                value={secret}
+                onChange={(e) => setSecret(e.target.value)}
+                placeholder="Admin password"
+                autoComplete="current-password"
+                style={{ fontSize: 16 }}
+                className="w-full rounded-xl border border-[#e8e8f0] bg-[#f9f9fe] px-4 py-3 text-sm text-[#1a1c1f] outline-none focus:border-[#0056b7]"
+              />
+              <button
+                type="submit"
+                disabled={authLoading || !secret.trim()}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0056b7] py-3 text-sm font-bold text-white hover:brightness-110 active:scale-95 transition disabled:opacity-60"
+              >
+                {authLoading && <div className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />}
+                {authLoading ? "Verifying…" : "Enter"}
+              </button>
+            </form>
+          )}
         </div>
       </div>
     );
@@ -445,9 +531,14 @@ export default function AdminGaragesPage() {
               <p className="text-[11px] text-[#727687]">{garages.length} {tab}</p>
             </div>
           </div>
-          <button onClick={fetchGarages} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] hover:bg-[#ededf2] transition active:scale-95">
-            <RefreshCw className="h-3.5 w-3.5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={fetchGarages} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f3f3f8] text-[#424656] hover:bg-[#ededf2] transition active:scale-95">
+              <RefreshCw className="h-3.5 w-3.5" />
+            </button>
+            <button onClick={handleLogout} title="Logout" className="flex h-8 w-8 items-center justify-center rounded-full bg-red-50 text-red-400 hover:bg-red-100 transition active:scale-95">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            </button>
+          </div>
         </div>
         <div className="mx-auto max-w-2xl px-4 flex gap-1.5 pb-3">
           {STATUS_TABS.map((t) => (
