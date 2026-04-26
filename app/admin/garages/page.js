@@ -336,11 +336,13 @@ export default function AdminGaragesPage() {
       headers: { "Content-Type": "application/json", "x-admin-secret": usedSecret },
       body: JSON.stringify({ garage_id: garageId, action }),
     });
+    const j = await res.json();
     if (res.ok) {
       setGarages((prev) => prev.filter((g) => g.id !== garageId));
+    } else if (j.error === "Unauthorized") {
+      setAuthed(false); setAuthErr("Wrong secret. Please re-enter.");
     } else {
-      const j = await res.json();
-      if (j.error === "Unauthorized") { setAuthed(false); setAuthErr("Wrong secret. Please re-enter."); }
+      alert("Action failed: " + (j.error || "Unknown error"));
     }
     setActing(null);
   }
