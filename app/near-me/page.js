@@ -185,19 +185,7 @@ function NearMeContent() {
   }, []);
 
   useEffect(() => {
-    const CACHE_KEY = "gd_garages_v1";
-    const CACHE_TTL = 5 * 60 * 1000;
-    try {
-      const raw = sessionStorage.getItem(CACHE_KEY);
-      if (raw) {
-        const { data, ts } = JSON.parse(raw);
-        if (Date.now() - ts < CACHE_TTL) { setGarages(data); return; }
-      }
-    } catch { /* ignore */ }
-    getAllGarages().then((data) => {
-      setGarages(data);
-      try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() })); } catch {}
-    }).catch(console.error);
+    getAllGarages().then(setGarages).catch(console.error);
   }, []);
 
   const garagesWithDist = useMemo(() => garages.filter(Boolean).map((g) => {

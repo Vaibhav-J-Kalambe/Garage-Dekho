@@ -81,7 +81,11 @@ export async function POST(request) {
 
   if (action === "rejected") {
     // Remove from public garages if it was previously approved
-    await supabaseAdmin.from("garages").delete().eq("portal_garage_id", garage_id).catch(() => {});
+    const { error: delErr } = await supabaseAdmin
+      .from("garages")
+      .delete()
+      .eq("portal_garage_id", garage_id);
+    if (delErr) console.error("Failed to remove from garages on reject:", delErr.message);
   }
 
   return NextResponse.json({ ok: true });
