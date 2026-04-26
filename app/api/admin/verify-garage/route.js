@@ -24,15 +24,19 @@ export async function POST(request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { garage_id, action } = await request.json();
+  const { garage_id, action, rejection_reason } = await request.json();
   if (!garage_id || !["approved", "rejected"].includes(action)) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  // Update status in portal_garages
+  // Update status (and reason if rejecting) in portal_garages
+  const updatePayload = { status: action };
+  if (action === "rejected" && rejection_reason) updatePayload.rejection_reason = rejection_reason;
+  if (action === "approved") updatePayload.rejection_reason = null;
+
   const { error } = await supabaseAdmin
     .from("portal_garages")
-    .update({ status: action })
+    .update(updatePayload)
     .eq("id", garage_id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

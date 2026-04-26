@@ -38,10 +38,54 @@ function Section({ title, icon: Icon, children }) {
   );
 }
 
+function RejectReasonDialog({ reason, onChangeReason, acting, onConfirm, onCancel }) {
+  return (
+    <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3">
+      <p className="text-sm font-bold text-red-600 mb-0.5">Reject this garage?</p>
+      <p className="text-xs text-red-400 mb-3">Select a reason — garage goes offline and partner is notified.</p>
+      <div className="flex flex-col gap-2 mb-3">
+        {REJECTION_REASONS.map((r) => (
+          <label key={r} className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="reject-reason"
+              value={r}
+              checked={reason === r}
+              onChange={() => onChangeReason(r)}
+              className="accent-red-500"
+            />
+            <span className="text-xs font-medium text-[#1a1c1f]">{r}</span>
+          </label>
+        ))}
+      </div>
+      <div className="flex gap-2">
+        <button onClick={onConfirm} disabled={acting}
+          className="flex-1 rounded-xl bg-red-500 py-2 text-sm font-bold text-white hover:brightness-110 active:scale-95 transition disabled:opacity-60">
+          {acting ? "Rejecting…" : "Yes, Reject"}
+        </button>
+        <button onClick={onCancel}
+          className="flex-1 rounded-xl border border-[#e8e8f0] bg-white py-2 text-sm font-bold text-[#424656] hover:bg-[#f3f3f8] active:scale-95 transition">
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
+
+const REJECTION_REASONS = [
+  "Incomplete or incorrect information",
+  "Could not verify the business",
+  "Duplicate listing",
+  "Outside service area",
+  "Fraudulent or suspicious listing",
+  "Other",
+];
+
 function GarageCard({ garage, onAction, acting, onRemove }) {
-  const [expanded,  setExpanded]  = useState(false);
-  const [confirm,   setConfirm]   = useState(false);
-  const [removing,  setRemoving]  = useState(false);
+  const [expanded,      setExpanded]      = useState(false);
+  const [confirm,       setConfirm]       = useState(false);
+  const [removing,      setRemoving]      = useState(false);
+  const [rejectReason,  setRejectReason]  = useState(REJECTION_REASONS[0]);
   const st = statusStyle[garage.status] ?? statusStyle.pending;
   const wh = garage.working_hours || {};
   const closedDays = wh.closed_days || [];
@@ -72,27 +116,39 @@ function GarageCard({ garage, onAction, acting, onRemove }) {
             <p className="text-[10px] text-[#c2c6d8] mt-1">
               Registered {new Date(garage.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
             </p>
+            {garage.status === "rejected" && garage.rejection_reason && (
+              <p className="mt-1.5 text-[11px] font-semibold text-red-400">
+                Reason: {garage.rejection_reason}
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Approve / Reject */}
+        {/* Approve / Reject — pending */}
         {garage.status === "pending" && (
-          <div className="flex gap-2 mt-4">
-            <button onClick={() => onAction(garage.id, "approved")} disabled={!!acting}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-green-500 py-2.5 text-sm font-bold text-white hover:brightness-110 active:scale-95 transition disabled:opacity-60">
-              {acting === garage.id + "approved"
-                ? <div className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
-                : <CheckCircle2 className="h-4 w-4" />}
-              Approve & Go Live
-            </button>
-            <button onClick={() => onAction(garage.id, "rejected")} disabled={!!acting}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 py-2.5 text-sm font-bold text-red-500 hover:bg-red-100 active:scale-95 transition disabled:opacity-60">
-              {acting === garage.id + "rejected"
-                ? <div className="h-4 w-4 rounded-full border-2 border-red-400 border-t-transparent animate-spin" />
-                : <XCircle className="h-4 w-4" />}
-              Reject
-            </button>
-          </div>
+          confirm === "reject" ? (
+            <RejectReasonDialog
+              reason={rejectReason}
+              onChangeReason={setRejectReason}
+              acting={acting === garage.id + "rejected"}
+              onConfirm={async () => { await onAction(garage.id, "rejected", rejectReason); setConfirm(false); }}
+              onCancel={() => setConfirm(false)}
+            />
+          ) : (
+            <div className="flex gap-2 mt-4">
+              <button onClick={() => onAction(garage.id, "approved")} disabled={!!acting}
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-green-500 py-2.5 text-sm font-bold text-white hover:brightness-110 active:scale-95 transition disabled:opacity-60">
+                {acting === garage.id + "approved"
+                  ? <div className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                  : <CheckCircle2 className="h-4 w-4" />}
+                Approve & Go Live
+              </button>
+              <button onClick={() => setConfirm("reject")} disabled={!!acting}
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 py-2.5 text-sm font-bold text-red-500 hover:bg-red-100 active:scale-95 transition disabled:opacity-60">
+                <XCircle className="h-4 w-4" /> Reject
+              </button>
+            </div>
+          )
         )}
 
         {/* Approve / Remove buttons for rejected garages */}
@@ -132,20 +188,23 @@ function GarageCard({ garage, onAction, acting, onRemove }) {
 
         {/* Reject / Remove buttons for approved garages */}
         {garage.status === "approved" && (
-          confirm ? (
+          confirm === "reject" ? (
+            <RejectReasonDialog
+              reason={rejectReason}
+              onChangeReason={setRejectReason}
+              acting={acting === garage.id + "rejected"}
+              onConfirm={async () => { await onAction(garage.id, "rejected", rejectReason); setConfirm(false); }}
+              onCancel={() => setConfirm(false)}
+            />
+          ) : confirm === "remove" ? (
             <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3">
-              <p className="text-sm font-bold text-red-600 mb-0.5">{confirm === "remove" ? "Remove garage permanently?" : "Reject this garage?"}</p>
-              <p className="text-xs text-red-400 mb-2">{confirm === "remove" ? "Deletes all data and the partner's account. Cannot be undone." : "Garage goes offline. Partner can re-register."}</p>
+              <p className="text-sm font-bold text-red-600 mb-0.5">Remove garage permanently?</p>
+              <p className="text-xs text-red-400 mb-2">Deletes all data and the partner's account. Cannot be undone.</p>
               <div className="flex gap-2">
-                <button onClick={async () => {
-                  setRemoving(true);
-                  if (confirm === "remove") await onRemove(garage.id);
-                  else await onAction(garage.id, "rejected");
-                  setRemoving(false);
-                }}
+                <button onClick={async () => { setRemoving(true); await onRemove(garage.id); setRemoving(false); }}
                   disabled={removing}
                   className="flex-1 rounded-xl bg-red-500 py-2 text-sm font-bold text-white hover:brightness-110 active:scale-95 transition disabled:opacity-60">
-                  {removing ? "Processing…" : confirm === "remove" ? "Yes, Remove" : "Yes, Reject"}
+                  {removing ? "Removing…" : "Yes, Remove"}
                 </button>
                 <button onClick={() => setConfirm(false)}
                   className="flex-1 rounded-xl border border-[#e8e8f0] bg-white py-2 text-sm font-bold text-[#424656] hover:bg-[#f3f3f8] active:scale-95 transition">
@@ -328,13 +387,13 @@ export default function AdminGaragesPage() {
     }
   }
 
-  async function handleAction(garageId, action) {
+  async function handleAction(garageId, action, reason) {
     setActing(garageId + action);
     const usedSecret = secret || sessionStorage.getItem("admin_secret") || "";
     const res = await fetch("/api/admin/verify-garage", {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-admin-secret": usedSecret },
-      body: JSON.stringify({ garage_id: garageId, action }),
+      body: JSON.stringify({ garage_id: garageId, action, rejection_reason: reason || null }),
     });
     const j = await res.json();
     if (res.ok) {

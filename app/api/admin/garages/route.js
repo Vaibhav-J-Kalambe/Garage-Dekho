@@ -17,7 +17,7 @@ export async function GET(request) {
 
   let query = supabaseAdmin
     .from("portal_garages")
-    .select("id, garage_name, owner_name, city, address, phone, whatsapp, services, vehicle_types, speciality, experience, status, created_at")
+    .select("id, garage_name, owner_name, city, address, phone, whatsapp, services, vehicle_types, speciality, experience, status, rejection_reason, created_at")
     .order("created_at", { ascending: false });
 
   if (status === "pending") {
