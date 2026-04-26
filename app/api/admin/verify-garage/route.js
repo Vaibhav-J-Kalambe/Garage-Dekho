@@ -47,30 +47,30 @@ export async function POST(request) {
 
     if (pg) {
       const garageRow = {
-        id:              pg.id,
-        name:            pg.garage_name,
-        lat:             pg.lat,
-        lng:             pg.lng,
-        address:         pg.address,
-        phone:           pg.phone,
-        speciality:      pg.speciality  || null,
-        experience:      pg.experience ? String(pg.experience) : null,
-        about:           pg.about       || null,
-        verified:        true,
-        vehicle_type:    pg.vehicle_types?.[0] || null,
-        vehicles_served: (pg.vehicle_types ?? []).join(", ") || null,
-        open_hours:      formatOpenHours(pg.working_hours),
-        services:        (pg.services ?? []).map((s) => s.name).filter(Boolean),
-        rating:          0,
-        reviews:         0,
-        reviews_list:    [],
-        image:           null,
-        wait_time:       null,
+        portal_garage_id: pg.id,          // UUID linking portal_garages ↔ garages
+        name:             pg.garage_name,
+        lat:              pg.lat,
+        lng:              pg.lng,
+        address:          pg.address,
+        phone:            pg.phone,
+        speciality:       pg.speciality  || null,
+        experience:       pg.experience ? String(pg.experience) : null,
+        about:            pg.about       || null,
+        verified:         true,
+        vehicle_type:     pg.vehicle_types?.[0] || null,
+        vehicles_served:  (pg.vehicle_types ?? []).join(", ") || null,
+        open_hours:       formatOpenHours(pg.working_hours),
+        services:         (pg.services ?? []).map((s) => s.name).filter(Boolean),
+        rating:           0,
+        reviews:          0,
+        reviews_list:     [],
+        image:            null,
+        wait_time:        null,
       };
 
       const { error: upsertErr } = await supabaseAdmin
         .from("garages")
-        .upsert(garageRow, { onConflict: "id" });
+        .upsert(garageRow, { onConflict: "portal_garage_id" });
 
       if (upsertErr) {
         console.error("Failed to upsert into garages:", upsertErr.message);
@@ -81,7 +81,7 @@ export async function POST(request) {
 
   if (action === "rejected") {
     // Remove from public garages if it was previously approved
-    await supabaseAdmin.from("garages").delete().eq("id", garage_id).catch(() => {});
+    await supabaseAdmin.from("garages").delete().eq("portal_garage_id", garage_id).catch(() => {});
   }
 
   return NextResponse.json({ ok: true });

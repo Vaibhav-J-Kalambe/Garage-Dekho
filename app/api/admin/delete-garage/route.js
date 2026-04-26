@@ -22,8 +22,8 @@ export async function POST(request) {
     .eq("id", garage_id)
     .single();
 
-  // Delete from public garages table (same UUID)
-  await supabaseAdmin.from("garages").delete().eq("id", garage_id).catch(() => {});
+  // Delete from public garages table (linked via portal_garage_id)
+  await supabaseAdmin.from("garages").delete().eq("portal_garage_id", garage_id).catch(() => {});
 
   // Delete portal garage record
   const { error } = await supabaseAdmin
