@@ -95,16 +95,22 @@ function GarageCard({ garage, onAction, acting, onRemove }) {
           </div>
         )}
 
-        {/* Remove button for approved garages */}
+        {/* Reject / Remove buttons for approved garages */}
         {garage.status === "approved" && (
           confirm ? (
             <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3">
-              <p className="text-sm font-bold text-red-600 mb-2">Remove this garage? This cannot be undone.</p>
+              <p className="text-sm font-bold text-red-600 mb-0.5">{confirm === "remove" ? "Remove garage permanently?" : "Reject this garage?"}</p>
+              <p className="text-xs text-red-400 mb-2">{confirm === "remove" ? "Deletes all data and the partner's account. Cannot be undone." : "Garage goes offline. Partner can re-register."}</p>
               <div className="flex gap-2">
-                <button onClick={async () => { setRemoving(true); await onRemove(garage.id); setRemoving(false); }}
+                <button onClick={async () => {
+                  setRemoving(true);
+                  if (confirm === "remove") await onRemove(garage.id);
+                  else await onAction(garage.id, "rejected");
+                  setRemoving(false);
+                }}
                   disabled={removing}
                   className="flex-1 rounded-xl bg-red-500 py-2 text-sm font-bold text-white hover:brightness-110 active:scale-95 transition disabled:opacity-60">
-                  {removing ? "Removing…" : "Yes, Remove"}
+                  {removing ? "Processing…" : confirm === "remove" ? "Yes, Remove" : "Yes, Reject"}
                 </button>
                 <button onClick={() => setConfirm(false)}
                   className="flex-1 rounded-xl border border-[#e8e8f0] bg-white py-2 text-sm font-bold text-[#424656] hover:bg-[#f3f3f8] active:scale-95 transition">
@@ -113,10 +119,16 @@ function GarageCard({ garage, onAction, acting, onRemove }) {
               </div>
             </div>
           ) : (
-            <button onClick={() => setConfirm(true)}
-              className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 py-2.5 text-sm font-bold text-red-500 hover:bg-red-100 active:scale-95 transition">
-              <XCircle className="h-4 w-4" /> Remove Garage
-            </button>
+            <div className="flex gap-2 mt-4">
+              <button onClick={() => setConfirm("reject")}
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 py-2.5 text-sm font-bold text-amber-600 hover:bg-amber-100 active:scale-95 transition">
+                <XCircle className="h-4 w-4" /> Reject
+              </button>
+              <button onClick={() => setConfirm("remove")}
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-red-200 bg-red-50 py-2.5 text-sm font-bold text-red-500 hover:bg-red-100 active:scale-95 transition">
+                <XCircle className="h-4 w-4" /> Remove
+              </button>
+            </div>
           )
         )}
 
